@@ -147,7 +147,7 @@ void OnTick()
             {
                Print("Opening BUY trade for ", CurrentSymbol);
                OrderType = ORDER_TYPE_BUY; 
-               TicketNumber[SymbolLoop]  = ProcessTradeOpen(CurrentSymbol, OrderType,SymbolLoop); //Open positions and store ticket
+               ProcessTradeOpen(CurrentSymbol, OrderType,SymbolLoop); //Open positions and store ticket
             
             }
             else
@@ -161,7 +161,7 @@ void OnTick()
             {
                Print("Opening SELL trade for ", CurrentSymbol);
                OrderType = ORDER_TYPE_SELL;
-               TicketNumber[SymbolLoop]  = ProcessTradeOpen(CurrentSymbol, OrderType,SymbolLoop); //Open positions and store ticket
+               ProcessTradeOpen(CurrentSymbol, OrderType,SymbolLoop); //Open positions and store ticket
             
             }
             else
