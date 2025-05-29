@@ -1,0 +1,995 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AgriQuality Control | Premium Agricultural Products</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        .gradient-bg {
+            background: linear-gradient(135deg, #4CAF50 0%, #2E7D32 100%);
+        }
+        
+        .product-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+        }
+        
+        .quality-meter {
+            height: 8px;
+            border-radius: 4px;
+            background: linear-gradient(to right, #FF5722, #FFC107, #4CAF50);
+        }
+        
+        .quality-indicator {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            display: inline-block;
+            margin-right: 5px;
+        }
+        
+        .chart-container {
+            position: relative;
+            height: 250px;
+        }
+        
+        .animated-progress {
+            animation: progress 1.5s ease-in-out forwards;
+        }
+        
+        @keyframes progress {
+            from {
+                width: 0;
+            }
+        }
+        
+        .nav-link:hover::after {
+            content: '';
+            display: block;
+            width: 100%;
+            height: 2px;
+            background: white;
+            margin-top: 2px;
+        }
+    </style>
+</head>
+
+<body class="font-sans bg-gray-50">
+    <!-- Header -->
+    <header class="gradient-bg text-white shadow-lg">
+        <div class="container mx-auto px-4 py-4">
+            <div class="flex justify-between items-center">
+                <div class="flex items-center space-x-2">
+                    <i class="fas fa-leaf text-2xl"></i>
+                    <h1 class="text-2xl font-bold">AgriQuality Control</h1>
+                </div>
+                <nav class="hidden md:flex space-x-8">
+                    <a href="#dashboard" class="nav-link font-medium">Dashboard</a>
+                    <a href="#products" class="nav-link font-medium">Products</a>
+                    <a href="#reports" class="nav-link font-medium">Reports</a>
+                    <a href="#standards" class="nav-link font-medium">Standards</a>
+                    <a href="#contact" class="nav-link font-medium">Contact</a>
+                </nav>
+                <button class="md:hidden text-xl">
+                    <i class="fas fa-bars"></i>
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <!-- Hero Section -->
+    <section class="gradient-bg text-white py-16">
+        <div class="container mx-auto px-4 text-center">
+            <h2 class="text-4xl font-bold mb-4">Premium Quality Agricultural Products</h2>
+            <p class="text-xl max-w-3xl mx-auto mb-8">Ensuring excellence in every batch of tea, coffee, macadamia, and avocados through rigorous quality control processes.</p>
+            <button class="bg-white text-green-700 font-bold px-6 py-3 rounded-lg hover:bg-gray-100 transition duration-300">
+                View Quality Reports <i class="fas fa-arrow-right ml-2"></i>
+            </button>
+        </div>
+    </section>
+
+    <!-- Dashboard Section -->
+    <section id="dashboard" class="py-12 bg-white">
+        <div class="container mx-auto px-4">
+            <h2 class="text-3xl font-bold text-center mb-12 text-gray-800">Quality Control Dashboard</h2>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+                <!-- Stats Cards -->
+                <div class="bg-white p-6 rounded-xl shadow-md border-l-4 border-green-500">
+                    <div class="flex justify-between items-center">
+                        <div>
+                            <p class="text-gray-500">Total Inspections</p>
+                            <h3 class="text-2xl font-bold">1,248</h3>
+                        </div>
+                        <div class="bg-green-100 p-3 rounded-full">
+                            <i class="fas fa-clipboard-check text-green-600 text-xl"></i>
+                        </div>
+                    </div>
+                    <p class="text-green-600 text-sm mt-2"><i class="fas fa-arrow-up"></i> 12% from last month</p>
+                </div>
+
+                <div class="bg-white p-6 rounded-xl shadow-md border-l-4 border-blue-500">
+                    <div class="flex justify-between items-center">
+                        <div>
+                            <p class="text-gray-500">Passed QC</p>
+                            <h3 class="text-2xl font-bold">1,105</h3>
+                        </div>
+                        <div class="bg-blue-100 p-3 rounded-full">
+                            <i class="fas fa-check-circle text-blue-600 text-xl"></i>
+                        </div>
+                    </div>
+                    <p class="text-green-600 text-sm mt-2"><i class="fas fa-arrow-up"></i> 8% from last month</p>
+                </div>
+
+                <div class="bg-white p-6 rounded-xl shadow-md border-l-4 border-yellow-500">
+                    <div class="flex justify-between items-center">
+                        <div>
+                            <p class="text-gray-500">Minor Issues</p>
+                            <h3 class="text-2xl font-bold">98</h3>
+                        </div>
+                        <div class="bg-yellow-100 p-3 rounded-full">
+                            <i class="fas fa-exclamation-triangle text-yellow-600 text-xl"></i>
+                        </div>
+                    </div>
+                    <p class="text-red-600 text-sm mt-2"><i class="fas fa-arrow-down"></i> 5% from last month</p>
+                </div>
+
+                <div class="bg-white p-6 rounded-xl shadow-md border-l-4 border-red-500">
+                    <div class="flex justify-between items-center">
+                        <div>
+                            <p class="text-gray-500">Rejected Batches</p>
+                            <h3 class="text-2xl font-bold">45</h3>
+                        </div>
+                        <div class="bg-red-100 p-3 rounded-full">
+                            <i class="fas fa-times-circle text-red-600 text-xl"></i>
+                        </div>
+                    </div>
+                    <p class="text-green-600 text-sm mt-2"><i class="fas fa-arrow-down"></i> 15% from last month</p>
+                </div>
+            </div>
+
+            <!-- Quality Trends Chart -->
+            <div class="bg-white p-6 rounded-xl shadow-md mb-8">
+                <div class="flex justify-between items-center mb-4">
+                    <h3 class="text-xl font-semibold text-gray-800">Quality Trends (Last 6 Months)</h3>
+                    <div class="flex space-x-2">
+                        <button class="px-3 py-1 bg-gray-100 rounded text-sm">Tea</button>
+                        <button class="px-3 py-1 bg-gray-100 rounded text-sm">Coffee</button>
+                        <button class="px-3 py-1 bg-gray-100 rounded text-sm">Macadamia</button>
+                        <button class="px-3 py-1 bg-gray-100 rounded text-sm">Avocado</button>
+                    </div>
+                </div>
+                <div class="chart-container">
+                    <canvas id="qualityTrendsChart"></canvas>
+                </div>
+            </div>
+
+            <!-- Recent Inspections -->
+            <div class="bg-white p-6 rounded-xl shadow-md">
+                <h3 class="text-xl font-semibold text-gray-800 mb-4">Recent Quality Inspections</h3>
+                <div class="overflow-x-auto">
+                    <table class="min-w-full divide-y divide-gray-200">
+                        <thead class="bg-gray-50">
+                            <tr>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Batch ID</th>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Product</th>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Date</th>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Inspector</th>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody class="bg-white divide-y divide-gray-200">
+                            <tr>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">TEA-0423-18</td>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">Premium Tea</td>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">Apr 18, 2023</td>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">John M.</td>
+                                <td class="px-6 py-4 whitespace-nowrap">
+                                    <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800">Approved</span>
+                                </td>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                                    <a href="#" class="text-blue-600 hover:text-blue-900">View</a>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">COF-0423-22</td>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">Arabica Coffee</td>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">Apr 17, 2023</td>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">Sarah K.</td>
+                                <td class="px-6 py-4 whitespace-nowrap">
+                                    <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-yellow-100 text-yellow-800">Minor Issues</span>
+                                </td>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                                    <a href="#" class="text-blue-600 hover:text-blue-900">View</a>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">MAC-0423-15</td>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">Macadamia Nuts</td>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">Apr 16, 2023</td>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">David L.</td>
+                                <td class="px-6 py-4 whitespace-nowrap">
+                                    <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800">Approved</span>
+                                </td>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                                    <a href="#" class="text-blue-600 hover:text-blue-900">View</a>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">AVO-0423-09</td>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">Hass Avocados</td>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">Apr 15, 2023</td>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">Emma G.</td>
+                                <td class="px-6 py-4 whitespace-nowrap">
+                                    <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-red-100 text-red-800">Rejected</span>
+                                </td>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                                    <a href="#" class="text-blue-600 hover:text-blue-900">View</a>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Products Section -->
+    <section id="products" class="py-12 bg-gray-50">
+        <div class="container mx-auto px-4">
+            <h2 class="text-3xl font-bold text-center mb-12 text-gray-800">Our Premium Products</h2>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+                <!-- Tea Card -->
+                <div class="bg-white rounded-xl shadow-md overflow-hidden product-card transition duration-300">
+                    <div class="h-48 bg-green-100 flex items-center justify-center">
+                        <i class="fas fa-mug-hot text-6xl text-green-600"></i>
+                    </div>
+                    <div class="p-6">
+                        <h3 class="text-xl font-semibold text-gray-800 mb-2">Premium Tea</h3>
+                        <div class="flex items-center mb-3">
+                            <span class="quality-indicator bg-green-500"></span>
+                            <span class="text-sm text-gray-600">Current Quality Score: 92/100</span>
+                        </div>
+                        <div class="quality-meter mb-4">
+                            <div class="animated-progress h-full rounded bg-green-500" style="width: 92%"></div>
+                        </div>
+                        <div class="flex justify-between text-sm text-gray-600 mb-4">
+                            <span>Last Inspection: Apr 18</span>
+                            <span>12 batches</span>
+                        </div>
+                        <button class="w-full bg-green-600 text-white py-2 rounded-lg hover:bg-green-700 transition duration-300">
+                            View QC Reports
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Coffee Card -->
+                <div class="bg-white rounded-xl shadow-md overflow-hidden product-card transition duration-300">
+                    <div class="h-48 bg-amber-100 flex items-center justify-center">
+                        <i class="fas fa-coffee text-6xl text-amber-600"></i>
+                    </div>
+                    <div class="p-6">
+                        <h3 class="text-xl font-semibold text-gray-800 mb-2">Arabica Coffee</h3>
+                        <div class="flex items-center mb-3">
+                            <span class="quality-indicator bg-amber-500"></span>
+                            <span class="text-sm text-gray-600">Current Quality Score: 87/100</span>
+                        </div>
+                        <div class="quality-meter mb-4">
+                            <div class="animated-progress h-full rounded bg-amber-500" style="width: 87%"></div>
+                        </div>
+                        <div class="flex justify-between text-sm text-gray-600 mb-4">
+                            <span>Last Inspection: Apr 17</span>
+                            <span>8 batches</span>
+                        </div>
+                        <button class="w-full bg-amber-600 text-white py-2 rounded-lg hover:bg-amber-700 transition duration-300">
+                            View QC Reports
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Macadamia Card -->
+                <div class="bg-white rounded-xl shadow-md overflow-hidden product-card transition duration-300">
+                    <div class="h-48 bg-yellow-100 flex items-center justify-center">
+                        <i class="fas fa-acorn text-6xl text-yellow-600"></i>
+                    </div>
+                    <div class="p-6">
+                        <h3 class="text-xl font-semibold text-gray-800 mb-2">Macadamia Nuts</h3>
+                        <div class="flex items-center mb-3">
+                            <span class="quality-indicator bg-green-500"></span>
+                            <span class="text-sm text-gray-600">Current Quality Score: 94/100</span>
+                        </div>
+                        <div class="quality-meter mb-4">
+                            <div class="animated-progress h-full rounded bg-green-500" style="width: 94%"></div>
+                        </div>
+                        <div class="flex justify-between text-sm text-gray-600 mb-4">
+                            <span>Last Inspection: Apr 16</span>
+                            <span>5 batches</span>
+                        </div>
+                        <button class="w-full bg-yellow-600 text-white py-2 rounded-lg hover:bg-yellow-700 transition duration-300">
+                            View QC Reports
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Avocado Card -->
+                <div class="bg-white rounded-xl shadow-md overflow-hidden product-card transition duration-300">
+                    <div class="h-48 bg-lime-100 flex items-center justify-center">
+                        <i class="fas fa-avocado text-6xl text-lime-600"></i>
+                    </div>
+                    <div class="p-6">
+                        <h3 class="text-xl font-semibold text-gray-800 mb-2">Hass Avocados</h3>
+                        <div class="flex items-center mb-3">
+                            <span class="quality-indicator bg-red-500"></span>
+                            <span class="text-sm text-gray-600">Current Quality Score: 76/100</span>
+                        </div>
+                        <div class="quality-meter mb-4">
+                            <div class="animated-progress h-full rounded bg-red-500" style="width: 76%"></div>
+                        </div>
+                        <div class="flex justify-between text-sm text-gray-600 mb-4">
+                            <span>Last Inspection: Apr 15</span>
+                            <span>10 batches</span>
+                        </div>
+                        <button class="w-full bg-lime-600 text-white py-2 rounded-lg hover:bg-lime-700 transition duration-300">
+                            View QC Reports
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Reports Section -->
+    <section id="reports" class="py-12 bg-white">
+        <div class="container mx-auto px-4">
+            <h2 class="text-3xl font-bold text-center mb-12 text-gray-800">Quality Control Reports</h2>
+
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-8 mb-8">
+                <!-- Monthly Report -->
+                <div class="bg-gray-50 p-6 rounded-xl shadow-sm border border-gray-200">
+                    <div class="flex items-center mb-4">
+                        <div class="bg-blue-100 p-3 rounded-full mr-4">
+                            <i class="fas fa-calendar-alt text-blue-600"></i>
+                        </div>
+                        <h3 class="text-xl font-semibold text-gray-800">Monthly QC Report</h3>
+                    </div>
+                    <p class="text-gray-600 mb-4">Comprehensive analysis of all quality inspections conducted in the current month.</p>
+                    <div class="flex justify-between items-center">
+                        <span class="text-sm text-gray-500">Last updated: Apr 18, 2023</span>
+                        <button class="bg-blue-600 text-white px-4 py-2 rounded-lg text-sm hover:bg-blue-700 transition duration-300">
+                            Download <i class="fas fa-download ml-1"></i>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Product Comparison -->
+                <div class="bg-gray-50 p-6 rounded-xl shadow-sm border border-gray-200">
+                    <div class="flex items-center mb-4">
+                        <div class="bg-green-100 p-3 rounded-full mr-4">
+                            <i class="fas fa-chart-bar text-green-600"></i>
+                        </div>
+                        <h3 class="text-xl font-semibold text-gray-800">Product Comparison</h3>
+                    </div>
+                    <p class="text-gray-600 mb-4">Detailed comparison of quality metrics across all product categories.</p>
+                    <div class="flex justify-between items-center">
+                        <span class="text-sm text-gray-500">Last updated: Apr 15, 2023</span>
+                        <button class="bg-green-600 text-white px-4 py-2 rounded-lg text-sm hover:bg-green-700 transition duration-300">
+                            View Report <i class="fas fa-external-link-alt ml-1"></i>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Supplier Performance -->
+                <div class="bg-gray-50 p-6 rounded-xl shadow-sm border border-gray-200">
+                    <div class="flex items-center mb-4">
+                        <div class="bg-purple-100 p-3 rounded-full mr-4">
+                            <i class="fas fa-truck-loading text-purple-600"></i>
+                        </div>
+                        <h3 class="text-xl font-semibold text-gray-800">Supplier Performance</h3>
+                    </div>
+                    <p class="text-gray-600 mb-4">Evaluation of raw material quality from different suppliers and farms.</p>
+                    <div class="flex justify-between items-center">
+                        <span class="text-sm text-gray-500">Last updated: Apr 10, 2023</span>
+                        <button class="bg-purple-600 text-white px-4 py-2 rounded-lg text-sm hover:bg-purple-700 transition duration-300">
+                            Generate <i class="fas fa-cog ml-1"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Detailed Report -->
+            <div class="bg-white p-6 rounded-xl shadow-md">
+                <h3 class="text-xl font-semibold text-gray-800 mb-6">Detailed Quality Metrics</h3>
+                <div class="overflow-x-auto">
+                    <table class="min-w-full divide-y divide-gray-200">
+                        <thead class="bg-gray-50">
+                            <tr>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Product</th>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Avg. Score</th>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Appearance</th>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Aroma</th>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Texture</th>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Taste</th>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Defects</th>
+                            </tr>
+                        </thead>
+                        <tbody class="bg-white divide-y divide-gray-200">
+                            <tr>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">Premium Tea</td>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">92</td>
+                                <td class="px-6 py-4 whitespace-nowrap">
+                                    <div class="flex items-center">
+                                        <div class="w-16 bg-gray-200 rounded-full h-2.5">
+                                            <div class="bg-green-500 h-2.5 rounded-full" style="width: 95%"></div>
+                                        </div>
+                                        <span class="ml-2 text-xs text-gray-500">95%</span>
+                                    </div>
+                                </td>
+                                <td class="px-6 py-4 whitespace-nowrap">
+                                    <div class="flex items-center">
+                                        <div class="w-16 bg-gray-200 rounded-full h-2.5">
+                                            <div class="bg-green-500 h-2.5 rounded-full" style="width: 93%"></div>
+                                        </div>
+                                        <span class="ml-2 text-xs text-gray-500">93%</span>
+                                    </div>
+                                </td>
+                                <td class="px-6 py-4 whitespace-nowrap">
+                                    <div class="flex items-center">
+                                        <div class="w-16 bg-gray-200 rounded-full h-2.5">
+                                            <div class="bg-green-500 h-2.5 rounded-full" style="width: 90%"></div>
+                                        </div>
+                                        <span class="ml-2 text-xs text-gray-500">90%</span>
+                                    </div>
+                                </td>
+                                <td class="px-6 py-4 whitespace-nowrap">
+                                    <div class="flex items-center">
+                                        <div class="w-16 bg-gray-200 rounded-full h-2.5">
+                                            <div class="bg-green-500 h-2.5 rounded-full" style="width: 94%"></div>
+                                        </div>
+                                        <span class="ml-2 text-xs text-gray-500">94%</span>
+                                    </div>
+                                </td>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">2%</td>
+                            </tr>
+                            <tr>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">Arabica Coffee</td>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">87</td>
+                                <td class="px-6 py-4 whitespace-nowrap">
+                                    <div class="flex items-center">
+                                        <div class="w-16 bg-gray-200 rounded-full h-2.5">
+                                            <div class="bg-amber-500 h-2.5 rounded-full" style="width: 88%"></div>
+                                        </div>
+                                        <span class="ml-2 text-xs text-gray-500">88%</span>
+                                    </div>
+                                </td>
+                                <td class="px-6 py-4 whitespace-nowrap">
+                                    <div class="flex items-center">
+                                        <div class="w-16 bg-gray-200 rounded-full h-2.5">
+                                            <div class="bg-amber-500 h-2.5 rounded-full" style="width: 85%"></div>
+                                        </div>
+                                        <span class="ml-2 text-xs text-gray-500">85%</span>
+                                    </div>
+                                </td>
+                                <td class="px-6 py-4 whitespace-nowrap">
+                                    <div class="flex items-center">
+                                        <div class="w-16 bg-gray-200 rounded-full h-2.5">
+                                            <div class="bg-amber-500 h-2.5 rounded-full" style="width: 86%"></div>
+                                        </div>
+                                        <span class="ml-2 text-xs text-gray-500">86%</span>
+                                    </div>
+                                </td>
+                                <td class="px-6 py-4 whitespace-nowrap">
+                                    <div class="flex items-center">
+                                        <div class="w-16 bg-gray-200 rounded-full h-2.5">
+                                            <div class="bg-amber-500 h-2.5 rounded-full" style="width: 89%"></div>
+                                        </div>
+                                        <span class="ml-2 text-xs text-gray-500">89%</span>
+                                    </div>
+                                </td>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">5%</td>
+                            </tr>
+                            <tr>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">Macadamia Nuts</td>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">94</td>
+                                <td class="px-6 py-4 whitespace-nowrap">
+                                    <div class="flex items-center">
+                                        <div class="w-16 bg-gray-200 rounded-full h-2.5">
+                                            <div class="bg-green-500 h-2.5 rounded-full" style="width: 96%"></div>
+                                        </div>
+                                        <span class="ml-2 text-xs text-gray-500">96%</span>
+                                    </div>
+                                </td>
+                                <td class="px-6 py-4 whitespace-nowrap">
+                                    <div class="flex items-center">
+                                        <div class="w-16 bg-gray-200 rounded-full h-2.5">
+                                            <div class="bg-green-500 h-2.5 rounded-full" style="width: 95%"></div>
+                                        </div>
+                                        <span class="ml-2 text-xs text-gray-500">95%</span>
+                                    </div>
+                                </td>
+                                <td class="px-6 py-4 whitespace-nowrap">
+                                    <div class="flex items-center">
+                                        <div class="w-16 bg-gray-200 rounded-full h-2.5">
+                                            <div class="bg-green-500 h-2.5 rounded-full" style="width: 93%"></div>
+                                        </div>
+                                        <span class="ml-2 text-xs text-gray-500">93%</span>
+                                    </div>
+                                </td>
+                                <td class="px-6 py-4 whitespace-nowrap">
+                                    <div class="flex items-center">
+                                        <div class="w-16 bg-gray-200 rounded-full h-2.5">
+                                            <div class="bg-green-500 h-2.5 rounded-full" style="width: 92%"></div>
+                                        </div>
+                                        <span class="ml-2 text-xs text-gray-500">92%</span>
+                                    </div>
+                                </td>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">1%</td>
+                            </tr>
+                            <tr>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">Hass Avocados</td>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">76</td>
+                                <td class="px-6 py-4 whitespace-nowrap">
+                                    <div class="flex items-center">
+                                        <div class="w-16 bg-gray-200 rounded-full h-2.5">
+                                            <div class="bg-red-500 h-2.5 rounded-full" style="width: 78%"></div>
+                                        </div>
+                                        <span class="ml-2 text-xs text-gray-500">78%</span>
+                                    </div>
+                                </td>
+                                <td class="px-6 py-4 whitespace-nowrap">
+                                    <div class="flex items-center">
+                                        <div class="w-16 bg-gray-200 rounded-full h-2.5">
+                                            <div class="bg-red-500 h-2.5 rounded-full" style="width: 75%"></div>
+                                        </div>
+                                        <span class="ml-2 text-xs text-gray-500">75%</span>
+                                    </div>
+                                </td>
+                                <td class="px-6 py-4 whitespace-nowrap">
+                                    <div class="flex items-center">
+                                        <div class="w-16 bg-gray-200 rounded-full h-2.5">
+                                            <div class="bg-red-500 h-2.5 rounded-full" style="width: 72%"></div>
+                                        </div>
+                                        <span class="ml-2 text-xs text-gray-500">72%</span>
+                                    </div>
+                                </td>
+                                <td class="px-6 py-4 whitespace-nowrap">
+                                    <div class="flex items-center">
+                                        <div class="w-16 bg-gray-200 rounded-full h-2.5">
+                                            <div class="bg-red-500 h-2.5 rounded-full" style="width: 79%"></div>
+                                        </div>
+                                        <span class="ml-2 text-xs text-gray-500">79%</span>
+                                    </div>
+                                </td>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">12%</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Standards Section -->
+    <section id="standards" class="py-12 bg-gray-50">
+        <div class="container mx-auto px-4">
+            <h2 class="text-3xl font-bold text-center mb-12 text-gray-800">Our Quality Standards</h2>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-8 mb-8">
+                <!-- Tea Standards -->
+                <div class="bg-white p-6 rounded-xl shadow-md">
+                    <div class="flex items-center mb-4">
+                        <div class="bg-green-100 p-3 rounded-full mr-4">
+                            <i class="fas fa-mug-hot text-green-600"></i>
+                        </div>
+                        <h3 class="text-xl font-semibold text-gray-800">Tea Quality Standards</h3>
+                    </div>
+                    <ul class="space-y-3">
+                        <li class="flex items-start">
+                            <i class="fas fa-check text-green-500 mt-1 mr-2"></i>
+                            <span class="text-gray-700">Leaf appearance: Uniform color, no discoloration</span>
+                        </li>
+                        <li class="flex items-start">
+                            <i class="fas fa-check text-green-500 mt-1 mr-2"></i>
+                            <span class="text-gray-700">Aroma: Fresh, characteristic of tea type</span>
+                        </li>
+                        <li class="flex items-start">
+                            <i class="fas fa-check text-green-500 mt-1 mr-2"></i>
+                            <span class="text-gray-700">Infusion color: Bright and clear</span>
+                        </li>
+                        <li class="flex items-start">
+                            <i class="fas fa-check text-green-500 mt-1 mr-2"></i>
+                            <span class="text-gray-700">Taste: Well-balanced, no off-flavors</span>
+                        </li>
+                        <li class="flex items-start">
+                            <i class="fas fa-check text-green-500 mt-1 mr-2"></i>
+                            <span class="text-gray-700">Moisture content: ≤6%</span>
+                        </li>
+                    </ul>
+                </div>
+
+                <!-- Coffee Standards -->
+                <div class="bg-white p-6 rounded-xl shadow-md">
+                    <div class="flex items-center mb-4">
+                        <div class="bg-amber-100 p-3 rounded-full mr-4">
+                            <i class="fas fa-coffee text-amber-600"></i>
+                        </div>
+                        <h3 class="text-xl font-semibold text-gray-800">Coffee Quality Standards</h3>
+                    </div>
+                    <ul class="space-y-3">
+                        <li class="flex items-start">
+                            <i class="fas fa-check text-green-500 mt-1 mr-2"></i>
+                            <span class="text-gray-700">Bean size: Uniform, minimum 90% screen size 16+</span>
+                        </li>
+                        <li class="flex items-start">
+                            <i class="fas fa-check text-green-500 mt-1 mr-2"></i>
+                            <span class="text-gray-700">Defects: ≤5 full defects per 300g</span>
+                        </li>
+                        <li class="flex items-start">
+                            <i class="fas fa-check text-green-500 mt-1 mr-2"></i>
+                            <span class="text-gray-700">Aroma: Distinctive, no musty or fermented notes</span>
+                        </li>
+                        <li class="flex items-start">
+                            <i class="fas fa-check text-green-500 mt-1 mr-2"></i>
+                            <span class="text-gray-700">Cupping score: ≥85 points (SCAA scale)</span>
+                        </li>
+                        <li class="flex items-start">
+                            <i class="fas fa-check text-green-500 mt-1 mr-2"></i>
+                            <span class="text-gray-700">Moisture content: 10-12%</span>
+                        </li>
+                    </ul>
+                </div>
+
+                <!-- Macadamia Standards -->
+                <div class="bg-white p-6 rounded-xl shadow-md">
+                    <div class="flex items-center mb-4">
+                        <div class="bg-yellow-100 p-3 rounded-full mr-4">
+                            <i class="fas fa-acorn text-yellow-600"></i>
+                        </div>
+                        <h3 class="text-xl font-semibold text-gray-800">Macadamia Quality Standards</h3>
+                    </div>
+                    <ul class="space-y-3">
+                        <li class="flex items-start">
+                            <i class="fas fa-check text-green-500 mt-1 mr-2"></i>
+                            <span class="text-gray-700">Kernel recovery: ≥35%</span>
+                        </li>
+                        <li class="flex items-start">
+                            <i class="fas fa-check text-green-500 mt-1 mr-2"></i>
+                            <span class="text-gray-700">Color: Creamy white to light ivory</span>
+                        </li>
+                        <li class="flex items-start">
+                            <i class="fas fa-check text-green-500 mt-1 mr-2"></i>
+                            <span class="text-gray-700">Texture: Crisp, not rubbery</span>
+                        </li>
+                        <li class="flex items-start">
+                            <i class="fas fa-check text-green-500 mt-1 mr-2"></i>
+                            <span class="text-gray-700">Oil content: ≥72%</span>
+                        </li>
+                        <li class="flex items-start">
+                            <i class="fas fa-check text-green-500 mt-1 mr-2"></i>
+                            <span class="text-gray-700">Foreign matter: ≤0.5%</span>
+                        </li>
+                    </ul>
+                </div>
+
+                <!-- Avocado Standards -->
+                <div class="bg-white p-6 rounded-xl shadow-md">
+                    <div class="flex items-center mb-4">
+                        <div class="bg-lime-100 p-3 rounded-full mr-4">
+                            <i class="fas fa-avocado text-lime-600"></i>
+                        </div>
+                        <h3 class="text-xl font-semibold text-gray-800">Avocado Quality Standards</h3>
+                    </div>
+                    <ul class="space-y-3">
+                        <li class="flex items-start">
+                            <i class="fas fa-check text-green-500 mt-1 mr-2"></i>
+                            <span class="text-gray-700">Size: 6-18 oz depending on variety</span>
+                        </li>
+                        <li class="flex items-start">
+                            <i class="fas fa-check text-green-500 mt-1 mr-2"></i>
+                            <span class="text-gray-700">Color: Characteristic of variety when ripe</span>
+                        </li>
+                        <li class="flex items-start">
+                            <i class="fas fa-check text-green-500 mt-1 mr-2"></i>
+                            <span class="text-gray-700">Firmness: Appropriate for stage of ripeness</span>
+                        </li>
+                        <li class="flex items-start">
+                            <i class="fas fa-check text-green-500 mt-1 mr-2"></i>
+                            <span class="text-gray-700">Dry matter content: ≥21% (Hass)</span>
+                        </li>
+                        <li class="flex items-start">
+                            <i class="fas fa-check text-green-500 mt-1 mr-2"></i>
+                            <span class="text-gray-700">Defects: ≤5% surface area affected</span>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="bg-white p-6 rounded-xl shadow-md">
+                <h3 class="text-xl font-semibold text-gray-800 mb-4">Certifications</h3>
+                <div class="grid grid-cols-2 md:grid-cols-4 gap-6">
+                    <div class="flex flex-col items-center">
+                        <div class="bg-gray-100 p-4 rounded-full mb-2">
+                            <i class="fas fa-certificate text-3xl text-green-600"></i>
+                        </div>
+                        <span class="text-sm font-medium text-gray-700">Organic</span>
+                    </div>
+                    <div class="flex flex-col items-center">
+                        <div class="bg-gray-100 p-4 rounded-full mb-2">
+                            <i class="fas fa-globe-americas text-3xl text-blue-600"></i>
+                        </div>
+                        <span class="text-sm font-medium text-gray-700">Fair Trade</span>
+                    </div>
+                    <div class="flex flex-col items-center">
+                        <div class="bg-gray-100 p-4 rounded-full mb-2">
+                            <i class="fas fa-leaf text-3xl text-green-700"></i>
+                        </div>
+                        <span class="text-sm font-medium text-gray-700">Rainforest Alliance</span>
+                    </div>
+                    <div class="flex flex-col items-center">
+                        <div class="bg-gray-100 p-4 rounded-full mb-2">
+                            <i class="fas fa-heart text-3xl text-red-500"></i>
+                        </div>
+                        <span class="text-sm font-medium text-gray-700">Non-GMO</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Contact Section -->
+    <section id="contact" class="py-12 bg-white">
+        <div class="container mx-auto px-4">
+            <h2 class="text-3xl font-bold text-center mb-12 text-gray-800">Contact Our Quality Team</h2>
+
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-12">
+                <div>
+                    <h3 class="text-xl font-semibold text-gray-800 mb-4">Quality Control Department</h3>
+                    <p class="text-gray-600 mb-6">Our quality control team is available to address any concerns or questions about our products and quality standards.</p>
+
+                    <div class="space-y-4">
+                        <div class="flex items-start">
+                            <div class="bg-green-100 p-3 rounded-full mr-4">
+                                <i class="fas fa-envelope text-green-600"></i>
+                            </div>
+                            <div>
+                                <h4 class="font-medium text-gray-800">Email</h4>
+                                <p class="text-gray-600">quality@agriqualitycontrol.com</p>
+                            </div>
+                        </div>
+
+                        <div class="flex items-start">
+                            <div class="bg-blue-100 p-3 rounded-full mr-4">
+                                <i class="fas fa-phone-alt text-blue-600"></i>
+                            </div>
+                            <div>
+                                <h4 class="font-medium text-gray-800">Phone</h4>
+                                <p class="text-gray-600">+1 (555) 123-4567</p>
+                            </div>
+                        </div>
+
+                        <div class="flex items-start">
+                            <div class="bg-amber-100 p-3 rounded-full mr-4">
+                                <i class="fas fa-map-marker-alt text-amber-600"></i>
+                            </div>
+                            <div>
+                                <h4 class="font-medium text-gray-800">Headquarters</h4>
+                                <p class="text-gray-600">123 Agriculture Way<br>Farmingville, CA 90210</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="mt-8">
+                        <h4 class="font-medium text-gray-800 mb-3">Follow Us</h4>
+                        <div class="flex space-x-4">
+                            <a href="#" class="bg-gray-100 p-3 rounded-full text-gray-700 hover:bg-green-100 hover:text-green-600 transition duration-300">
+                                <i class="fab fa-facebook-f"></i>
+                            </a>
+                            <a href="#" class="bg-gray-100 p-3 rounded-full text-gray-700 hover:bg-green-100 hover:text-green-600 transition duration-300">
+                                <i class="fab fa-twitter"></i>
+                            </a>
+                            <a href="#" class="bg-gray-100 p-3 rounded-full text-gray-700 hover:bg-green-100 hover:text-green-600 transition duration-300">
+                                <i class="fab fa-linkedin-in"></i>
+                            </a>
+                            <a href="#" class="bg-gray-100 p-3 rounded-full text-gray-700 hover:bg-green-100 hover:text-green-600 transition duration-300">
+                                <i class="fab fa-instagram"></i>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="bg-gray-50 p-8 rounded-xl shadow-sm">
+                    <h3 class="text-xl font-semibold text-gray-800 mb-6">Send Us a Message</h3>
+                    <form>
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+                            <div>
+                                <label for="name" class="block text-sm font-medium text-gray-700 mb-1">Name</label>
+                                <input type="text" id="name" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500">
+                            </div>
+                            <div>
+                                <label for="email" class="block text-sm font-medium text-gray-700 mb-1">Email</label>
+                                <input type="email" id="email" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500">
+                            </div>
+                        </div>
+                        <div class="mb-4">
+                            <label for="subject" class="block text-sm font-medium text-gray-700 mb-1">Subject</label>
+                            <input type="text" id="subject" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500">
+                        </div>
+                        <div class="mb-4">
+                            <label for="product" class="block text-sm font-medium text-gray-700 mb-1">Product</label>
+                            <select id="product" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500">
+                                <option value="">Select a product</option>
+                                <option value="tea">Tea</option>
+                                <option value="coffee">Coffee</option>
+                                <option value="macadamia">Macadamia</option>
+                                <option value="avocado">Avocado</option>
+                            </select>
+                        </div>
+                        <div class="mb-6">
+                            <label for="message" class="block text-sm font-medium text-gray-700 mb-1">Message</label>
+                            <textarea id="message" rows="4" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500"></textarea>
+                        </div>
+                        <button type="submit" class="w-full bg-green-600 text-white py-3 rounded-lg font-medium hover:bg-green-700 transition duration-300">
+                            Send Message <i class="fas fa-paper-plane ml-2"></i>
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="bg-gray-900 text-white py-12">
+        <div class="container mx-auto px-4">
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-8 mb-8">
+                <div>
+                    <h3 class="text-lg font-semibold mb-4">AgriQuality Control</h3>
+                    <p class="text-gray-400">Ensuring premium quality in agricultural products through rigorous quality control processes and standards.</p>
+                </div>
+                <div>
+                    <h3 class="text-lg font-semibold mb-4">Products</h3>
+                    <ul class="space-y-2">
+                        <li><a href="#" class="text-gray-400 hover:text-white transition duration-300">Tea</a></li>
+                        <li><a href="#" class="text-gray-400 hover:text-white transition duration-300">Coffee</a></li>
+                        <li><a href="#" class="text-gray-400 hover:text-white transition duration-300">Macadamia</a></li>
+                        <li><a href="#" class="text-gray-400 hover:text-white transition duration-300">Avocados</a></li>
+                    </ul>
+                </div>
+                <div>
+                    <h3 class="text-lg font-semibold mb-4">Resources</h3>
+                    <ul class="space-y-2">
+                        <li><a href="#" class="text-gray-400 hover:text-white transition duration-300">Quality Reports</a></li>
+                        <li><a href="#" class="text-gray-400 hover:text-white transition duration-300">Certifications</a></li>
+                        <li><a href="#" class="text-gray-400 hover:text-white transition duration-300">Standards</a></li>
+                        <li><a href="#" class="text-gray-400 hover:text-white transition duration-300">FAQs</a></li>
+                    </ul>
+                </div>
+                <div>
+                    <h3 class="text-lg font-semibold mb-4">Newsletter</h3>
+                    <p class="text-gray-400 mb-4">Subscribe to our newsletter for the latest quality updates.</p>
+                    <div class="flex">
+                        <input type="email" placeholder="Your email" class="px-4 py-2 rounded-l-lg w-full text-gray-900">
+                        <button class="bg-green-600 px-4 py-2 rounded-r-lg hover:bg-green-700 transition duration-300">
+                            <i class="fas fa-paper-plane"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+            <div class="pt-8 border-t border-gray-800 flex flex-col md:flex-row justify-between items-center">
+                <p class="text-gray-400 mb-4 md:mb-0">© 2023 AgriQuality Control. All rights reserved.</p>
+                <div class="flex space-x-6">
+                    <a href="#" class="text-gray-400 hover:text-white transition duration-300">Privacy Policy</a>
+                    <a href="#" class="text-gray-400 hover:text-white transition duration-300">Terms of Service</a>
+                    <a href="#" class="text-gray-400 hover:text-white transition duration-300">Sitemap</a>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Chart.js for quality trends -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script>
+        // Quality Trends Chart
+        const ctx = document.getElementById('qualityTrendsChart').getContext('2d');
+        const qualityTrendsChart = new Chart(ctx, {
+            type: 'line',
+            data: {
+                labels: ['November', 'December', 'January', 'February', 'March', 'April'],
+                datasets: [{
+                    label: 'Tea',
+                    data: [88, 85, 87, 89, 90, 92],
+                    borderColor: '#4CAF50',
+                    backgroundColor: 'rgba(76, 175, 80, 0.1)',
+                    tension: 0.3,
+                    fill: true
+                }, {
+                    label: 'Coffee',
+                    data: [82, 83, 84, 85, 86, 87],
+                    borderColor: '#FF9800',
+                    backgroundColor: 'rgba(255, 152, 0, 0.1)',
+                    tension: 0.3,
+                    fill: true
+                }, {
+                    label: 'Macadamia',
+                    data: [90, 91, 92, 93, 93, 94],
+                    borderColor: '#FFC107',
+                    backgroundColor: 'rgba(255, 193, 7, 0.1)',
+                    tension: 0.3,
+                    fill: true
+                }, {
+                    label: 'Avocado',
+                    data: [80, 78, 79, 77, 75, 76],
+                    borderColor: '#F44336',
+                    backgroundColor: 'rgba(244, 67, 54, 0.1)',
+                    tension: 0.3,
+                    fill: true
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: {
+                        position: 'top',
+                    },
+                    tooltip: {
+                        mode: 'index',
+                        intersect: false,
+                    }
+                },
+                scales: {
+                    y: {
+                        beginAtZero: false,
+                        min: 70,
+                        max: 100,
+                        ticks: {
+                            callback: function(value) {
+                                return value + '%';
+                            }
+                        }
+                    }
+                },
+                interaction: {
+                    mode: 'nearest',
+                    axis: 'x',
+                    intersect: false
+                }
+            }
+        });
+
+        // Mobile menu toggle
+        document.querySelector('.md\\:hidden').addEventListener('click', function() {
+            const nav = document.querySelector('nav');
+            if (nav.classList.contains('hidden')) {
+                nav.classList.remove('hidden');
+                nav.classList.add('flex', 'flex-col', 'absolute', 'top-16', 'right-4', 'bg-green-700', 'p-4', 'rounded-lg', 'z-50');
+            } else {
+                nav.classList.add('hidden');
+                nav.classList.remove('flex', 'flex-col', 'absolute', 'top-16', 'right-4', 'bg-green-700', 'p-4', 'rounded-lg', 'z-50');
+            }
+        });
+
+        // Smooth scrolling for navigation links
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function(e) {
+                e.preventDefault();
+
+                document.querySelector(this.getAttribute('href')).scrollIntoView({
+                    behavior: 'smooth'
+                });
+
+                // Close mobile menu if open
+                const nav = document.querySelector('nav');
+                if (!nav.classList.contains('hidden')) {
+                    nav.classList.add('hidden');
+                    nav.classList.remove('flex', 'flex-col', 'absolute', 'top-16', 'right-4', 'bg-green-700', 'p-4', 'rounded-lg', 'z-50');
+                }
+            });
+        });
+    </script>
+</body>
+
+</html>

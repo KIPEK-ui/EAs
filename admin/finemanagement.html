@@ -1,0 +1,912 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fine Management | Traffic Police System</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        .sidebar {
+            transition: all 0.3s ease;
+        }
+        
+        .sidebar.collapsed {
+            width: 70px;
+        }
+        
+        .sidebar.collapsed .sidebar-text {
+            display: none;
+        }
+        
+        .sidebar.collapsed .logo-text {
+            display: none;
+        }
+        
+        .sidebar.collapsed .nav-item {
+            justify-content: center;
+        }
+        
+        .main-content {
+            transition: all 0.3s ease;
+        }
+        
+        .main-content.expanded {
+            margin-left: 70px;
+        }
+        
+        .notification-badge {
+            position: absolute;
+            top: -5px;
+            right: -5px;
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            background-color: #EF4444;
+            color: white;
+            font-size: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .dropdown:hover .dropdown-menu {
+            display: block;
+        }
+        
+        .status-badge {
+            padding: 0.25rem 0.5rem;
+            border-radius: 9999px;
+            font-size: 0.75rem;
+            font-weight: 600;
+        }
+        
+        .animate-pulse {
+            animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+        }
+        
+        @keyframes pulse {
+            0%,
+            100% {
+                opacity: 1;
+            }
+            50% {
+                opacity: 0.5;
+            }
+        }
+        
+        [x-cloak] {
+            display: none !important;
+        }
+        
+        .fine-status {
+            width: 10px;
+            height: 100%;
+            border-radius: 4px 0 0 4px;
+        }
+        
+        .status-paid {
+            background-color: #10B981;
+        }
+        
+        .status-pending {
+            background-color: #F59E0B;
+        }
+        
+        .status-overdue {
+            background-color: #EF4444;
+        }
+        
+        .status-disputed {
+            background-color: #6366F1;
+        }
+    </style>
+</head>
+
+<body class="bg-gray-50 font-sans">
+    <div class="flex h-screen overflow-hidden">
+        <!-- Sidebar -->
+        <div class="sidebar bg-blue-900 text-white w-64 flex flex-col">
+            <div class="p-4 flex items-center space-x-2 border-b border-blue-800">
+                <div class="bg-white p-2 rounded-lg">
+                    <i class="fas fa-shield-alt text-blue-900 text-xl"></i>
+                </div>
+                <span class="logo-text text-xl font-bold">TrafficFine Admin</span>
+            </div>
+
+            <div class="p-4 flex items-center justify-between border-b border-blue-800">
+                <div class="flex items-center space-x-3">
+                    <div class="w-10 h-10 rounded-full bg-blue-700 flex items-center justify-center">
+                        <i class="fas fa-user-shield"></i>
+                    </div>
+                    <div>
+                        <div class="sidebar-text font-medium">Admin User</div>
+                        <div class="sidebar-text text-xs text-blue-300">Super Administrator</div>
+                    </div>
+                </div>
+                <button id="sidebarToggle" class="text-blue-300 hover:text-white">
+                    <i class="fas fa-bars"></i>
+                </button>
+            </div>
+
+            <nav class="flex-1 overflow-y-auto py-4">
+                <div class="space-y-1 px-3">
+                    <a href="#" class="nav-item flex items-center space-x-3 px-3 py-2 rounded-lg text-blue-200 hover:bg-blue-800 hover:text-white">
+                        <i class="fas fa-tachometer-alt"></i>
+                        <span class="sidebar-text">Dashboard</span>
+                    </a>
+                    <a href="#" class="nav-item flex items-center space-x-3 px-3 py-2 rounded-lg text-blue-200 hover:bg-blue-800 hover:text-white">
+                        <i class="fas fa-users-cog"></i>
+                        <span class="sidebar-text">User Management</span>
+                    </a>
+                    <a href="#" class="nav-item flex items-center space-x-3 px-3 py-2 rounded-lg text-blue-200 hover:bg-blue-800 hover:text-white">
+                        <i class="fas fa-car-crash"></i>
+                        <span class="sidebar-text">Violation Types</span>
+                    </a>
+                    <a href="#" class="nav-item flex items-center space-x-3 px-3 py-2 rounded-lg bg-blue-800 text-white">
+                        <i class="fas fa-file-invoice-dollar"></i>
+                        <span class="sidebar-text">Fine Management</span>
+                    </a>
+                    <a href="#" class="nav-item flex items-center space-x-3 px-3 py-2 rounded-lg text-blue-200 hover:bg-blue-800 hover:text-white">
+                        <i class="fas fa-map-marked-alt"></i>
+                        <span class="sidebar-text">Hotspot Zones</span>
+                    </a>
+                    <a href="#" class="nav-item flex items-center space-x-3 px-3 py-2 rounded-lg text-blue-200 hover:bg-blue-800 hover:text-white">
+                        <i class="fas fa-chart-pie"></i>
+                        <span class="sidebar-text">Analytics</span>
+                    </a>
+                    <a href="#" class="nav-item flex items-center space-x-3 px-3 py-2 rounded-lg text-blue-200 hover:bg-blue-800 hover:text-white">
+                        <i class="fas fa-cog"></i>
+                        <span class="sidebar-text">System Settings</span>
+                    </a>
+                </div>
+
+                <div class="px-3 mt-8">
+                    <div class="text-xs uppercase text-blue-400 mb-2 sidebar-text">Quick Actions</div>
+                    <div class="space-y-1">
+                        <a href="#" class="nav-item flex items-center space-x-3 px-3 py-2 rounded-lg text-blue-200 hover:bg-blue-800 hover:text-white">
+                            <i class="fas fa-plus-circle"></i>
+                            <span class="sidebar-text">Issue Fine</span>
+                        </a>
+                        <a href="#" class="nav-item flex items-center space-x-3 px-3 py-2 rounded-lg text-blue-200 hover:bg-blue-800 hover:text-white">
+                            <i class="fas fa-file-export"></i>
+                            <span class="sidebar-text">Export Reports</span>
+                        </a>
+                        <a href="#" class="nav-item flex items-center space-x-3 px-3 py-2 rounded-lg text-blue-200 hover:bg-blue-800 hover:text-white">
+                            <i class="fas fa-history"></i>
+                            <span class="sidebar-text">Payment History</span>
+                        </a>
+                    </div>
+                </div>
+            </nav>
+
+            <div class="p-4 border-t border-blue-800">
+                <a href="#" class="nav-item flex items-center space-x-3 px-3 py-2 rounded-lg text-blue-200 hover:bg-blue-800 hover:text-white">
+                    <i class="fas fa-sign-out-alt"></i>
+                    <span class="sidebar-text">Logout</span>
+                </a>
+            </div>
+        </div>
+
+        <!-- Main Content -->
+        <div class="main-content flex-1 flex flex-col overflow-hidden">
+            <!-- Top Navigation -->
+            <header class="bg-white shadow-sm">
+                <div class="px-6 py-4 flex items-center justify-between">
+                    <div>
+                        <h1 class="text-2xl font-semibold text-gray-800">Fine Management</h1>
+                        <p class="text-sm text-gray-500">Manage all issued fines, payments, and disputes</p>
+                    </div>
+                    <div class="flex items-center space-x-4">
+                        <div class="relative">
+                            <input type="text" placeholder="Search fines..." class="pl-10 pr-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 w-64">
+                            <i class="fas fa-search absolute left-3 top-3 text-gray-400"></i>
+                        </div>
+
+                        <div class="relative">
+                            <button class="p-2 rounded-full bg-gray-100 text-gray-600 hover:bg-gray-200 relative">
+                                <i class="fas fa-bell"></i>
+                                <span class="notification-badge">3</span>
+                            </button>
+                        </div>
+
+                        <div class="dropdown relative">
+                            <button class="flex items-center space-x-2 focus:outline-none">
+                                <div class="w-10 h-10 rounded-full bg-blue-100 text-blue-800 flex items-center justify-center">
+                                    <i class="fas fa-user-shield"></i>
+                                </div>
+                                <span class="hidden md:inline">Admin User</span>
+                                <i class="fas fa-chevron-down text-gray-500 text-xs"></i>
+                            </button>
+                            <div class="dropdown-menu absolute right-0 mt-2 w-48 bg-white rounded-md shadow-lg py-1 z-10 hidden">
+                                <a href="#" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"><i class="fas fa-user mr-2"></i>Profile</a>
+                                <a href="#" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"><i class="fas fa-cog mr-2"></i>Settings</a>
+                                <div class="border-t border-gray-200"></div>
+                                <a href="#" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"><i class="fas fa-sign-out-alt mr-2"></i>Logout</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </header>
+
+            <!-- Main Content Area -->
+            <main class="flex-1 overflow-y-auto p-6">
+                <!-- Fine Management Header -->
+                <div class="flex flex-col md:flex-row md:items-center md:justify-between mb-6">
+                    <div>
+                        <h2 class="text-xl font-semibold text-gray-800">Issued Fines</h2>
+                        <p class="text-sm text-gray-500">Total 128 fines issued with 84 paid, 32 pending, and 12 overdue</p>
+                    </div>
+                    <div class="mt-4 md:mt-0 flex space-x-3">
+                        <button id="issueFineBtn" class="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 flex items-center">
+                            <i class="fas fa-plus-circle mr-2"></i> Issue New Fine
+                        </button>
+                        <button class="px-4 py-2 border border-gray-300 rounded-lg hover:bg-gray-50 flex items-center">
+                            <i class="fas fa-filter mr-2"></i> Filter
+                        </button>
+                        <button class="px-4 py-2 border border-gray-300 rounded-lg hover:bg-gray-50 flex items-center">
+                            <i class="fas fa-download mr-2"></i> Export
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Fine Stats Cards -->
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-6">
+                    <div class="bg-white rounded-xl shadow p-6">
+                        <div class="flex items-center justify-between">
+                            <div>
+                                <p class="text-gray-500">Total Fines</p>
+                                <h3 class="text-3xl font-bold text-blue-600">128</h3>
+                            </div>
+                            <div class="p-3 rounded-full bg-blue-100 text-blue-600">
+                                <i class="fas fa-file-invoice text-xl"></i>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="bg-white rounded-xl shadow p-6">
+                        <div class="flex items-center justify-between">
+                            <div>
+                                <p class="text-gray-500">Paid Fines</p>
+                                <h3 class="text-3xl font-bold text-green-600">84</h3>
+                                <p class="text-sm text-green-500">65.6% completion</p>
+                            </div>
+                            <div class="p-3 rounded-full bg-green-100 text-green-600">
+                                <i class="fas fa-check-circle text-xl"></i>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="bg-white rounded-xl shadow p-6">
+                        <div class="flex items-center justify-between">
+                            <div>
+                                <p class="text-gray-500">Pending Fines</p>
+                                <h3 class="text-3xl font-bold text-yellow-600">32</h3>
+                                <p class="text-sm text-yellow-500">Due within 7 days</p>
+                            </div>
+                            <div class="p-3 rounded-full bg-yellow-100 text-yellow-600">
+                                <i class="fas fa-clock text-xl"></i>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="bg-white rounded-xl shadow p-6">
+                        <div class="flex items-center justify-between">
+                            <div>
+                                <p class="text-gray-500">Overdue Fines</p>
+                                <h3 class="text-3xl font-bold text-red-600">12</h3>
+                                <p class="text-sm text-red-500 flex items-center">
+                                    <i class="fas fa-exclamation-triangle text-xs mr-1"></i> 9.4% overdue rate
+                                </p>
+                            </div>
+                            <div class="p-3 rounded-full bg-red-100 text-red-600">
+                                <i class="fas fa-exclamation text-xl"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Fine Status Tabs -->
+                <div class="mb-6">
+                    <div class="border-b border-gray-200">
+                        <nav class="-mb-px flex space-x-8">
+                            <button class="border-b-2 border-blue-500 text-blue-600 px-4 py-3 text-sm font-medium">
+                                All Fines
+                            </button>
+                            <button class="border-b-2 border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300 px-4 py-3 text-sm font-medium">
+                                Paid
+                            </button>
+                            <button class="border-b-2 border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300 px-4 py-3 text-sm font-medium">
+                                Pending
+                            </button>
+                            <button class="border-b-2 border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300 px-4 py-3 text-sm font-medium">
+                                Overdue
+                            </button>
+                            <button class="border-b-2 border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300 px-4 py-3 text-sm font-medium">
+                                Disputed
+                            </button>
+                        </nav>
+                    </div>
+                </div>
+
+                <!-- Fine Table -->
+                <div class="bg-white rounded-xl shadow overflow-hidden mb-6">
+                    <div class="px-6 py-4 border-b flex flex-col md:flex-row md:items-center md:justify-between">
+                        <div class="mb-4 md:mb-0">
+                            <h3 class="text-lg font-semibold">Recent Fines</h3>
+                        </div>
+                        <div class="flex items-center space-x-2">
+                            <div class="relative">
+                                <select class="appearance-none bg-gray-100 border border-gray-300 rounded-lg pl-3 pr-8 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm">
+                                    <option>All Statuses</option>
+                                    <option>Paid</option>
+                                    <option>Pending</option>
+                                    <option>Overdue</option>
+                                    <option>Disputed</option>
+                                </select>
+                                <i class="fas fa-chevron-down absolute right-3 top-3 text-gray-500 text-xs"></i>
+                            </div>
+                            <div class="relative">
+                                <select class="appearance-none bg-gray-100 border border-gray-300 rounded-lg pl-3 pr-8 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm">
+                                    <option>Last 30 Days</option>
+                                    <option>Last 7 Days</option>
+                                    <option>Last 24 Hours</option>
+                                    <option>Custom Range</option>
+                                </select>
+                                <i class="fas fa-chevron-down absolute right-3 top-3 text-gray-500 text-xs"></i>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="overflow-x-auto">
+                        <table class="min-w-full divide-y divide-gray-200">
+                            <thead class="bg-gray-50">
+                                <tr>
+                                    <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                        Fine Details
+                                    </th>
+                                    <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                        Driver
+                                    </th>
+                                    <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                        Vehicle
+                                    </th>
+                                    <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                        Amount
+                                    </th>
+                                    <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                        Due Date
+                                    </th>
+                                    <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                        Status
+                                    </th>
+                                    <th scope="col" class="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                        Actions
+                                    </th>
+                                </tr>
+                            </thead>
+                            <tbody class="bg-white divide-y divide-gray-200">
+                                <tr class="hover:bg-gray-50">
+                                    <td class="px-6 py-4 whitespace-nowrap">
+                                        <div class="flex items-center">
+                                            <div class="fine-status status-paid"></div>
+                                            <div class="ml-4">
+                                                <div class="text-sm font-medium text-gray-900">#FIN-2023-00128</div>
+                                                <div class="text-sm text-gray-500">Speeding (25km/h over)</div>
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td class="px-6 py-4 whitespace-nowrap">
+                                        <div class="text-sm font-medium text-gray-900">John Smith</div>
+                                        <div class="text-sm text-gray-500">DL: JS-458796</div>
+                                    </td>
+                                    <td class="px-6 py-4 whitespace-nowrap">
+                                        <div class="text-sm text-gray-900">Toyota Camry</div>
+                                        <div class="text-sm text-gray-500">ABC-1234</div>
+                                    </td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
+                                        $175.00
+                                    </td>
+                                    <td class="px-6 py-4 whitespace-nowrap">
+                                        <div class="text-sm text-gray-900">Jun 15, 2023</div>
+                                        <div class="text-sm text-gray-500">Paid on Jun 10</div>
+                                    </td>
+                                    <td class="px-6 py-4 whitespace-nowrap">
+                                        <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800">
+                                            Paid
+                                        </span>
+                                    </td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
+                                        <div class="flex justify-end space-x-2">
+                                            <button class="text-blue-600 hover:text-blue-900">
+                                                <i class="fas fa-eye"></i>
+                                            </button>
+                                            <button class="text-yellow-600 hover:text-yellow-900">
+                                                <i class="fas fa-receipt"></i>
+                                            </button>
+                                            <button class="text-gray-600 hover:text-gray-900">
+                                                <i class="fas fa-print"></i>
+                                            </button>
+                                        </div>
+                                    </td>
+                                </tr>
+
+                                <tr class="hover:bg-gray-50">
+                                    <td class="px-6 py-4 whitespace-nowrap">
+                                        <div class="flex items-center">
+                                            <div class="fine-status status-pending"></div>
+                                            <div class="ml-4">
+                                                <div class="text-sm font-medium text-gray-900">#FIN-2023-00127</div>
+                                                <div class="text-sm text-gray-500">Running red light</div>
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td class="px-6 py-4 whitespace-nowrap">
+                                        <div class="text-sm font-medium text-gray-900">Sarah Johnson</div>
+                                        <div class="text-sm text-gray-500">DL: SJ-784512</div>
+                                    </td>
+                                    <td class="px-6 py-4 whitespace-nowrap">
+                                        <div class="text-sm text-gray-900">Honda Civic</div>
+                                        <div class="text-sm text-gray-500">XYZ-5678</div>
+                                    </td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
+                                        $225.00
+                                    </td>
+                                    <td class="px-6 py-4 whitespace-nowrap">
+                                        <div class="text-sm text-gray-900">Jun 18, 2023</div>
+                                        <div class="text-sm text-yellow-600">Due in 2 days</div>
+                                    </td>
+                                    <td class="px-6 py-4 whitespace-nowrap">
+                                        <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-yellow-100 text-yellow-800">
+                                            Pending
+                                        </span>
+                                    </td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
+                                        <div class="flex justify-end space-x-2">
+                                            <button class="text-blue-600 hover:text-blue-900">
+                                                <i class="fas fa-eye"></i>
+                                            </button>
+                                            <button class="text-green-600 hover:text-green-900">
+                                                <i class="fas fa-credit-card"></i>
+                                            </button>
+                                            <button class="text-gray-600 hover:text-gray-900">
+                                                <i class="fas fa-print"></i>
+                                            </button>
+                                        </div>
+                                    </td>
+                                </tr>
+
+                                <tr class="hover:bg-gray-50">
+                                    <td class="px-6 py-4 whitespace-nowrap">
+                                        <div class="flex items-center">
+                                            <div class="fine-status status-overdue"></div>
+                                            <div class="ml-4">
+                                                <div class="text-sm font-medium text-gray-900">#FIN-2023-00105</div>
+                                                <div class="text-sm text-gray-500">No seatbelt</div>
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td class="px-6 py-4 whitespace-nowrap">
+                                        <div class="text-sm font-medium text-gray-900">Michael Brown</div>
+                                        <div class="text-sm text-gray-500">DL: MB-369852</div>
+                                    </td>
+                                    <td class="px-6 py-4 whitespace-nowrap">
+                                        <div class="text-sm text-gray-900">Ford F-150</div>
+                                        <div class="text-sm text-gray-500">TRK-9876</div>
+                                    </td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
+                                        $85.00
+                                    </td>
+                                    <td class="px-6 py-4 whitespace-nowrap">
+                                        <div class="text-sm text-gray-900">May 28, 2023</div>
+                                        <div class="text-sm text-red-600">Overdue by 18 days</div>
+                                    </td>
+                                    <td class="px-6 py-4 whitespace-nowrap">
+                                        <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-red-100 text-red-800">
+                                            Overdue
+                                        </span>
+                                    </td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
+                                        <div class="flex justify-end space-x-2">
+                                            <button class="text-blue-600 hover:text-blue-900">
+                                                <i class="fas fa-eye"></i>
+                                            </button>
+                                            <button class="text-green-600 hover:text-green-900">
+                                                <i class="fas fa-credit-card"></i>
+                                            </button>
+                                            <button class="text-red-600 hover:text-red-900">
+                                                <i class="fas fa-gavel"></i>
+                                            </button>
+                                        </div>
+                                    </td>
+                                </tr>
+
+                                <tr class="hover:bg-gray-50">
+                                    <td class="px-6 py-4 whitespace-nowrap">
+                                        <div class="flex items-center">
+                                            <div class="fine-status status-disputed"></div>
+                                            <div class="ml-4">
+                                                <div class="text-sm font-medium text-gray-900">#FIN-2023-00098</div>
+                                                <div class="text-sm text-gray-500">Illegal parking</div>
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td class="px-6 py-4 whitespace-nowrap">
+                                        <div class="text-sm font-medium text-gray-900">Emily Davis</div>
+                                        <div class="text-sm text-gray-500">DL: ED-147258</div>
+                                    </td>
+                                    <td class="px-6 py-4 whitespace-nowrap">
+                                        <div class="text-sm text-gray-900">Chevrolet Malibu</div>
+                                        <div class="text-sm text-gray-500">MAL-3698</div>
+                                    </td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
+                                        $120.00
+                                    </td>
+                                    <td class="px-6 py-4 whitespace-nowrap">
+                                        <div class="text-sm text-gray-900">May 15, 2023</div>
+                                        <div class="text-sm text-blue-600">Dispute in review</div>
+                                    </td>
+                                    <td class="px-6 py-4 whitespace-nowrap">
+                                        <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-blue-100 text-blue-800">
+                                            Disputed
+                                        </span>
+                                    </td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
+                                        <div class="flex justify-end space-x-2">
+                                            <button class="text-blue-600 hover:text-blue-900">
+                                                <i class="fas fa-eye"></i>
+                                            </button>
+                                            <button class="text-purple-600 hover:text-purple-900">
+                                                <i class="fas fa-comments"></i>
+                                            </button>
+                                            <button class="text-gray-600 hover:text-gray-900">
+                                                <i class="fas fa-print"></i>
+                                            </button>
+                                        </div>
+                                    </td>
+                                </tr>
+
+                                <tr class="hover:bg-gray-50">
+                                    <td class="px-6 py-4 whitespace-nowrap">
+                                        <div class="flex items-center">
+                                            <div class="fine-status status-paid"></div>
+                                            <div class="ml-4">
+                                                <div class="text-sm font-medium text-gray-900">#FIN-2023-00120</div>
+                                                <div class="text-sm text-gray-500">Expired registration</div>
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td class="px-6 py-4 whitespace-nowrap">
+                                        <div class="text-sm font-medium text-gray-900">Robert Wilson</div>
+                                        <div class="text-sm text-gray-500">DL: RW-963852</div>
+                                    </td>
+                                    <td class="px-6 py-4 whitespace-nowrap">
+                                        <div class="text-sm text-gray-900">Nissan Altima</div>
+                                        <div class="text-sm text-gray-500">ALT-7412</div>
+                                    </td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
+                                        $65.00
+                                    </td>
+                                    <td class="px-6 py-4 whitespace-nowrap">
+                                        <div class="text-sm text-gray-900">Jun 10, 2023</div>
+                                        <div class="text-sm text-green-500">Paid on Jun 8</div>
+                                    </td>
+                                    <td class="px-6 py-4 whitespace-nowrap">
+                                        <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800">
+                                            Paid
+                                        </span>
+                                    </td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
+                                        <div class="flex justify-end space-x-2">
+                                            <button class="text-blue-600 hover:text-blue-900">
+                                                <i class="fas fa-eye"></i>
+                                            </button>
+                                            <button class="text-yellow-600 hover:text-yellow-900">
+                                                <i class="fas fa-receipt"></i>
+                                            </button>
+                                            <button class="text-gray-600 hover:text-gray-900">
+                                                <i class="fas fa-print"></i>
+                                            </button>
+                                        </div>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <div class="px-6 py-4 border-t flex items-center justify-between">
+                        <div class="text-sm text-gray-500">
+                            Showing <span class="font-medium">1</span> to <span class="font-medium">5</span> of <span class="font-medium">128</span> fines
+                        </div>
+                        <div class="flex space-x-2">
+                            <button class="px-3 py-1 border rounded-lg text-sm bg-gray-100 text-gray-600">
+                                Previous
+                            </button>
+                            <button class="px-3 py-1 border rounded-lg text-sm bg-blue-600 text-white">
+                                1
+                            </button>
+                            <button class="px-3 py-1 border rounded-lg text-sm hover:bg-gray-100">
+                                2
+                            </button>
+                            <button class="px-3 py-1 border rounded-lg text-sm hover:bg-gray-100">
+                                3
+                            </button>
+                            <button class="px-3 py-1 border rounded-lg text-sm hover:bg-gray-100">
+                                Next
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Issue Fine Modal (Hidden by default) -->
+                <div id="issueFineModal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 hidden">
+                    <div class="bg-white rounded-xl shadow-lg w-full max-w-4xl">
+                        <div class="px-6 py-4 border-b flex items-center justify-between">
+                            <h3 class="text-lg font-semibold">Issue New Traffic Fine</h3>
+                            <button id="closeIssueModal" class="text-gray-500 hover:text-gray-700">
+                                <i class="fas fa-times"></i>
+                            </button>
+                        </div>
+                        <div class="p-6">
+                            <form>
+                                <div class="grid grid-cols-1 gap-6 mb-6">
+                                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                        <div>
+                                            <label class="block text-sm font-medium text-gray-700 mb-1">Driver Information</label>
+                                            <div class="relative">
+                                                <input type="text" class="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" placeholder="Search driver by name or license">
+                                                <i class="fas fa-search absolute right-3 top-3 text-gray-400"></i>
+                                            </div>
+                                        </div>
+                                        <div>
+                                            <label class="block text-sm font-medium text-gray-700 mb-1">Vehicle Information</label>
+                                            <div class="relative">
+                                                <input type="text" class="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" placeholder="Search vehicle by plate">
+                                                <i class="fas fa-search absolute right-3 top-3 text-gray-400"></i>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="border-t border-gray-200 pt-4">
+                                        <h4 class="text-md font-medium text-gray-700 mb-3">Violation Details</h4>
+                                        <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                                            <div>
+                                                <label class="block text-sm font-medium text-gray-700 mb-1">Violation Type</label>
+                                                <select class="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
+                                                    <option>Select Violation</option>
+                                                    <option>Speeding</option>
+                                                    <option>Running red light</option>
+                                                    <option>Illegal parking</option>
+                                                    <option>No seatbelt</option>
+                                                    <option>Expired registration</option>
+                                                    <option>DUI</option>
+                                                </select>
+                                            </div>
+                                            <div>
+                                                <label class="block text-sm font-medium text-gray-700 mb-1">Severity</label>
+                                                <select class="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
+                                                    <option>Select Severity</option>
+                                                    <option>Low</option>
+                                                    <option>Medium</option>
+                                                    <option>High</option>
+                                                </select>
+                                            </div>
+                                            <div>
+                                                <label class="block text-sm font-medium text-gray-700 mb-1">Fine Amount</label>
+                                                <div class="relative">
+                                                    <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                                                        <span class="text-gray-500 sm:text-sm">$</span>
+                                                    </div>
+                                                    <input type="number" class="pl-7 w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" placeholder="0.00" value="150.00">
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="mt-4">
+                                            <label class="block text-sm font-medium text-gray-700 mb-1">Violation Details</label>
+                                            <textarea rows="3" class="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" placeholder="Additional details about the violation"></textarea>
+                                        </div>
+                                    </div>
+
+                                    <div class="border-t border-gray-200 pt-4">
+                                        <h4 class="text-md font-medium text-gray-700 mb-3">Location & Officer Details</h4>
+                                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                            <div>
+                                                <label class="block text-sm font-medium text-gray-700 mb-1">Location</label>
+                                                <input type="text" class="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" placeholder="Enter violation location">
+                                            </div>
+                                            <div>
+                                                <label class="block text-sm font-medium text-gray-700 mb-1">Issuing Officer</label>
+                                                <input type="text" class="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" value="Officer James Wilson (ID: OF-4587)" readonly>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="border-t border-gray-200 pt-4">
+                                        <h4 class="text-md font-medium text-gray-700 mb-3">Payment & Due Date</h4>
+                                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                            <div>
+                                                <label class="block text-sm font-medium text-gray-700 mb-1">Due Date</label>
+                                                <input type="date" class="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" value="2023-06-30">
+                                            </div>
+                                            <div>
+                                                <label class="block text-sm font-medium text-gray-700 mb-1">Payment Method</label>
+                                                <select class="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
+                                                    <option>Online Payment</option>
+                                                    <option>Bank Transfer</option>
+                                                    <option>In-Person Payment</option>
+                                                </select>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="flex justify-end space-x-3">
+                                    <button type="button" id="cancelIssueFine" class="px-4 py-2 border border-gray-300 rounded-lg text-gray-700 hover:bg-gray-50">
+                                        Cancel
+                                    </button>
+                                    <button type="submit" class="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700">
+                                        Issue Fine
+                                    </button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Payment Statistics -->
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                    <div class="bg-white rounded-xl shadow p-6">
+                        <h3 class="text-lg font-semibold mb-4">Fines by Status</h3>
+                        <div class="h-64" id="statusChart"></div>
+                    </div>
+
+                    <div class="bg-white rounded-xl shadow p-6">
+                        <h3 class="text-lg font-semibold mb-4">Monthly Collection</h3>
+                        <div class="h-64" id="collectionChart"></div>
+                    </div>
+                </div>
+            </main>
+        </div>
+    </div>
+
+    <script>
+        // Sidebar toggle
+        const sidebarToggle = document.getElementById('sidebarToggle');
+        const sidebar = document.querySelector('.sidebar');
+        const mainContent = document.querySelector('.main-content');
+
+        sidebarToggle.addEventListener('click', () => {
+            sidebar.classList.toggle('collapsed');
+            mainContent.classList.toggle('expanded');
+        });
+
+        // Modal handling
+        const issueFineModal = document.getElementById('issueFineModal');
+        const issueFineBtn = document.getElementById('issueFineBtn');
+        const closeIssueModal = document.getElementById('closeIssueModal');
+        const cancelIssueFine = document.getElementById('cancelIssueFine');
+
+        issueFineBtn.addEventListener('click', () => {
+            issueFineModal.classList.remove('hidden');
+        });
+
+        closeIssueModal.addEventListener('click', () => {
+            issueFineModal.classList.add('hidden');
+        });
+
+        cancelIssueFine.addEventListener('click', () => {
+            issueFineModal.classList.add('hidden');
+        });
+
+        // Dropdown menu
+        document.addEventListener('click', function(event) {
+            if (!event.target.closest('.dropdown')) {
+                const dropdowns = document.querySelectorAll('.dropdown-menu');
+                dropdowns.forEach(function(dropdown) {
+                    dropdown.classList.add('hidden');
+                });
+            }
+        });
+
+        const dropdownButtons = document.querySelectorAll('.dropdown');
+        dropdownButtons.forEach(function(button) {
+            button.addEventListener('click', function() {
+                const menu = this.querySelector('.dropdown-menu');
+                menu.classList.toggle('hidden');
+            });
+        });
+
+        // Charts
+        // Fines by Status Chart
+        const statusChartOptions = {
+            series: [84, 32, 12],
+            labels: ['Paid', 'Pending', 'Overdue'],
+            chart: {
+                type: 'donut',
+                height: '100%'
+            },
+            colors: ['#10B981', '#F59E0B', '#EF4444'],
+            plotOptions: {
+                pie: {
+                    donut: {
+                        size: '65%',
+                        labels: {
+                            show: true,
+                            total: {
+                                show: true,
+                                label: 'Total Fines',
+                                formatter: function(w) {
+                                    return w.globals.seriesTotals.reduce((a, b) => {
+                                        return a + b
+                                    }, 0)
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            dataLabels: {
+                enabled: false
+            },
+            legend: {
+                position: 'bottom'
+            },
+            responsive: [{
+                breakpoint: 480,
+                options: {
+                    chart: {
+                        width: 200
+                    },
+                    legend: {
+                        position: 'bottom'
+                    }
+                }
+            }]
+        };
+
+        // Monthly Collection Chart
+        const collectionChartOptions = {
+            series: [{
+                name: 'Collection',
+                data: [4500, 5200, 4800, 6200, 5800, 7500]
+            }],
+            chart: {
+                type: 'bar',
+                height: '100%',
+                toolbar: {
+                    show: false
+                }
+            },
+            plotOptions: {
+                bar: {
+                    borderRadius: 4,
+                    horizontal: false,
+                    columnWidth: '55%',
+                }
+            },
+            dataLabels: {
+                enabled: false
+            },
+            colors: ['#3B82F6'],
+            xaxis: {
+                categories: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun'],
+            },
+            tooltip: {
+                y: {
+                    formatter: function(val) {
+                        return "$" + val
+                    }
+                }
+            }
+        };
+
+        // In a real implementation, you would use a charting library like ApexCharts or Chart.js
+        // For this example, we'll just simulate the charts with placeholders
+        document.addEventListener('DOMContentLoaded', function() {
+            // This would be replaced with actual chart initialization
+            console.log('Charts would be initialized here with the provided options');
+        });
+    </script>
+</body>
+
+</html>

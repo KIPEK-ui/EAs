@@ -1,0 +1,451 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Traffic Police Fine Management System</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        .sidebar {
+            transition: all 0.3s ease;
+        }
+        
+        .sidebar.collapsed {
+            width: 70px;
+        }
+        
+        .sidebar.collapsed .sidebar-text {
+            display: none;
+        }
+        
+        .sidebar.collapsed .logo-text {
+            display: none;
+        }
+        
+        .sidebar.collapsed .nav-item {
+            justify-content: center;
+        }
+        
+        .main-content {
+            transition: all 0.3s ease;
+        }
+        
+        .main-content.expanded {
+            margin-left: 70px;
+        }
+        
+        .chart-container {
+            position: relative;
+            height: 300px;
+        }
+        
+        .fine-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+        }
+        
+        .fine-card {
+            transition: all 0.3s ease;
+        }
+    </style>
+</head>
+
+<body class="bg-gray-100 font-sans">
+    <div class="flex h-screen overflow-hidden">
+        <!-- Sidebar -->
+        <div class="sidebar bg-blue-800 text-white w-64 flex flex-col">
+            <div class="p-4 flex items-center space-x-2 border-b border-blue-700">
+                <div class="bg-white p-2 rounded-lg">
+                    <i class="fas fa-traffic-light text-blue-800 text-xl"></i>
+                </div>
+                <span class="logo-text text-xl font-bold">TrafficFineSys</span>
+            </div>
+
+            <div class="p-4 flex items-center justify-between border-b border-blue-700">
+                <div class="flex items-center space-x-3">
+                    <div class="w-10 h-10 rounded-full bg-blue-600 flex items-center justify-center">
+                        <i class="fas fa-user"></i>
+                    </div>
+                    <div>
+                        <div class="sidebar-text font-medium">Officer John</div>
+                        <div class="sidebar-text text-xs text-blue-300">Traffic Police</div>
+                    </div>
+                </div>
+                <button id="sidebarToggle" class="text-blue-300 hover:text-white" title="Sidebar">
+                    <i class="fas fa-bars"></i>
+                </button>
+            </div>
+
+            <nav class="flex-1 overflow-y-auto py-4">
+                <div class="space-y-1 px-3">
+                    <a href="#" class="nav-item flex items-center space-x-3 px-3 py-2 rounded-lg bg-blue-700 text-white">
+                        <i class="fas fa-tachometer-alt"></i>
+                        <span class="sidebar-text">Dashboard</span>
+                    </a>
+                    <a href="#" class="nav-item flex items-center space-x-3 px-3 py-2 rounded-lg text-blue-200 hover:bg-blue-700 hover:text-white">
+                        <i class="fas fa-car-crash"></i>
+                        <span class="sidebar-text">Violations</span>
+                    </a>
+                    <a href="#" class="nav-item flex items-center space-x-3 px-3 py-2 rounded-lg text-blue-200 hover:bg-blue-700 hover:text-white">
+                        <i class="fas fa-file-invoice-dollar"></i>
+                        <span class="sidebar-text">Fines</span>
+                    </a>
+                    <a href="#" class="nav-item flex items-center space-x-3 px-3 py-2 rounded-lg text-blue-200 hover:bg-blue-700 hover:text-white">
+                        <i class="fas fa-users"></i>
+                        <span class="sidebar-text">Drivers</span>
+                    </a>
+                    <a href="#" class="nav-item flex items-center space-x-3 px-3 py-2 rounded-lg text-blue-200 hover:bg-blue-700 hover:text-white">
+                        <i class="fas fa-chart-line"></i>
+                        <span class="sidebar-text">Reports</span>
+                    </a>
+                    <a href="#" class="nav-item flex items-center space-x-3 px-3 py-2 rounded-lg text-blue-200 hover:bg-blue-700 hover:text-white">
+                        <i class="fas fa-cog"></i>
+                        <span class="sidebar-text">Settings</span>
+                    </a>
+                </div>
+
+                <div class="px-3 mt-8">
+                    <div class="text-xs uppercase text-blue-400 mb-2 sidebar-text">Quick Actions</div>
+                    <div class="space-y-1">
+                        <a href="#" class="nav-item flex items-center space-x-3 px-3 py-2 rounded-lg text-blue-200 hover:bg-blue-700 hover:text-white">
+                            <i class="fas fa-plus-circle"></i>
+                            <span class="sidebar-text">New Fine</span>
+                        </a>
+                        <a href="#" class="nav-item flex items-center space-x-3 px-3 py-2 rounded-lg text-blue-200 hover:bg-blue-700 hover:text-white">
+                            <i class="fas fa-search"></i>
+                            <span class="sidebar-text">Search Driver</span>
+                        </a>
+                        <a href="#" class="nav-item flex items-center space-x-3 px-3 py-2 rounded-lg text-blue-200 hover:bg-blue-700 hover:text-white">
+                            <i class="fas fa-print"></i>
+                            <span class="sidebar-text">Print Report</span>
+                        </a>
+                    </div>
+                </div>
+            </nav>
+
+            <div class="p-4 border-t border-blue-700">
+                <a href="#" class="nav-item flex items-center space-x-3 px-3 py-2 rounded-lg text-blue-200 hover:bg-blue-700 hover:text-white">
+                    <i class="fas fa-sign-out-alt"></i>
+                    <span class="sidebar-text">Logout</span>
+                </a>
+            </div>
+        </div>
+
+        <!-- Main Content -->
+        <div class="main-content flex-1 flex flex-col overflow-hidden">
+            <!-- Top Navigation -->
+            <header class="bg-white shadow-sm">
+                <div class="px-6 py-4 flex items-center justify-between">
+                    <h1 class="text-2xl font-semibold text-gray-800">Dashboard</h1>
+                    <div class="flex items-center space-x-4">
+                        <div class="relative">
+                            <input type="text" placeholder="Search..." class="pl-10 pr-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
+                            <i class="fas fa-search absolute left-3 top-3 text-gray-400"></i>
+                        </div>
+                        <button class="p-2 rounded-full bg-gray-100 text-gray-600 hover:bg-gray-200">
+                            <i class="fas fa-bell"></i>
+                            <span class="absolute top-0 right-0 h-2 w-2 rounded-full bg-red-500"></span>
+                        </button>
+                    </div>
+                </div>
+            </header>
+
+            <!-- Main Content Area -->
+            <main class="flex-1 overflow-y-auto p-6">
+                <!-- Stats Cards -->
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-6">
+                    <div class="bg-white rounded-xl shadow p-6">
+                        <div class="flex items-center justify-between">
+                            <div>
+                                <p class="text-gray-500">Total Fines Today</p>
+                                <h3 class="text-3xl font-bold text-blue-600">142</h3>
+                                <p class="text-sm text-green-500 flex items-center">
+                                    <i class="fas fa-arrow-up mr-1"></i> 12% from yesterday
+                                </p>
+                            </div>
+                            <div class="p-3 rounded-full bg-blue-100 text-blue-600">
+                                <i class="fas fa-file-invoice text-xl"></i>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="bg-white rounded-xl shadow p-6">
+                        <div class="flex items-center justify-between">
+                            <div>
+                                <p class="text-gray-500">Total Amount</p>
+                                <h3 class="text-3xl font-bold text-green-600">$8,540</h3>
+                                <p class="text-sm text-green-500 flex items-center">
+                                    <i class="fas fa-arrow-up mr-1"></i> 8% from yesterday
+                                </p>
+                            </div>
+                            <div class="p-3 rounded-full bg-green-100 text-green-600">
+                                <i class="fas fa-dollar-sign text-xl"></i>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="bg-white rounded-xl shadow p-6">
+                        <div class="flex items-center justify-between">
+                            <div>
+                                <p class="text-gray-500">Unpaid Fines</p>
+                                <h3 class="text-3xl font-bold text-red-600">67</h3>
+                                <p class="text-sm text-red-500 flex items-center">
+                                    <i class="fas fa-arrow-up mr-1"></i> 5% from yesterday
+                                </p>
+                            </div>
+                            <div class="p-3 rounded-full bg-red-100 text-red-600">
+                                <i class="fas fa-exclamation-circle text-xl"></i>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="bg-white rounded-xl shadow p-6">
+                        <div class="flex items-center justify-between">
+                            <div>
+                                <p class="text-gray-500">Top Violation</p>
+                                <h3 class="text-2xl font-bold text-purple-600">Speeding</h3>
+                                <p class="text-sm text-gray-500">42 cases today</p>
+                            </div>
+                            <div class="p-3 rounded-full bg-purple-100 text-purple-600">
+                                <i class="fas fa-tachometer-alt text-xl"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Charts and Recent Fines -->
+                <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-6">
+                    <!-- Fines Chart -->
+                    <div class="lg:col-span-2 bg-white rounded-xl shadow p-6">
+                        <div class="flex items-center justify-between mb-4">
+                            <h2 class="text-lg font-semibold">Fines Overview</h2>
+                            <div class="flex space-x-2">
+                                <button class="px-3 py-1 text-sm bg-blue-100 text-blue-600 rounded-lg">Day</button>
+                                <button class="px-3 py-1 text-sm bg-gray-100 text-gray-600 rounded-lg">Week</button>
+                                <button class="px-3 py-1 text-sm bg-gray-100 text-gray-600 rounded-lg">Month</button>
+                            </div>
+                        </div>
+                        <div class="chart-container">
+                            <canvas id="finesChart"></canvas>
+                        </div>
+                    </div>
+
+                    <!-- Violation Distribution -->
+                    <div class="bg-white rounded-xl shadow p-6">
+                        <h2 class="text-lg font-semibold mb-4">Violation Distribution</h2>
+                        <div class="chart-container">
+                            <canvas id="violationChart"></canvas>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Recent Fines -->
+                <div class="bg-white rounded-xl shadow overflow-hidden">
+                    <div class="px-6 py-4 border-b flex items-center justify-between">
+                        <h2 class="text-lg font-semibold">Recent Fines</h2>
+                        <button class="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 flex items-center space-x-2">
+                            <i class="fas fa-plus"></i>
+                            <span>Add New Fine</span>
+                        </button>
+                    </div>
+                    <div class="overflow-x-auto">
+                        <table class="min-w-full divide-y divide-gray-200">
+                            <thead class="bg-gray-50">
+                                <tr>
+                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Fine ID</th>
+                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Driver</th>
+                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Violation</th>
+                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Amount</th>
+                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
+                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Date</th>
+                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody class="bg-white divide-y divide-gray-200">
+                                <tr>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">#TF-2023-00142</td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">John Smith</td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">Speeding (20km/h over)</td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">$150</td>
+                                    <td class="px-6 py-4 whitespace-nowrap">
+                                        <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800">Paid</span>
+                                    </td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">10:42 AM</td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                                        <button class="text-blue-600 hover:text-blue-900 mr-3" title="Eye"><i class="fas fa-eye"></i></button>
+                                        <button class="text-green-600 hover:text-green-900 mr-3" title="Print"><i class="fas fa-print"></i></button>
+                                        <button class="text-red-600 hover:text-red-900" title="Trash"><i class="fas fa-trash"></i></button>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">#TF-2023-00141</td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">Sarah Johnson</td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">Red Light Violation</td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">$250</td>
+                                    <td class="px-6 py-4 whitespace-nowrap">
+                                        <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-yellow-100 text-yellow-800">Pending</span>
+                                    </td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">10:25 AM</td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                                        <button class="text-blue-600 hover:text-blue-900 mr-3"><i class="fas fa-eye"></i></button>
+                                        <button class="text-green-600 hover:text-green-900 mr-3"><i class="fas fa-print"></i></button>
+                                        <button class="text-red-600 hover:text-red-900"><i class="fas fa-trash"></i></button>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">#TF-2023-00140</td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">Michael Brown</td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">No Seatbelt</td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">$100</td>
+                                    <td class="px-6 py-4 whitespace-nowrap">
+                                        <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-red-100 text-red-800">Unpaid</span>
+                                    </td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">09:58 AM</td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                                        <button class="text-blue-600 hover:text-blue-900 mr-3"><i class="fas fa-eye"></i></button>
+                                        <button class="text-green-600 hover:text-green-900 mr-3"><i class="fas fa-print"></i></button>
+                                        <button class="text-red-600 hover:text-red-900"><i class="fas fa-trash"></i></button>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">#TF-2023-00139</td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">Emily Davis</td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">Illegal Parking</td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">$75</td>
+                                    <td class="px-6 py-4 whitespace-nowrap">
+                                        <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800">Paid</span>
+                                    </td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">09:30 AM</td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                                        <button class="text-blue-600 hover:text-blue-900 mr-3"><i class="fas fa-eye"></i></button>
+                                        <button class="text-green-600 hover:text-green-900 mr-3"><i class="fas fa-print"></i></button>
+                                        <button class="text-red-600 hover:text-red-900"><i class="fas fa-trash"></i></button>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">#TF-2023-00138</td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">Robert Wilson</td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">Using Mobile Phone</td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">$200</td>
+                                    <td class="px-6 py-4 whitespace-nowrap">
+                                        <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-yellow-100 text-yellow-800">Pending</span>
+                                    </td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">09:15 AM</td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                                        <button class="text-blue-600 hover:text-blue-900 mr-3"><i class="fas fa-eye"></i></button>
+                                        <button class="text-green-600 hover:text-green-900 mr-3"><i class="fas fa-print"></i></button>
+                                        <button class="text-red-600 hover:text-red-900"><i class="fas fa-trash"></i></button>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <div class="px-6 py-4 border-t flex items-center justify-between">
+                        <div class="text-sm text-gray-500">Showing <span class="font-medium">1</span> to <span class="font-medium">5</span> of <span class="font-medium">142</span> entries</div>
+                        <div class="flex space-x-2">
+                            <button class="px-3 py-1 border rounded-lg text-sm">Previous</button>
+                            <button class="px-3 py-1 border rounded-lg bg-blue-600 text-white text-sm">1</button>
+                            <button class="px-3 py-1 border rounded-lg text-sm">2</button>
+                            <button class="px-3 py-1 border rounded-lg text-sm">3</button>
+                            <button class="px-3 py-1 border rounded-lg text-sm">Next</button>
+                        </div>
+                    </div>
+                </div>
+            </main>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script>
+        // Sidebar toggle
+        const sidebarToggle = document.getElementById('sidebarToggle');
+        const sidebar = document.querySelector('.sidebar');
+        const mainContent = document.querySelector('.main-content');
+
+        sidebarToggle.addEventListener('click', () => {
+            sidebar.classList.toggle('collapsed');
+            mainContent.classList.toggle('expanded');
+        });
+
+        // Charts
+        // Fines Chart
+        const finesCtx = document.getElementById('finesChart').getContext('2d');
+        const finesChart = new Chart(finesCtx, {
+            type: 'line',
+            data: {
+                labels: ['6AM', '8AM', '10AM', '12PM', '2PM', '4PM', '6PM', '8PM'],
+                datasets: [{
+                    label: 'Fines Issued',
+                    data: [12, 19, 28, 42, 36, 25, 18, 10],
+                    borderColor: 'rgb(59, 130, 246)',
+                    backgroundColor: 'rgba(59, 130, 246, 0.1)',
+                    tension: 0.4,
+                    fill: true
+                }, {
+                    label: 'Fines Paid',
+                    data: [8, 12, 20, 30, 25, 18, 12, 5],
+                    borderColor: 'rgb(16, 185, 129)',
+                    backgroundColor: 'rgba(16, 185, 129, 0.1)',
+                    tension: 0.4,
+                    fill: true
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: {
+                        position: 'top',
+                    }
+                },
+                scales: {
+                    y: {
+                        beginAtZero: true
+                    }
+                }
+            }
+        });
+
+        // Violation Chart
+        const violationCtx = document.getElementById('violationChart').getContext('2d');
+        const violationChart = new Chart(violationCtx, {
+            type: 'doughnut',
+            data: {
+                labels: ['Speeding', 'Red Light', 'No Seatbelt', 'Illegal Parking', 'Mobile Phone', 'Others'],
+                datasets: [{
+                    data: [42, 25, 18, 15, 20, 22],
+                    backgroundColor: [
+                        'rgba(59, 130, 246, 0.8)',
+                        'rgba(239, 68, 68, 0.8)',
+                        'rgba(16, 185, 129, 0.8)',
+                        'rgba(245, 158, 11, 0.8)',
+                        'rgba(139, 92, 246, 0.8)',
+                        'rgba(75, 85, 99, 0.8)'
+                    ],
+                    borderColor: [
+                        'rgba(59, 130, 246, 1)',
+                        'rgba(239, 68, 68, 1)',
+                        'rgba(16, 185, 129, 1)',
+                        'rgba(245, 158, 11, 1)',
+                        'rgba(139, 92, 246, 1)',
+                        'rgba(75, 85, 99, 1)'
+                    ],
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: {
+                        position: 'right',
+                    }
+                }
+            }
+        });
+    </script>
+</body>
+
+</html>

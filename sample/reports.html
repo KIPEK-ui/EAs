@@ -1,0 +1,907 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Reports | Traffic Police Fine Management System</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        .sidebar {
+            transition: all 0.3s ease;
+        }
+        
+        .sidebar.collapsed {
+            width: 70px;
+        }
+        
+        .sidebar.collapsed .sidebar-text {
+            display: none;
+        }
+        
+        .sidebar.collapsed .logo-text {
+            display: none;
+        }
+        
+        .sidebar.collapsed .nav-item {
+            justify-content: center;
+        }
+        
+        .main-content {
+            transition: all 0.3s ease;
+        }
+        
+        .main-content.expanded {
+            margin-left: 70px;
+        }
+        
+        .report-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+        }
+        
+        .report-card {
+            transition: all 0.3s ease;
+        }
+        
+        .progress-bar {
+            height: 6px;
+            border-radius: 3px;
+            overflow: hidden;
+        }
+        
+        .progress-fill {
+            height: 100%;
+            transition: width 0.5s ease;
+        }
+        
+        .badge {
+            display: inline-flex;
+            align-items: center;
+            padding: 0.25rem 0.5rem;
+            border-radius: 9999px;
+            font-size: 0.75rem;
+            font-weight: 600;
+        }
+    </style>
+</head>
+
+<body class="bg-gray-100 font-sans">
+    <div class="flex h-screen overflow-hidden">
+        <!-- Sidebar -->
+        <div class="sidebar bg-blue-800 text-white w-64 flex flex-col">
+            <div class="p-4 flex items-center space-x-2 border-b border-blue-700">
+                <div class="bg-white p-2 rounded-lg">
+                    <i class="fas fa-traffic-light text-blue-800 text-xl"></i>
+                </div>
+                <span class="logo-text text-xl font-bold">TrafficFineSys</span>
+            </div>
+
+            <div class="p-4 flex items-center justify-between border-b border-blue-700">
+                <div class="flex items-center space-x-3">
+                    <div class="w-10 h-10 rounded-full bg-blue-600 flex items-center justify-center">
+                        <i class="fas fa-user"></i>
+                    </div>
+                    <div>
+                        <div class="sidebar-text font-medium">Officer John</div>
+                        <div class="sidebar-text text-xs text-blue-300">Traffic Police</div>
+                    </div>
+                </div>
+                <button id="sidebarToggle" class="text-blue-300 hover:text-white">
+                    <i class="fas fa-bars"></i>
+                </button>
+            </div>
+
+            <nav class="flex-1 overflow-y-auto py-4">
+                <div class="space-y-1 px-3">
+                    <a href="dashboard.html" class="nav-item flex items-center space-x-3 px-3 py-2 rounded-lg text-blue-200 hover:bg-blue-700 hover:text-white">
+                        <i class="fas fa-tachometer-alt"></i>
+                        <span class="sidebar-text">Dashboard</span>
+                    </a>
+                    <a href="violations.html" class="nav-item flex items-center space-x-3 px-3 py-2 rounded-lg text-blue-200 hover:bg-blue-700 hover:text-white">
+                        <i class="fas fa-car-crash"></i>
+                        <span class="sidebar-text">Violations</span>
+                    </a>
+                    <a href="fines.html" class="nav-item flex items-center space-x-3 px-3 py-2 rounded-lg text-blue-200 hover:bg-blue-700 hover:text-white">
+                        <i class="fas fa-file-invoice-dollar"></i>
+                        <span class="sidebar-text">Fines</span>
+                    </a>
+                    <a href="drivers.html" class="nav-item flex items-center space-x-3 px-3 py-2 rounded-lg text-blue-200 hover:bg-blue-700 hover:text-white">
+                        <i class="fas fa-users"></i>
+                        <span class="sidebar-text">Drivers</span>
+                    </a>
+                    <a href="reports.html" class="nav-item flex items-center space-x-3 px-3 py-2 rounded-lg bg-blue-700 text-white">
+                        <i class="fas fa-chart-line"></i>
+                        <span class="sidebar-text">Reports</span>
+                    </a>
+                    <a href="settings.html" class="nav-item flex items-center space-x-3 px-3 py-2 rounded-lg text-blue-200 hover:bg-blue-700 hover:text-white">
+                        <i class="fas fa-cog"></i>
+                        <span class="sidebar-text">Settings</span>
+                    </a>
+                </div>
+
+                <div class="px-3 mt-8">
+                    <div class="text-xs uppercase text-blue-400 mb-2 sidebar-text">Quick Reports</div>
+                    <div class="space-y-1">
+                        <a href="#" class="nav-item flex items-center space-x-3 px-3 py-2 rounded-lg text-blue-200 hover:bg-blue-700 hover:text-white">
+                            <i class="fas fa-chart-pie"></i>
+                            <span class="sidebar-text">Daily Summary</span>
+                        </a>
+                        <a href="#" class="nav-item flex items-center space-x-3 px-3 py-2 rounded-lg text-blue-200 hover:bg-blue-700 hover:text-white">
+                            <i class="fas fa-chart-bar"></i>
+                            <span class="sidebar-text">Monthly Trends</span>
+                        </a>
+                        <a href="#" class="nav-item flex items-center space-x-3 px-3 py-2 rounded-lg text-blue-200 hover:bg-blue-700 hover:text-white">
+                            <i class="fas fa-file-pdf"></i>
+                            <span class="sidebar-text">Export PDF</span>
+                        </a>
+                    </div>
+                </div>
+            </nav>
+
+            <div class="p-4 border-t border-blue-700">
+                <a href="#" class="nav-item flex items-center space-x-3 px-3 py-2 rounded-lg text-blue-200 hover:bg-blue-700 hover:text-white">
+                    <i class="fas fa-sign-out-alt"></i>
+                    <span class="sidebar-text">Logout</span>
+                </a>
+            </div>
+        </div>
+
+        <!-- Main Content -->
+        <div class="main-content flex-1 flex flex-col overflow-hidden">
+            <!-- Top Navigation -->
+            <header class="bg-white shadow-sm">
+                <div class="px-6 py-4 flex items-center justify-between">
+                    <h1 class="text-2xl font-semibold text-gray-800">Reports & Analytics</h1>
+                    <div class="flex items-center space-x-4">
+                        <div class="relative">
+                            <input type="text" placeholder="Search reports..." class="pl-10 pr-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
+                            <i class="fas fa-search absolute left-3 top-3 text-gray-400"></i>
+                        </div>
+                        <button class="p-2 rounded-full bg-gray-100 text-gray-600 hover:bg-gray-200">
+                            <i class="fas fa-bell"></i>
+                            <span class="absolute top-0 right-0 h-2 w-2 rounded-full bg-red-500"></span>
+                        </button>
+                    </div>
+                </div>
+            </header>
+
+            <!-- Main Content Area -->
+            <main class="flex-1 overflow-y-auto p-6">
+                <!-- Report Filters -->
+                <div class="bg-white rounded-xl shadow p-6 mb-6">
+                    <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
+                        <div>
+                            <h2 class="text-xl font-semibold text-gray-800">Custom Report Generator</h2>
+                            <p class="text-gray-600">Generate detailed reports based on your criteria</p>
+                        </div>
+                        <div class="flex space-x-3">
+                            <button class="px-4 py-2 bg-white border rounded-lg text-gray-700 hover:bg-gray-50 flex items-center space-x-2">
+                                <i class="fas fa-calendar"></i>
+                                <span>This Month</span>
+                            </button>
+                            <button id="generateReportBtn" class="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 flex items-center space-x-2">
+                                <i class="fas fa-sync-alt"></i>
+                                <span>Generate Report</span>
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="grid grid-cols-1 md:grid-cols-4 gap-6 mt-6">
+                        <div>
+                            <label class="block text-gray-700 text-sm font-medium mb-2" for="report-type">
+                                Report Type
+                            </label>
+                            <select id="report-type" class="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
+                                <option>Fines Summary</option>
+                                <option>Violations Analysis</option>
+                                <option>Driver Statistics</option>
+                                <option>Revenue Reports</option>
+                                <option>Officer Performance</option>
+                            </select>
+                        </div>
+
+                        <div>
+                            <label class="block text-gray-700 text-sm font-medium mb-2" for="date-from">
+                                Date From
+                            </label>
+                            <input id="date-from" type="date" class="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
+                        </div>
+
+                        <div>
+                            <label class="block text-gray-700 text-sm font-medium mb-2" for="date-to">
+                                Date To
+                            </label>
+                            <input id="date-to" type="date" class="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
+                        </div>
+
+                        <div>
+                            <label class="block text-gray-700 text-sm font-medium mb-2" for="location">
+                                Location
+                            </label>
+                            <select id="location" class="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
+                                <option>All Locations</option>
+                                <option>Downtown District</option>
+                                <option>North District</option>
+                                <option>South District</option>
+                                <option>East District</option>
+                                <option>West District</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Key Metrics -->
+                <div class="grid grid-cols-1 md:grid-cols-4 gap-6 mb-6">
+                    <div class="bg-white rounded-xl shadow p-6">
+                        <div class="flex items-center justify-between">
+                            <div>
+                                <p class="text-gray-500">Total Fines Issued</p>
+                                <h3 class="text-3xl font-bold text-blue-600">1,284</h3>
+                                <p class="text-sm text-gray-500">+12% from last month</p>
+                            </div>
+                            <div class="p-3 rounded-full bg-blue-100 text-blue-600">
+                                <i class="fas fa-file-invoice text-xl"></i>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="bg-white rounded-xl shadow p-6">
+                        <div class="flex items-center justify-between">
+                            <div>
+                                <p class="text-gray-500">Total Revenue</p>
+                                <h3 class="text-3xl font-bold text-green-600">$42,750</h3>
+                                <p class="text-sm text-gray-500">+8% from last month</p>
+                            </div>
+                            <div class="p-3 rounded-full bg-green-100 text-green-600">
+                                <i class="fas fa-dollar-sign text-xl"></i>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="bg-white rounded-xl shadow p-6">
+                        <div class="flex items-center justify-between">
+                            <div>
+                                <p class="text-gray-500">Top Violation</p>
+                                <h3 class="text-2xl font-bold text-red-600">Speeding</h3>
+                                <p class="text-sm text-gray-500">428 cases (33%)</p>
+                            </div>
+                            <div class="p-3 rounded-full bg-red-100 text-red-600">
+                                <i class="fas fa-car-crash text-xl"></i>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="bg-white rounded-xl shadow p-6">
+                        <div class="flex items-center justify-between">
+                            <div>
+                                <p class="text-gray-500">Avg. Fine Amount</p>
+                                <h3 class="text-3xl font-bold text-yellow-600">$120</h3>
+                                <p class="text-sm text-gray-500">+$5 from last month</p>
+                            </div>
+                            <div class="p-3 rounded-full bg-yellow-100 text-yellow-600">
+                                <i class="fas fa-chart-line text-xl"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Charts Section -->
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
+                    <!-- Monthly Fines Chart -->
+                    <div class="bg-white rounded-xl shadow p-6">
+                        <div class="flex justify-between items-center mb-4">
+                            <h3 class="text-lg font-semibold text-gray-800">Monthly Fines Issued</h3>
+                            <div class="flex space-x-2">
+                                <button class="px-3 py-1 text-sm bg-blue-100 text-blue-600 rounded-lg">2023</button>
+                                <button class="px-3 py-1 text-sm bg-gray-100 text-gray-600 rounded-lg">2022</button>
+                            </div>
+                        </div>
+                        <div class="h-64">
+                            <canvas id="monthlyFinesChart"></canvas>
+                        </div>
+                    </div>
+
+                    <!-- Violation Types Chart -->
+                    <div class="bg-white rounded-xl shadow p-6">
+                        <div class="flex justify-between items-center mb-4">
+                            <h3 class="text-lg font-semibold text-gray-800">Violation Types Distribution</h3>
+                            <div class="flex space-x-2">
+                                <button class="px-3 py-1 text-sm bg-blue-100 text-blue-600 rounded-lg">This Month</button>
+                                <button class="px-3 py-1 text-sm bg-gray-100 text-gray-600 rounded-lg">All Time</button>
+                            </div>
+                        </div>
+                        <div class="h-64">
+                            <canvas id="violationTypesChart"></canvas>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Additional Charts Section -->
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
+                    <!-- Revenue by District Chart -->
+                    <div class="bg-white rounded-xl shadow p-6">
+                        <div class="flex justify-between items-center mb-4">
+                            <h3 class="text-lg font-semibold text-gray-800">Revenue by District</h3>
+                            <div class="flex space-x-2">
+                                <button class="px-3 py-1 text-sm bg-blue-100 text-blue-600 rounded-lg">This Month</button>
+                                <button class="px-3 py-1 text-sm bg-gray-100 text-gray-600 rounded-lg">Quarter</button>
+                            </div>
+                        </div>
+                        <div class="h-64">
+                            <canvas id="revenueDistrictChart"></canvas>
+                        </div>
+                    </div>
+
+                    <!-- Payment Status Chart -->
+                    <div class="bg-white rounded-xl shadow p-6">
+                        <div class="flex justify-between items-center mb-4">
+                            <h3 class="text-lg font-semibold text-gray-800">Payment Status</h3>
+                            <div class="flex space-x-2">
+                                <button class="px-3 py-1 text-sm bg-blue-100 text-blue-600 rounded-lg">This Month</button>
+                                <button class="px-3 py-1 text-sm bg-gray-100 text-gray-600 rounded-lg">All Time</button>
+                            </div>
+                        </div>
+                        <div class="h-64">
+                            <canvas id="paymentStatusChart"></canvas>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Recent Reports -->
+                <div class="bg-white rounded-xl shadow overflow-hidden mb-6">
+                    <div class="px-6 py-4 border-b flex items-center justify-between">
+                        <h2 class="text-lg font-semibold">Recent Generated Reports</h2>
+                        <div class="flex items-center space-x-3">
+                            <div class="relative">
+                                <select class="appearance-none pl-3 pr-8 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm">
+                                    <option>Filter by: All Types</option>
+                                    <option>Filter by: Fines</option>
+                                    <option>Filter by: Violations</option>
+                                    <option>Filter by: Drivers</option>
+                                    <option>Filter by: Revenue</option>
+                                </select>
+                                <i class="fas fa-chevron-down absolute right-3 top-3 text-gray-400 text-xs"></i>
+                            </div>
+                            <button class="px-3 py-2 bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200">
+                                <i class="fas fa-download"></i>
+                            </button>
+                        </div>
+                    </div>
+                    <div class="overflow-x-auto">
+                        <table class="min-w-full divide-y divide-gray-200">
+                            <thead class="bg-gray-50">
+                                <tr>
+                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Report Name</th>
+                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Type</th>
+                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Date Range</th>
+                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Generated By</th>
+                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Date Generated</th>
+                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody class="bg-white divide-y divide-gray-200">
+                                <tr>
+                                    <td class="px-6 py-4 whitespace-nowrap">
+                                        <div class="text-sm font-medium text-gray-900">Monthly Fines Summary</div>
+                                        <div class="text-sm text-gray-500">October 2023</div>
+                                    </td>
+                                    <td class="px-6 py-4 whitespace-nowrap">
+                                        <span class="badge bg-blue-100 text-blue-800">Fines</span>
+                                    </td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                                        Oct 1 - Oct 31, 2023
+                                    </td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                                        Officer John
+                                    </td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                                        Nov 1, 2023 09:42 AM
+                                    </td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                                        <button class="text-blue-600 hover:text-blue-900 mr-3"><i class="fas fa-eye"></i></button>
+                                        <button class="text-green-600 hover:text-green-900 mr-3"><i class="fas fa-download"></i></button>
+                                        <button class="text-red-600 hover:text-red-900"><i class="fas fa-trash"></i></button>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td class="px-6 py-4 whitespace-nowrap">
+                                        <div class="text-sm font-medium text-gray-900">Speeding Violations Analysis</div>
+                                        <div class="text-sm text-gray-500">Q3 2023</div>
+                                    </td>
+                                    <td class="px-6 py-4 whitespace-nowrap">
+                                        <span class="badge bg-purple-100 text-purple-800">Violations</span>
+                                    </td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                                        Jul 1 - Sep 30, 2023
+                                    </td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                                        Officer Smith
+                                    </td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                                        Oct 15, 2023 02:15 PM
+                                    </td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                                        <button class="text-blue-600 hover:text-blue-900 mr-3"><i class="fas fa-eye"></i></button>
+                                        <button class="text-green-600 hover:text-green-900 mr-3"><i class="fas fa-download"></i></button>
+                                        <button class="text-red-600 hover:text-red-900"><i class="fas fa-trash"></i></button>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td class="px-6 py-4 whitespace-nowrap">
+                                        <div class="text-sm font-medium text-gray-900">Annual Revenue Report</div>
+                                        <div class="text-sm text-gray-500">2022 Fiscal Year</div>
+                                    </td>
+                                    <td class="px-6 py-4 whitespace-nowrap">
+                                        <span class="badge bg-green-100 text-green-800">Revenue</span>
+                                    </td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                                        Jan 1 - Dec 31, 2022
+                                    </td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                                        Officer Johnson
+                                    </td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                                        Jan 5, 2023 10:30 AM
+                                    </td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                                        <button class="text-blue-600 hover:text-blue-900 mr-3"><i class="fas fa-eye"></i></button>
+                                        <button class="text-green-600 hover:text-green-900 mr-3"><i class="fas fa-download"></i></button>
+                                        <button class="text-red-600 hover:text-red-900"><i class="fas fa-trash"></i></button>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td class="px-6 py-4 whitespace-nowrap">
+                                        <div class="text-sm font-medium text-gray-900">Driver License Status</div>
+                                        <div class="text-sm text-gray-500">Current Status</div>
+                                    </td>
+                                    <td class="px-6 py-4 whitespace-nowrap">
+                                        <span class="badge bg-indigo-100 text-indigo-800">Drivers</span>
+                                    </td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                                        As of Oct 31, 2023
+                                    </td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                                        Officer Williams
+                                    </td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                                        Nov 2, 2023 04:20 PM
+                                    </td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                                        <button class="text-blue-600 hover:text-blue-900 mr-3"><i class="fas fa-eye"></i></button>
+                                        <button class="text-green-600 hover:text-green-900 mr-3"><i class="fas fa-download"></i></button>
+                                        <button class="text-red-600 hover:text-red-900"><i class="fas fa-trash"></i></button>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td class="px-6 py-4 whitespace-nowrap">
+                                        <div class="text-sm font-medium text-gray-900">Officer Performance</div>
+                                        <div class="text-sm text-gray-500">September 2023</div>
+                                    </td>
+                                    <td class="px-6 py-4 whitespace-nowrap">
+                                        <span class="badge bg-yellow-100 text-yellow-800">Performance</span>
+                                    </td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                                        Sep 1 - Sep 30, 2023
+                                    </td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                                        Officer Brown
+                                    </td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                                        Oct 3, 2023 11:15 AM
+                                    </td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                                        <button class="text-blue-600 hover:text-blue-900 mr-3"><i class="fas fa-eye"></i></button>
+                                        <button class="text-green-600 hover:text-green-900 mr-3"><i class="fas fa-download"></i></button>
+                                        <button class="text-red-600 hover:text-red-900"><i class="fas fa-trash"></i></button>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <div class="px-6 py-4 border-t flex items-center justify-between">
+                        <div class="text-sm text-gray-500">Showing <span class="font-medium">1</span> to <span class="font-medium">5</span> of <span class="font-medium">24</span> entries</div>
+                        <div class="flex space-x-2">
+                            <button class="px-3 py-1 border rounded-lg text-sm">Previous</button>
+                            <button class="px-3 py-1 border rounded-lg bg-blue-600 text-white text-sm">1</button>
+                            <button class="px-3 py-1 border rounded-lg text-sm">2</button>
+                            <button class="px-3 py-1 border rounded-lg text-sm">3</button>
+                            <button class="px-3 py-1 border rounded-lg text-sm">4</button>
+                            <button class="px-3 py-1 border rounded-lg text-sm">5</button>
+                            <button class="px-3 py-1 border rounded-lg text-sm">Next</button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Quick Reports -->
+                <div class="mb-6">
+                    <h3 class="text-lg font-semibold text-gray-800 mb-4">Quick Reports</h3>
+                    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+                        <!-- Report Card 1 -->
+                        <div class="report-card bg-white rounded-lg shadow overflow-hidden">
+                            <div class="p-5">
+                                <div class="flex items-center justify-between mb-4">
+                                    <div class="p-3 rounded-full bg-blue-100 text-blue-600">
+                                        <i class="fas fa-file-invoice text-xl"></i>
+                                    </div>
+                                    <span class="text-sm text-gray-500">PDF</span>
+                                </div>
+                                <h4 class="font-bold text-lg text-gray-800 mb-2">Daily Fines Report</h4>
+                                <p class="text-sm text-gray-500 mb-4">Summary of all fines issued today with payment status</p>
+                                <button class="w-full px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 flex items-center justify-center space-x-2">
+                                    <i class="fas fa-download"></i>
+                                    <span>Generate</span>
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- Report Card 2 -->
+                        <div class="report-card bg-white rounded-lg shadow overflow-hidden">
+                            <div class="p-5">
+                                <div class="flex items-center justify-between mb-4">
+                                    <div class="p-3 rounded-full bg-green-100 text-green-600">
+                                        <i class="fas fa-dollar-sign text-xl"></i>
+                                    </div>
+                                    <span class="text-sm text-gray-500">Excel</span>
+                                </div>
+                                <h4 class="font-bold text-lg text-gray-800 mb-2">Monthly Revenue</h4>
+                                <p class="text-sm text-gray-500 mb-4">Detailed breakdown of revenue by violation type and district</p>
+                                <button class="w-full px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 flex items-center justify-center space-x-2">
+                                    <i class="fas fa-download"></i>
+                                    <span>Generate</span>
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- Report Card 3 -->
+                        <div class="report-card bg-white rounded-lg shadow overflow-hidden">
+                            <div class="p-5">
+                                <div class="flex items-center justify-between mb-4">
+                                    <div class="p-3 rounded-full bg-purple-100 text-purple-600">
+                                        <i class="fas fa-car-crash text-xl"></i>
+                                    </div>
+                                    <span class="text-sm text-gray-500">CSV</span>
+                                </div>
+                                <h4 class="font-bold text-lg text-gray-800 mb-2">Top Violations</h4>
+                                <p class="text-sm text-gray-500 mb-4">List of most frequent violations with locations and times</p>
+                                <button class="w-full px-4 py-2 bg-purple-600 text-white rounded-lg hover:bg-purple-700 flex items-center justify-center space-x-2">
+                                    <i class="fas fa-download"></i>
+                                    <span>Generate</span>
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- Report Card 4 -->
+                        <div class="report-card bg-white rounded-lg shadow overflow-hidden">
+                            <div class="p-5">
+                                <div class="flex items-center justify-between mb-4">
+                                    <div class="p-3 rounded-full bg-indigo-100 text-indigo-600">
+                                        <i class="fas fa-users text-xl"></i>
+                                    </div>
+                                    <span class="text-sm text-gray-500">PDF</span>
+                                </div>
+                                <h4 class="font-bold text-lg text-gray-800 mb-2">Driver Statistics</h4>
+                                <p class="text-sm text-gray-500 mb-4">Demographics and violation patterns of registered drivers</p>
+                                <button class="w-full px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 flex items-center justify-center space-x-2">
+                                    <i class="fas fa-download"></i>
+                                    <span>Generate</span>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </main>
+        </div>
+    </div>
+
+    <!-- Generate Report Modal -->
+    <div id="generateReportModal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 hidden">
+        <div class="bg-white rounded-lg shadow-xl w-full max-w-2xl">
+            <div class="px-6 py-4 border-b flex items-center justify-between">
+                <h3 class="text-lg font-semibold">Generate Custom Report</h3>
+                <button id="closeReportModalBtn" class="text-gray-500 hover:text-gray-700">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <div class="p-6">
+                <div class="mb-6">
+                    <label class="block text-gray-700 text-sm font-medium mb-2" for="report-title">
+                        Report Title
+                    </label>
+                    <input id="report-title" type="text" class="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" placeholder="Monthly Fines Summary - October 2023">
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+                    <div>
+                        <label class="block text-gray-700 text-sm font-medium mb-2" for="report-format">
+                            Format
+                        </label>
+                        <select id="report-format" class="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
+                            <option>PDF Document</option>
+                            <option>Excel Spreadsheet</option>
+                            <option>CSV File</option>
+                            <option>HTML Web Page</option>
+                        </select>
+                    </div>
+
+                    <div>
+                        <label class="block text-gray-700 text-sm font-medium mb-2" for="report-detail">
+                            Detail Level
+                        </label>
+                        <select id="report-detail" class="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
+                            <option>Summary</option>
+                            <option>Detailed</option>
+                            <option>Comprehensive</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="mb-6">
+                    <label class="block text-gray-700 text-sm font-medium mb-2">
+                        Include Charts
+                    </label>
+                    <div class="flex flex-wrap gap-4">
+                        <label class="inline-flex items-center">
+                            <input type="checkbox" class="form-checkbox h-5 w-5 text-blue-600" checked>
+                            <span class="ml-2 text-gray-700">Bar Charts</span>
+                        </label>
+                        <label class="inline-flex items-center">
+                            <input type="checkbox" class="form-checkbox h-5 w-5 text-blue-600" checked>
+                            <span class="ml-2 text-gray-700">Pie Charts</span>
+                        </label>
+                        <label class="inline-flex items-center">
+                            <input type="checkbox" class="form-checkbox h-5 w-5 text-blue-600">
+                            <span class="ml-2 text-gray-700">Line Graphs</span>
+                        </label>
+                        <label class="inline-flex items-center">
+                            <input type="checkbox" class="form-checkbox h-5 w-5 text-blue-600" checked>
+                            <span class="ml-2 text-gray-700">Data Tables</span>
+                        </label>
+                    </div>
+                </div>
+
+                <div class="mb-6">
+                    <label class="block text-gray-700 text-sm font-medium mb-2" for="report-notes">
+                        Notes (Optional)
+                    </label>
+                    <textarea id="report-notes" rows="3" class="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" placeholder="Any additional notes or instructions for this report..."></textarea>
+                </div>
+            </div>
+            <div class="px-6 py-4 border-t flex justify-end space-x-3">
+                <button id="cancelReportModalBtn" class="px-4 py-2 bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200">
+                    Cancel
+                </button>
+                <button class="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 flex items-center space-x-2">
+                    <i class="fas fa-file-download"></i>
+                    <span>Generate Report</span>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Sidebar toggle
+        const sidebarToggle = document.getElementById('sidebarToggle');
+        const sidebar = document.querySelector('.sidebar');
+        const mainContent = document.querySelector('.main-content');
+
+        sidebarToggle.addEventListener('click', () => {
+            sidebar.classList.toggle('collapsed');
+            mainContent.classList.toggle('expanded');
+        });
+
+        // Modal handling for reports
+        const generateReportBtn = document.getElementById('generateReportBtn');
+        const generateReportModal = document.getElementById('generateReportModal');
+        const closeReportModalBtn = document.getElementById('closeReportModalBtn');
+        const cancelReportModalBtn = document.getElementById('cancelReportModalBtn');
+
+        generateReportBtn.addEventListener('click', () => {
+            generateReportModal.classList.remove('hidden');
+        });
+
+        closeReportModalBtn.addEventListener('click', () => {
+            generateReportModal.classList.add('hidden');
+        });
+
+        cancelReportModalBtn.addEventListener('click', () => {
+            generateReportModal.classList.add('hidden');
+        });
+
+        // Close modal when clicking outside
+        generateReportModal.addEventListener('click', (e) => {
+            if (e.target === generateReportModal) {
+                generateReportModal.classList.add('hidden');
+            }
+        });
+
+        // Set default dates for report filters
+        document.addEventListener('DOMContentLoaded', function() {
+            const today = new Date();
+            const firstDay = new Date(today.getFullYear(), today.getMonth(), 1);
+            const lastDay = new Date(today.getFullYear(), today.getMonth() + 1, 0);
+
+            const formatDate = (date) => {
+                const dd = String(date.getDate()).padStart(2, '0');
+                const mm = String(date.getMonth() + 1).padStart(2, '0');
+                const yyyy = date.getFullYear();
+                return yyyy + '-' + mm + '-' + dd;
+            };
+
+            document.getElementById('date-from').value = formatDate(firstDay);
+            document.getElementById('date-to').value = formatDate(lastDay);
+
+            // Initialize charts
+            initCharts();
+        });
+
+        // Chart initialization
+        function initCharts() {
+            // Monthly Fines Chart
+            const monthlyFinesCtx = document.getElementById('monthlyFinesChart').getContext('2d');
+            const monthlyFinesChart = new Chart(monthlyFinesCtx, {
+                type: 'bar',
+                data: {
+                    labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'],
+                    datasets: [{
+                        label: 'Fines Issued',
+                        data: [850, 920, 1020, 980, 1100, 1250, 1320, 1180, 1050, 1284, 0, 0],
+                        backgroundColor: 'rgba(59, 130, 246, 0.7)',
+                        borderColor: 'rgba(59, 130, 246, 1)',
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            grid: {
+                                drawBorder: false
+                            }
+                        },
+                        x: {
+                            grid: {
+                                display: false
+                            }
+                        }
+                    },
+                    plugins: {
+                        legend: {
+                            display: false
+                        }
+                    }
+                }
+            });
+
+            // Violation Types Chart
+            const violationTypesCtx = document.getElementById('violationTypesChart').getContext('2d');
+            const violationTypesChart = new Chart(violationTypesCtx, {
+                type: 'doughnut',
+                data: {
+                    labels: ['Speeding', 'Red Light', 'Parking', 'Seat Belt', 'DUI', 'Other'],
+                    datasets: [{
+                        data: [428, 215, 187, 156, 98, 200],
+                        backgroundColor: [
+                            'rgba(239, 68, 68, 0.7)',
+                            'rgba(249, 115, 22, 0.7)',
+                            'rgba(234, 179, 8, 0.7)',
+                            'rgba(16, 185, 129, 0.7)',
+                            'rgba(59, 130, 246, 0.7)',
+                            'rgba(139, 92, 246, 0.7)'
+                        ],
+                        borderColor: [
+                            'rgba(239, 68, 68, 1)',
+                            'rgba(249, 115, 22, 1)',
+                            'rgba(234, 179, 8, 1)',
+                            'rgba(16, 185, 129, 1)',
+                            'rgba(59, 130, 246, 1)',
+                            'rgba(139, 92, 246, 1)'
+                        ],
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            position: 'right',
+                        }
+                    },
+                    cutout: '70%'
+                }
+            });
+
+            // Revenue by District Chart
+            const revenueDistrictCtx = document.getElementById('revenueDistrictChart').getContext('2d');
+            const revenueDistrictChart = new Chart(revenueDistrictCtx, {
+                type: 'bar',
+                data: {
+                    labels: ['Downtown', 'North', 'South', 'East', 'West'],
+                    datasets: [{
+                        label: 'Paid',
+                        data: [12500, 9800, 7600, 8200, 6500],
+                        backgroundColor: 'rgba(16, 185, 129, 0.7)',
+                        borderColor: 'rgba(16, 185, 129, 1)',
+                        borderWidth: 1
+                    }, {
+                        label: 'Pending',
+                        data: [3200, 2400, 1800, 2100, 1500],
+                        backgroundColor: 'rgba(234, 179, 8, 0.7)',
+                        borderColor: 'rgba(234, 179, 8, 1)',
+                        borderWidth: 1
+                    }, {
+                        label: 'Overdue',
+                        data: [800, 600, 400, 500, 300],
+                        backgroundColor: 'rgba(239, 68, 68, 0.7)',
+                        borderColor: 'rgba(239, 68, 68, 1)',
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    scales: {
+                        x: {
+                            stacked: true,
+                            grid: {
+                                display: false
+                            }
+                        },
+                        y: {
+                            stacked: true,
+                            grid: {
+                                drawBorder: false
+                            }
+                        }
+                    },
+                    plugins: {
+                        legend: {
+                            position: 'top',
+                        }
+                    }
+                }
+            });
+
+            // Payment Status Chart
+            const paymentStatusCtx = document.getElementById('paymentStatusChart').getContext('2d');
+            const paymentStatusChart = new Chart(paymentStatusCtx, {
+                type: 'pie',
+                data: {
+                    labels: ['Paid', 'Pending', 'Overdue', 'Cancelled'],
+                    datasets: [{
+                        data: [820, 284, 156, 24],
+                        backgroundColor: [
+                            'rgba(16, 185, 129, 0.7)',
+                            'rgba(59, 130, 246, 0.7)',
+                            'rgba(239, 68, 68, 0.7)',
+                            'rgba(156, 163, 175, 0.7)'
+                        ],
+                        borderColor: [
+                            'rgba(16, 185, 129, 1)',
+                            'rgba(59, 130, 246, 1)',
+                            'rgba(239, 68, 68, 1)',
+                            'rgba(156, 163, 175, 1)'
+                        ],
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            position: 'right',
+                        }
+                    }
+                }
+            });
+        }
+    </script>
+</body>
+
+</html>

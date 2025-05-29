@@ -1,0 +1,706 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Violations | Traffic Police Fine Management System</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        .sidebar {
+            transition: all 0.3s ease;
+        }
+        
+        .sidebar.collapsed {
+            width: 70px;
+        }
+        
+        .sidebar.collapsed .sidebar-text {
+            display: none;
+        }
+        
+        .sidebar.collapsed .logo-text {
+            display: none;
+        }
+        
+        .sidebar.collapsed .nav-item {
+            justify-content: center;
+        }
+        
+        .main-content {
+            transition: all 0.3s ease;
+        }
+        
+        .main-content.expanded {
+            margin-left: 70px;
+        }
+        
+        .violation-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+        }
+        
+        .violation-card {
+            transition: all 0.3s ease;
+        }
+        
+        .violation-severity-low {
+            border-left: 4px solid #10B981;
+        }
+        
+        .violation-severity-medium {
+            border-left: 4px solid #F59E0B;
+        }
+        
+        .violation-severity-high {
+            border-left: 4px solid #EF4444;
+        }
+    </style>
+</head>
+
+<body class="bg-gray-100 font-sans">
+    <div class="flex h-screen overflow-hidden">
+        <!-- Sidebar -->
+        <div class="sidebar bg-blue-800 text-white w-64 flex flex-col">
+            <div class="p-4 flex items-center space-x-2 border-b border-blue-700">
+                <div class="bg-white p-2 rounded-lg">
+                    <i class="fas fa-traffic-light text-blue-800 text-xl"></i>
+                </div>
+                <span class="logo-text text-xl font-bold">TrafficFineSys</span>
+            </div>
+
+            <div class="p-4 flex items-center justify-between border-b border-blue-700">
+                <div class="flex items-center space-x-3">
+                    <div class="w-10 h-10 rounded-full bg-blue-600 flex items-center justify-center">
+                        <i class="fas fa-user"></i>
+                    </div>
+                    <div>
+                        <div class="sidebar-text font-medium">Officer John</div>
+                        <div class="sidebar-text text-xs text-blue-300">Traffic Police</div>
+                    </div>
+                </div>
+                <button id="sidebarToggle" class="text-blue-300 hover:text-white">
+                    <i class="fas fa-bars"></i>
+                </button>
+            </div>
+
+            <nav class="flex-1 overflow-y-auto py-4">
+                <div class="space-y-1 px-3">
+                    <a href="dashboard.html" class="nav-item flex items-center space-x-3 px-3 py-2 rounded-lg text-blue-200 hover:bg-blue-700 hover:text-white">
+                        <i class="fas fa-tachometer-alt"></i>
+                        <span class="sidebar-text">Dashboard</span>
+                    </a>
+                    <a href="violations.html" class="nav-item flex items-center space-x-3 px-3 py-2 rounded-lg bg-blue-700 text-white">
+                        <i class="fas fa-car-crash"></i>
+                        <span class="sidebar-text">Violations</span>
+                    </a>
+                    <a href="fines.html" class="nav-item flex items-center space-x-3 px-3 py-2 rounded-lg text-blue-200 hover:bg-blue-700 hover:text-white">
+                        <i class="fas fa-file-invoice-dollar"></i>
+                        <span class="sidebar-text">Fines</span>
+                    </a>
+                    <a href="drivers.html" class="nav-item flex items-center space-x-3 px-3 py-2 rounded-lg text-blue-200 hover:bg-blue-700 hover:text-white">
+                        <i class="fas fa-users"></i>
+                        <span class="sidebar-text">Drivers</span>
+                    </a>
+                    <a href="reports.html" class="nav-item flex items-center space-x-3 px-3 py-2 rounded-lg text-blue-200 hover:bg-blue-700 hover:text-white">
+                        <i class="fas fa-chart-line"></i>
+                        <span class="sidebar-text">Reports</span>
+                    </a>
+                    <a href="settings.html" class="nav-item flex items-center space-x-3 px-3 py-2 rounded-lg text-blue-200 hover:bg-blue-700 hover:text-white">
+                        <i class="fas fa-cog"></i>
+                        <span class="sidebar-text">Settings</span>
+                    </a>
+                </div>
+
+                <div class="px-3 mt-8">
+                    <div class="text-xs uppercase text-blue-400 mb-2 sidebar-text">Quick Actions</div>
+                    <div class="space-y-1">
+                        <a href="#" class="nav-item flex items-center space-x-3 px-3 py-2 rounded-lg text-blue-200 hover:bg-blue-700 hover:text-white">
+                            <i class="fas fa-plus-circle"></i>
+                            <span class="sidebar-text">New Fine</span>
+                        </a>
+                        <a href="#" class="nav-item flex items-center space-x-3 px-3 py-2 rounded-lg text-blue-200 hover:bg-blue-700 hover:text-white">
+                            <i class="fas fa-search"></i>
+                            <span class="sidebar-text">Search Driver</span>
+                        </a>
+                        <a href="#" class="nav-item flex items-center space-x-3 px-3 py-2 rounded-lg text-blue-200 hover:bg-blue-700 hover:text-white">
+                            <i class="fas fa-print"></i>
+                            <span class="sidebar-text">Print Report</span>
+                        </a>
+                    </div>
+                </div>
+            </nav>
+
+            <div class="p-4 border-t border-blue-700">
+                <a href="#" class="nav-item flex items-center space-x-3 px-3 py-2 rounded-lg text-blue-200 hover:bg-blue-700 hover:text-white">
+                    <i class="fas fa-sign-out-alt"></i>
+                    <span class="sidebar-text">Logout</span>
+                </a>
+            </div>
+        </div>
+
+        <!-- Main Content -->
+        <div class="main-content flex-1 flex flex-col overflow-hidden">
+            <!-- Top Navigation -->
+            <header class="bg-white shadow-sm">
+                <div class="px-6 py-4 flex items-center justify-between">
+                    <h1 class="text-2xl font-semibold text-gray-800">Violations</h1>
+                    <div class="flex items-center space-x-4">
+                        <div class="relative">
+                            <input type="text" placeholder="Search violations..." class="pl-10 pr-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
+                            <i class="fas fa-search absolute left-3 top-3 text-gray-400"></i>
+                        </div>
+                        <button class="p-2 rounded-full bg-gray-100 text-gray-600 hover:bg-gray-200">
+                            <i class="fas fa-bell"></i>
+                            <span class="absolute top-0 right-0 h-2 w-2 rounded-full bg-red-500"></span>
+                        </button>
+                    </div>
+                </div>
+            </header>
+
+            <!-- Main Content Area -->
+            <main class="flex-1 overflow-y-auto p-6">
+                <!-- Violation Management Header -->
+                <div class="flex flex-col md:flex-row justify-between items-start md:items-center mb-6 gap-4">
+                    <div>
+                        <h2 class="text-xl font-semibold text-gray-800">Traffic Violation Types</h2>
+                        <p class="text-gray-600">Manage all traffic violation categories and their penalties</p>
+                    </div>
+                    <div class="flex space-x-3">
+                        <button class="px-4 py-2 bg-white border rounded-lg text-gray-700 hover:bg-gray-50 flex items-center space-x-2">
+                            <i class="fas fa-filter"></i>
+                            <span>Filter</span>
+                        </button>
+                        <button id="addViolationBtn" class="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 flex items-center space-x-2">
+                            <i class="fas fa-plus"></i>
+                            <span>Add Violation</span>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Stats Cards -->
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-6">
+                    <div class="bg-white rounded-xl shadow p-6">
+                        <div class="flex items-center justify-between">
+                            <div>
+                                <p class="text-gray-500">Total Violation Types</p>
+                                <h3 class="text-3xl font-bold text-blue-600">24</h3>
+                                <p class="text-sm text-gray-500">Registered in system</p>
+                            </div>
+                            <div class="p-3 rounded-full bg-blue-100 text-blue-600">
+                                <i class="fas fa-exclamation-triangle text-xl"></i>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="bg-white rounded-xl shadow p-6">
+                        <div class="flex items-center justify-between">
+                            <div>
+                                <p class="text-gray-500">Most Common</p>
+                                <h3 class="text-2xl font-bold text-purple-600">Speeding</h3>
+                                <p class="text-sm text-gray-500">42% of all violations</p>
+                            </div>
+                            <div class="p-3 rounded-full bg-purple-100 text-purple-600">
+                                <i class="fas fa-chart-pie text-xl"></i>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="bg-white rounded-xl shadow p-6">
+                        <div class="flex items-center justify-between">
+                            <div>
+                                <p class="text-gray-500">Highest Penalty</p>
+                                <h3 class="text-2xl font-bold text-red-600">DUI</h3>
+                                <p class="text-sm text-gray-500">$1,000 - 6 months license suspension</p>
+                            </div>
+                            <div class="p-3 rounded-full bg-red-100 text-red-600">
+                                <i class="fas fa-handcuffs text-xl"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Violation Categories -->
+                <div class="mb-6">
+                    <div class="flex items-center justify-between mb-4">
+                        <h3 class="text-lg font-semibold text-gray-800">Violation Categories</h3>
+                        <div class="flex space-x-2">
+                            <button class="px-3 py-1 text-sm bg-blue-100 text-blue-600 rounded-lg">All</button>
+                            <button class="px-3 py-1 text-sm bg-gray-100 text-gray-600 rounded-lg">Moving</button>
+                            <button class="px-3 py-1 text-sm bg-gray-100 text-gray-600 rounded-lg">Non-Moving</button>
+                            <button class="px-3 py-1 text-sm bg-gray-100 text-gray-600 rounded-lg">Criminal</button>
+                        </div>
+                    </div>
+
+                    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                        <!-- Violation Card 1 -->
+                        <div class="violation-card bg-white rounded-lg shadow overflow-hidden violation-severity-high">
+                            <div class="p-5">
+                                <div class="flex justify-between items-start">
+                                    <div>
+                                        <h4 class="font-bold text-lg text-gray-800">Speeding</h4>
+                                        <p class="text-sm text-gray-500">Exceeding posted speed limits</p>
+                                    </div>
+                                    <span class="px-2 py-1 text-xs font-semibold rounded-full bg-red-100 text-red-800">High Severity</span>
+                                </div>
+                                <div class="mt-4">
+                                    <div class="flex justify-between text-sm mb-2">
+                                        <span class="text-gray-500">Base Fine:</span>
+                                        <span class="font-medium">$150 - $500</span>
+                                    </div>
+                                    <div class="flex justify-between text-sm mb-2">
+                                        <span class="text-gray-500">Points:</span>
+                                        <span class="font-medium">3-6</span>
+                                    </div>
+                                    <div class="flex justify-between text-sm">
+                                        <span class="text-gray-500">License Suspension:</span>
+                                        <span class="font-medium">Possible</span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="bg-gray-50 px-5 py-3 flex justify-between items-center">
+                                <span class="text-xs text-gray-500">Last updated: 2 days ago</span>
+                                <div class="flex space-x-2">
+                                    <button class="text-blue-600 hover:text-blue-800">
+                                        <i class="fas fa-edit"></i>
+                                    </button>
+                                    <button class="text-red-600 hover:text-red-800">
+                                        <i class="fas fa-trash"></i>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Violation Card 2 -->
+                        <div class="violation-card bg-white rounded-lg shadow overflow-hidden violation-severity-medium">
+                            <div class="p-5">
+                                <div class="flex justify-between items-start">
+                                    <div>
+                                        <h4 class="font-bold text-lg text-gray-800">Red Light Violation</h4>
+                                        <p class="text-sm text-gray-500">Running a red traffic light</p>
+                                    </div>
+                                    <span class="px-2 py-1 text-xs font-semibold rounded-full bg-yellow-100 text-yellow-800">Medium Severity</span>
+                                </div>
+                                <div class="mt-4">
+                                    <div class="flex justify-between text-sm mb-2">
+                                        <span class="text-gray-500">Base Fine:</span>
+                                        <span class="font-medium">$250</span>
+                                    </div>
+                                    <div class="flex justify-between text-sm mb-2">
+                                        <span class="text-gray-500">Points:</span>
+                                        <span class="font-medium">4</span>
+                                    </div>
+                                    <div class="flex justify-between text-sm">
+                                        <span class="text-gray-500">License Suspension:</span>
+                                        <span class="font-medium">No</span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="bg-gray-50 px-5 py-3 flex justify-between items-center">
+                                <span class="text-xs text-gray-500">Last updated: 1 week ago</span>
+                                <div class="flex space-x-2">
+                                    <button class="text-blue-600 hover:text-blue-800">
+                                        <i class="fas fa-edit"></i>
+                                    </button>
+                                    <button class="text-red-600 hover:text-red-800">
+                                        <i class="fas fa-trash"></i>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Violation Card 3 -->
+                        <div class="violation-card bg-white rounded-lg shadow overflow-hidden violation-severity-low">
+                            <div class="p-5">
+                                <div class="flex justify-between items-start">
+                                    <div>
+                                        <h4 class="font-bold text-lg text-gray-800">Illegal Parking</h4>
+                                        <p class="text-sm text-gray-500">Parking in prohibited areas</p>
+                                    </div>
+                                    <span class="px-2 py-1 text-xs font-semibold rounded-full bg-green-100 text-green-800">Low Severity</span>
+                                </div>
+                                <div class="mt-4">
+                                    <div class="flex justify-between text-sm mb-2">
+                                        <span class="text-gray-500">Base Fine:</span>
+                                        <span class="font-medium">$75</span>
+                                    </div>
+                                    <div class="flex justify-between text-sm mb-2">
+                                        <span class="text-gray-500">Points:</span>
+                                        <span class="font-medium">0</span>
+                                    </div>
+                                    <div class="flex justify-between text-sm">
+                                        <span class="text-gray-500">License Suspension:</span>
+                                        <span class="font-medium">No</span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="bg-gray-50 px-5 py-3 flex justify-between items-center">
+                                <span class="text-xs text-gray-500">Last updated: 3 days ago</span>
+                                <div class="flex space-x-2">
+                                    <button class="text-blue-600 hover:text-blue-800">
+                                        <i class="fas fa-edit"></i>
+                                    </button>
+                                    <button class="text-red-600 hover:text-red-800">
+                                        <i class="fas fa-trash"></i>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Violation Card 4 -->
+                        <div class="violation-card bg-white rounded-lg shadow overflow-hidden violation-severity-high">
+                            <div class="p-5">
+                                <div class="flex justify-between items-start">
+                                    <div>
+                                        <h4 class="font-bold text-lg text-gray-800">DUI (Driving Under Influence)</h4>
+                                        <p class="text-sm text-gray-500">Operating vehicle while impaired</p>
+                                    </div>
+                                    <span class="px-2 py-1 text-xs font-semibold rounded-full bg-red-100 text-red-800">High Severity</span>
+                                </div>
+                                <div class="mt-4">
+                                    <div class="flex justify-between text-sm mb-2">
+                                        <span class="text-gray-500">Base Fine:</span>
+                                        <span class="font-medium">$1,000 - $5,000</span>
+                                    </div>
+                                    <div class="flex justify-between text-sm mb-2">
+                                        <span class="text-gray-500">Points:</span>
+                                        <span class="font-medium">12</span>
+                                    </div>
+                                    <div class="flex justify-between text-sm">
+                                        <span class="text-gray-500">License Suspension:</span>
+                                        <span class="font-medium">6-12 months</span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="bg-gray-50 px-5 py-3 flex justify-between items-center">
+                                <span class="text-xs text-gray-500">Last updated: 1 month ago</span>
+                                <div class="flex space-x-2">
+                                    <button class="text-blue-600 hover:text-blue-800">
+                                        <i class="fas fa-edit"></i>
+                                    </button>
+                                    <button class="text-red-600 hover:text-red-800">
+                                        <i class="fas fa-trash"></i>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Violation Card 5 -->
+                        <div class="violation-card bg-white rounded-lg shadow overflow-hidden violation-severity-medium">
+                            <div class="p-5">
+                                <div class="flex justify-between items-start">
+                                    <div>
+                                        <h4 class="font-bold text-lg text-gray-800">No Seatbelt</h4>
+                                        <p class="text-sm text-gray-500">Driver or passenger without seatbelt</p>
+                                    </div>
+                                    <span class="px-2 py-1 text-xs font-semibold rounded-full bg-yellow-100 text-yellow-800">Medium Severity</span>
+                                </div>
+                                <div class="mt-4">
+                                    <div class="flex justify-between text-sm mb-2">
+                                        <span class="text-gray-500">Base Fine:</span>
+                                        <span class="font-medium">$100</span>
+                                    </div>
+                                    <div class="flex justify-between text-sm mb-2">
+                                        <span class="text-gray-500">Points:</span>
+                                        <span class="font-medium">2</span>
+                                    </div>
+                                    <div class="flex justify-between text-sm">
+                                        <span class="text-gray-500">License Suspension:</span>
+                                        <span class="font-medium">No</span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="bg-gray-50 px-5 py-3 flex justify-between items-center">
+                                <span class="text-xs text-gray-500">Last updated: 2 weeks ago</span>
+                                <div class="flex space-x-2">
+                                    <button class="text-blue-600 hover:text-blue-800">
+                                        <i class="fas fa-edit"></i>
+                                    </button>
+                                    <button class="text-red-600 hover:text-red-800">
+                                        <i class="fas fa-trash"></i>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Violation Card 6 -->
+                        <div class="violation-card bg-white rounded-lg shadow overflow-hidden violation-severity-low">
+                            <div class="p-5">
+                                <div class="flex justify-between items-start">
+                                    <div>
+                                        <h4 class="font-bold text-lg text-gray-800">Expired Registration</h4>
+                                        <p class="text-sm text-gray-500">Vehicle with expired registration</p>
+                                    </div>
+                                    <span class="px-2 py-1 text-xs font-semibold rounded-full bg-green-100 text-green-800">Low Severity</span>
+                                </div>
+                                <div class="mt-4">
+                                    <div class="flex justify-between text-sm mb-2">
+                                        <span class="text-gray-500">Base Fine:</span>
+                                        <span class="font-medium">$50</span>
+                                    </div>
+                                    <div class="flex justify-between text-sm mb-2">
+                                        <span class="text-gray-500">Points:</span>
+                                        <span class="font-medium">0</span>
+                                    </div>
+                                    <div class="flex justify-between text-sm">
+                                        <span class="text-gray-500">License Suspension:</span>
+                                        <span class="font-medium">No</span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="bg-gray-50 px-5 py-3 flex justify-between items-center">
+                                <span class="text-xs text-gray-500">Last updated: 5 days ago</span>
+                                <div class="flex space-x-2">
+                                    <button class="text-blue-600 hover:text-blue-800">
+                                        <i class="fas fa-edit"></i>
+                                    </button>
+                                    <button class="text-red-600 hover:text-red-800">
+                                        <i class="fas fa-trash"></i>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- All Violations Table -->
+                <div class="bg-white rounded-xl shadow overflow-hidden">
+                    <div class="px-6 py-4 border-b flex items-center justify-between">
+                        <h2 class="text-lg font-semibold">All Violation Types</h2>
+                        <div class="flex items-center space-x-3">
+                            <div class="relative">
+                                <select class="appearance-none pl-3 pr-8 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm">
+                                    <option>Sort by: Most Common</option>
+                                    <option>Sort by: Severity</option>
+                                    <option>Sort by: Penalty Amount</option>
+                                    <option>Sort by: Recent</option>
+                                </select>
+                                <i class="fas fa-chevron-down absolute right-3 top-3 text-gray-400 text-xs"></i>
+                            </div>
+                            <button class="px-3 py-2 bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200">
+                                <i class="fas fa-download"></i>
+                            </button>
+                        </div>
+                    </div>
+                    <div class="overflow-x-auto">
+                        <table class="min-w-full divide-y divide-gray-200">
+                            <thead class="bg-gray-50">
+                                <tr>
+                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Violation Code</th>
+                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Violation Name</th>
+                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Category</th>
+                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Severity</th>
+                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Base Fine</th>
+                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Points</th>
+                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody class="bg-white divide-y divide-gray-200">
+                                <tr>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">SPD-01</td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">Speeding (1-15 mph over)</td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">Moving</td>
+                                    <td class="px-6 py-4 whitespace-nowrap">
+                                        <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-yellow-100 text-yellow-800">Medium</span>
+                                    </td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">$150</td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">3</td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                                        <button class="text-blue-600 hover:text-blue-900 mr-3"><i class="fas fa-edit"></i></button>
+                                        <button class="text-red-600 hover:text-red-900"><i class="fas fa-trash"></i></button>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">SPD-02</td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">Speeding (16-25 mph over)</td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">Moving</td>
+                                    <td class="px-6 py-4 whitespace-nowrap">
+                                        <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-red-100 text-red-800">High</span>
+                                    </td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">$250</td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">4</td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                                        <button class="text-blue-600 hover:text-blue-900 mr-3"><i class="fas fa-edit"></i></button>
+                                        <button class="text-red-600 hover:text-red-900"><i class="fas fa-trash"></i></button>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">RL-01</td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">Red Light Violation</td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">Moving</td>
+                                    <td class="px-6 py-4 whitespace-nowrap">
+                                        <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-yellow-100 text-yellow-800">Medium</span>
+                                    </td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">$200</td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">4</td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                                        <button class="text-blue-600 hover:text-blue-900 mr-3"><i class="fas fa-edit"></i></button>
+                                        <button class="text-red-600 hover:text-red-900"><i class="fas fa-trash"></i></button>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">SB-01</td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">No Seatbelt</td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">Non-Moving</td>
+                                    <td class="px-6 py-4 whitespace-nowrap">
+                                        <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800">Low</span>
+                                    </td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">$100</td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">2</td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                                        <button class="text-blue-600 hover:text-blue-900 mr-3"><i class="fas fa-edit"></i></button>
+                                        <button class="text-red-600 hover:text-red-900"><i class="fas fa-trash"></i></button>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">PK-01</td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">Illegal Parking</td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">Non-Moving</td>
+                                    <td class="px-6 py-4 whitespace-nowrap">
+                                        <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800">Low</span>
+                                    </td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">$75</td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">0</td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                                        <button class="text-blue-600 hover:text-blue-900 mr-3"><i class="fas fa-edit"></i></button>
+                                        <button class="text-red-600 hover:text-red-900"><i class="fas fa-trash"></i></button>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <div class="px-6 py-4 border-t flex items-center justify-between">
+                        <div class="text-sm text-gray-500">Showing <span class="font-medium">1</span> to <span class="font-medium">5</span> of <span class="font-medium">24</span> entries</div>
+                        <div class="flex space-x-2">
+                            <button class="px-3 py-1 border rounded-lg text-sm">Previous</button>
+                            <button class="px-3 py-1 border rounded-lg bg-blue-600 text-white text-sm">1</button>
+                            <button class="px-3 py-1 border rounded-lg text-sm">2</button>
+                            <button class="px-3 py-1 border rounded-lg text-sm">3</button>
+                            <button class="px-3 py-1 border rounded-lg text-sm">4</button>
+                            <button class="px-3 py-1 border rounded-lg text-sm">5</button>
+                            <button class="px-3 py-1 border rounded-lg text-sm">Next</button>
+                        </div>
+                    </div>
+                </div>
+            </main>
+        </div>
+    </div>
+
+    <!-- Add Violation Modal -->
+    <div id="addViolationModal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 hidden">
+        <div class="bg-white rounded-lg shadow-xl w-full max-w-md">
+            <div class="px-6 py-4 border-b flex items-center justify-between">
+                <h3 class="text-lg font-semibold">Add New Violation</h3>
+                <button id="closeModalBtn" class="text-gray-500 hover:text-gray-700">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <div class="p-6">
+                <form>
+                    <div class="mb-4">
+                        <label class="block text-gray-700 text-sm font-medium mb-2" for="violation-code">
+                            Violation Code
+                        </label>
+                        <input id="violation-code" type="text" class="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" placeholder="e.g. SPD-01">
+                    </div>
+                    <div class="mb-4">
+                        <label class="block text-gray-700 text-sm font-medium mb-2" for="violation-name">
+                            Violation Name
+                        </label>
+                        <input id="violation-name" type="text" class="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" placeholder="e.g. Speeding">
+                    </div>
+                    <div class="mb-4">
+                        <label class="block text-gray-700 text-sm font-medium mb-2" for="violation-category">
+                            Category
+                        </label>
+                        <select id="violation-category" class="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
+                            <option value="">Select Category</option>
+                            <option value="moving">Moving Violation</option>
+                            <option value="non-moving">Non-Moving Violation</option>
+                            <option value="criminal">Criminal Violation</option>
+                        </select>
+                    </div>
+                    <div class="mb-4">
+                        <label class="block text-gray-700 text-sm font-medium mb-2" for="violation-severity">
+                            Severity Level
+                        </label>
+                        <select id="violation-severity" class="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
+                            <option value="">Select Severity</option>
+                            <option value="low">Low</option>
+                            <option value="medium">Medium</option>
+                            <option value="high">High</option>
+                        </select>
+                    </div>
+                    <div class="grid grid-cols-2 gap-4 mb-4">
+                        <div>
+                            <label class="block text-gray-700 text-sm font-medium mb-2" for="base-fine">
+                                Base Fine ($)
+                            </label>
+                            <input id="base-fine" type="number" class="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" placeholder="0.00">
+                        </div>
+                        <div>
+                            <label class="block text-gray-700 text-sm font-medium mb-2" for="points">
+                                Points
+                            </label>
+                            <input id="points" type="number" class="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" placeholder="0">
+                        </div>
+                    </div>
+                    <div class="mb-4">
+                        <label class="block text-gray-700 text-sm font-medium mb-2" for="description">
+                            Description
+                        </label>
+                        <textarea id="description" rows="3" class="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" placeholder="Brief description of the violation..."></textarea>
+                    </div>
+                </form>
+            </div>
+            <div class="px-6 py-4 border-t flex justify-end space-x-3">
+                <button id="cancelModalBtn" class="px-4 py-2 bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200">
+                    Cancel
+                </button>
+                <button class="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700">
+                    Add Violation
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Sidebar toggle
+        const sidebarToggle = document.getElementById('sidebarToggle');
+        const sidebar = document.querySelector('.sidebar');
+        const mainContent = document.querySelector('.main-content');
+
+        sidebarToggle.addEventListener('click', () => {
+            sidebar.classList.toggle('collapsed');
+            mainContent.classList.toggle('expanded');
+        });
+
+        // Modal handling
+        const addViolationBtn = document.getElementById('addViolationBtn');
+        const addViolationModal = document.getElementById('addViolationModal');
+        const closeModalBtn = document.getElementById('closeModalBtn');
+        const cancelModalBtn = document.getElementById('cancelModalBtn');
+
+        addViolationBtn.addEventListener('click', () => {
+            addViolationModal.classList.remove('hidden');
+        });
+
+        closeModalBtn.addEventListener('click', () => {
+            addViolationModal.classList.add('hidden');
+        });
+
+        cancelModalBtn.addEventListener('click', () => {
+            addViolationModal.classList.add('hidden');
+        });
+
+        // Close modal when clicking outside
+        addViolationModal.addEventListener('click', (e) => {
+            if (e.target === addViolationModal) {
+                addViolationModal.classList.add('hidden');
+            }
+        });
+    </script>
+</body>
+
+</html>

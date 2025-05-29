@@ -1,0 +1,1126 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Settings | Traffic Police Fine Management System</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        .sidebar {
+            transition: all 0.3s ease;
+        }
+        
+        .sidebar.collapsed {
+            width: 70px;
+        }
+        
+        .sidebar.collapsed .sidebar-text {
+            display: none;
+        }
+        
+        .sidebar.collapsed .logo-text {
+            display: none;
+        }
+        
+        .sidebar.collapsed .nav-item {
+            justify-content: center;
+        }
+        
+        .main-content {
+            transition: all 0.3s ease;
+        }
+        
+        .main-content.expanded {
+            margin-left: 70px;
+        }
+        
+        .setting-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+        }
+        
+        .setting-card {
+            transition: all 0.3s ease;
+        }
+        
+        .toggle-switch {
+            position: relative;
+            display: inline-block;
+            width: 60px;
+            height: 34px;
+        }
+        
+        .toggle-switch input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+        
+        .toggle-slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: #ccc;
+            transition: .4s;
+            border-radius: 34px;
+        }
+        
+        .toggle-slider:before {
+            position: absolute;
+            content: "";
+            height: 26px;
+            width: 26px;
+            left: 4px;
+            bottom: 4px;
+            background-color: white;
+            transition: .4s;
+            border-radius: 50%;
+        }
+        
+        input:checked+.toggle-slider {
+            background-color: #3b82f6;
+        }
+        
+        input:checked+.toggle-slider:before {
+            transform: translateX(26px);
+        }
+        
+        .tab-content {
+            display: none;
+        }
+        
+        .tab-content.active {
+            display: block;
+        }
+        
+        .tab-button.active {
+            border-bottom: 3px solid #3b82f6;
+            color: #3b82f6;
+            font-weight: 600;
+        }
+    </style>
+</head>
+
+<body class="bg-gray-100 font-sans">
+    <div class="flex h-screen overflow-hidden">
+        <!-- Sidebar -->
+        <div class="sidebar bg-blue-800 text-white w-64 flex flex-col">
+            <div class="p-4 flex items-center space-x-2 border-b border-blue-700">
+                <div class="bg-white p-2 rounded-lg">
+                    <i class="fas fa-traffic-light text-blue-800 text-xl"></i>
+                </div>
+                <span class="logo-text text-xl font-bold">TrafficFineSys</span>
+            </div>
+
+            <div class="p-4 flex items-center justify-between border-b border-blue-700">
+                <div class="flex items-center space-x-3">
+                    <div class="w-10 h-10 rounded-full bg-blue-600 flex items-center justify-center">
+                        <i class="fas fa-user"></i>
+                    </div>
+                    <div>
+                        <div class="sidebar-text font-medium">Officer John</div>
+                        <div class="sidebar-text text-xs text-blue-300">Traffic Police</div>
+                    </div>
+                </div>
+                <button id="sidebarToggle" class="text-blue-300 hover:text-white">
+                    <i class="fas fa-bars"></i>
+                </button>
+            </div>
+
+            <nav class="flex-1 overflow-y-auto py-4">
+                <div class="space-y-1 px-3">
+                    <a href="dashboard.html" class="nav-item flex items-center space-x-3 px-3 py-2 rounded-lg text-blue-200 hover:bg-blue-700 hover:text-white">
+                        <i class="fas fa-tachometer-alt"></i>
+                        <span class="sidebar-text">Dashboard</span>
+                    </a>
+                    <a href="violations.html" class="nav-item flex items-center space-x-3 px-3 py-2 rounded-lg text-blue-200 hover:bg-blue-700 hover:text-white">
+                        <i class="fas fa-car-crash"></i>
+                        <span class="sidebar-text">Violations</span>
+                    </a>
+                    <a href="fines.html" class="nav-item flex items-center space-x-3 px-3 py-2 rounded-lg text-blue-200 hover:bg-blue-700 hover:text-white">
+                        <i class="fas fa-file-invoice-dollar"></i>
+                        <span class="sidebar-text">Fines</span>
+                    </a>
+                    <a href="drivers.html" class="nav-item flex items-center space-x-3 px-3 py-2 rounded-lg text-blue-200 hover:bg-blue-700 hover:text-white">
+                        <i class="fas fa-users"></i>
+                        <span class="sidebar-text">Drivers</span>
+                    </a>
+                    <a href="reports.html" class="nav-item flex items-center space-x-3 px-3 py-2 rounded-lg text-blue-200 hover:bg-blue-700 hover:text-white">
+                        <i class="fas fa-chart-line"></i>
+                        <span class="sidebar-text">Reports</span>
+                    </a>
+                    <a href="settings.html" class="nav-item flex items-center space-x-3 px-3 py-2 rounded-lg bg-blue-700 text-white">
+                        <i class="fas fa-cog"></i>
+                        <span class="sidebar-text">Settings</span>
+                    </a>
+                </div>
+
+                <div class="px-3 mt-8">
+                    <div class="text-xs uppercase text-blue-400 mb-2 sidebar-text">System Settings</div>
+                    <div class="space-y-1">
+                        <a href="#profile" class="nav-item flex items-center space-x-3 px-3 py-2 rounded-lg text-blue-200 hover:bg-blue-700 hover:text-white">
+                            <i class="fas fa-user-cog"></i>
+                            <span class="sidebar-text">Profile</span>
+                        </a>
+                        <a href="#notifications" class="nav-item flex items-center space-x-3 px-3 py-2 rounded-lg text-blue-200 hover:bg-blue-700 hover:text-white">
+                            <i class="fas fa-bell"></i>
+                            <span class="sidebar-text">Notifications</span>
+                        </a>
+                        <a href="#security" class="nav-item flex items-center space-x-3 px-3 py-2 rounded-lg text-blue-200 hover:bg-blue-700 hover:text-white">
+                            <i class="fas fa-shield-alt"></i>
+                            <span class="sidebar-text">Security</span>
+                        </a>
+                    </div>
+                </div>
+            </nav>
+
+            <div class="p-4 border-t border-blue-700">
+                <a href="#" class="nav-item flex items-center space-x-3 px-3 py-2 rounded-lg text-blue-200 hover:bg-blue-700 hover:text-white">
+                    <i class="fas fa-sign-out-alt"></i>
+                    <span class="sidebar-text">Logout</span>
+                </a>
+            </div>
+        </div>
+
+        <!-- Main Content -->
+        <div class="main-content flex-1 flex flex-col overflow-hidden">
+            <!-- Top Navigation -->
+            <header class="bg-white shadow-sm">
+                <div class="px-6 py-4 flex items-center justify-between">
+                    <h1 class="text-2xl font-semibold text-gray-800">System Settings</h1>
+                    <div class="flex items-center space-x-4">
+                        <div class="relative">
+                            <input type="text" placeholder="Search settings..." class="pl-10 pr-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
+                            <i class="fas fa-search absolute left-3 top-3 text-gray-400"></i>
+                        </div>
+                        <button class="p-2 rounded-full bg-gray-100 text-gray-600 hover:bg-gray-200 relative">
+                            <i class="fas fa-bell"></i>
+                            <span class="absolute top-0 right-0 h-2 w-2 rounded-full bg-red-500"></span>
+                        </button>
+                    </div>
+                </div>
+            </header>
+
+            <!-- Main Content Area -->
+            <main class="flex-1 overflow-y-auto p-6">
+                <!-- Settings Tabs -->
+                <div class="bg-white rounded-xl shadow p-6 mb-6">
+                    <div class="flex space-x-6 border-b">
+                        <button class="tab-button pb-3 px-1 active" data-tab="profile">Profile</button>
+                        <button class="tab-button pb-3 px-1" data-tab="account">Account</button>
+                        <button class="tab-button pb-3 px-1" data-tab="notifications">Notifications</button>
+                        <button class="tab-button pb-3 px-1" data-tab="security">Security</button>
+                        <button class="tab-button pb-3 px-1" data-tab="system">System</button>
+                        <button class="tab-button pb-3 px-1" data-tab="privacy">Privacy</button>
+                    </div>
+
+                    <!-- Profile Tab Content -->
+                    <div id="profile" class="tab-content active py-6">
+                        <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                            <!-- Profile Information -->
+                            <div class="md:col-span-2">
+                                <h2 class="text-xl font-semibold mb-6">Profile Information</h2>
+
+                                <div class="space-y-6">
+                                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                        <div>
+                                            <label class="block text-gray-700 text-sm font-medium mb-2" for="first-name">
+                                                First Name
+                                            </label>
+                                            <input id="first-name" type="text" class="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" value="John">
+                                        </div>
+                                        <div>
+                                            <label class="block text-gray-700 text-sm font-medium mb-2" for="last-name">
+                                                Last Name
+                                            </label>
+                                            <input id="last-name" type="text" class="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" value="Doe">
+                                        </div>
+                                    </div>
+
+                                    <div>
+                                        <label class="block text-gray-700 text-sm font-medium mb-2" for="email">
+                                            Email Address
+                                        </label>
+                                        <input id="email" type="email" class="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" value="john.doe@trafficpolice.gov">
+                                    </div>
+
+                                    <div>
+                                        <label class="block text-gray-700 text-sm font-medium mb-2" for="phone">
+                                            Phone Number
+                                        </label>
+                                        <input id="phone" type="tel" class="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" value="+1 (555) 123-4567">
+                                    </div>
+
+                                    <div>
+                                        <label class="block text-gray-700 text-sm font-medium mb-2" for="department">
+                                            Department
+                                        </label>
+                                        <select id="department" class="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
+                                            <option>Traffic Enforcement</option>
+                                            <option>Patrol Division</option>
+                                            <option>Investigations</option>
+                                            <option>Administration</option>
+                                            <option>Special Operations</option>
+                                        </select>
+                                    </div>
+
+                                    <div>
+                                        <label class="block text-gray-700 text-sm font-medium mb-2" for="badge-number">
+                                            Badge Number
+                                        </label>
+                                        <input id="badge-number" type="text" class="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" value="TPD-2047">
+                                    </div>
+
+                                    <div>
+                                        <label class="block text-gray-700 text-sm font-medium mb-2" for="bio">
+                                            Bio
+                                        </label>
+                                        <textarea id="bio" rows="3" class="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">Senior Traffic Officer with 8 years of experience in traffic law enforcement and public safety.</textarea>
+                                    </div>
+
+                                    <div class="flex justify-end">
+                                        <button class="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700">
+                                            Save Changes
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Profile Picture -->
+                            <div>
+                                <h2 class="text-xl font-semibold mb-6">Profile Picture</h2>
+
+                                <div class="flex flex-col items-center">
+                                    <div class="relative mb-4">
+                                        <img src="https://randomuser.me/api/portraits/men/32.jpg" alt="Profile" class="w-40 h-40 rounded-full object-cover border-4 border-white shadow-lg">
+                                        <button class="absolute bottom-2 right-2 bg-blue-600 text-white p-2 rounded-full hover:bg-blue-700">
+                                            <i class="fas fa-camera"></i>
+                                        </button>
+                                    </div>
+
+                                    <div class="w-full space-y-3">
+                                        <button class="w-full px-4 py-2 bg-white border text-blue-600 rounded-lg hover:bg-gray-50">
+                                            Upload New Photo
+                                        </button>
+                                        <button class="w-full px-4 py-2 bg-white border text-red-600 rounded-lg hover:bg-gray-50">
+                                            Remove Photo
+                                        </button>
+                                    </div>
+
+                                    <div class="mt-6 text-sm text-gray-500 text-center">
+                                        <p>JPG, GIF or PNG. Max size of 2MB</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Account Tab Content -->
+                    <div id="account" class="tab-content py-6">
+                        <h2 class="text-xl font-semibold mb-6">Account Settings</h2>
+
+                        <div class="space-y-8">
+                            <!-- Language & Region -->
+                            <div class="setting-card bg-white rounded-lg shadow p-6">
+                                <div class="flex items-start justify-between">
+                                    <div>
+                                        <h3 class="text-lg font-medium mb-1">Language & Region</h3>
+                                        <p class="text-sm text-gray-500">Set your preferred language and timezone</p>
+                                    </div>
+                                    <button class="text-blue-600 hover:text-blue-800">Edit</button>
+                                </div>
+
+                                <div class="mt-4 grid grid-cols-1 md:grid-cols-2 gap-6">
+                                    <div>
+                                        <label class="block text-gray-700 text-sm font-medium mb-2" for="language">
+                                            Language
+                                        </label>
+                                        <select id="language" class="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
+                                            <option>English (United States)</option>
+                                            <option>Spanish</option>
+                                            <option>French</option>
+                                            <option>German</option>
+                                            <option>Chinese</option>
+                                        </select>
+                                    </div>
+
+                                    <div>
+                                        <label class="block text-gray-700 text-sm font-medium mb-2" for="timezone">
+                                            Timezone
+                                        </label>
+                                        <select id="timezone" class="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
+                                            <option>(UTC-05:00) Eastern Time</option>
+                                            <option>(UTC-06:00) Central Time</option>
+                                            <option>(UTC-07:00) Mountain Time</option>
+                                            <option>(UTC-08:00) Pacific Time</option>
+                                            <option>(UTC-04:00) Atlantic Time</option>
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Account Status -->
+                            <div class="setting-card bg-white rounded-lg shadow p-6">
+                                <div class="flex items-start justify-between">
+                                    <div>
+                                        <h3 class="text-lg font-medium mb-1">Account Status</h3>
+                                        <p class="text-sm text-gray-500">Manage your account activity</p>
+                                    </div>
+                                </div>
+
+                                <div class="mt-4 space-y-4">
+                                    <div class="flex items-center justify-between">
+                                        <div>
+                                            <h4 class="font-medium">Active Account</h4>
+                                            <p class="text-sm text-gray-500">Your account is currently active</p>
+                                        </div>
+                                        <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800">
+                                            Active
+                                        </span>
+                                    </div>
+
+                                    <div class="flex items-center justify-between pt-4 border-t">
+                                        <div>
+                                            <h4 class="font-medium">Delete Account</h4>
+                                            <p class="text-sm text-gray-500">Permanently delete your account and all data</p>
+                                        </div>
+                                        <button class="px-4 py-2 bg-red-100 text-red-600 rounded-lg hover:bg-red-200">
+                                            Delete Account
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Data Export -->
+                            <div class="setting-card bg-white rounded-lg shadow p-6">
+                                <div class="flex items-start justify-between">
+                                    <div>
+                                        <h3 class="text-lg font-medium mb-1">Data Export</h3>
+                                        <p class="text-sm text-gray-500">Export your account data for backup</p>
+                                    </div>
+                                    <button class="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700">
+                                        Request Export
+                                    </button>
+                                </div>
+
+                                <div class="mt-4">
+                                    <p class="text-sm text-gray-500">You can request a complete export of your account data including profile information, activity logs, and system preferences. The export will be available for download for 7 days.</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Notifications Tab Content -->
+                    <div id="notifications" class="tab-content py-6">
+                        <h2 class="text-xl font-semibold mb-6">Notification Preferences</h2>
+
+                        <div class="space-y-6">
+                            <!-- Email Notifications -->
+                            <div class="setting-card bg-white rounded-lg shadow p-6">
+                                <div class="flex items-center justify-between mb-4">
+                                    <h3 class="text-lg font-medium">Email Notifications</h3>
+                                    <label class="toggle-switch">
+                                        <input type="checkbox" checked>
+                                        <span class="toggle-slider"></span>
+                                    </label>
+                                </div>
+
+                                <div class="space-y-4 pl-2">
+                                    <div class="flex items-center justify-between">
+                                        <div>
+                                            <h4 class="font-medium">System Alerts</h4>
+                                            <p class="text-sm text-gray-500">Important system notifications and updates</p>
+                                        </div>
+                                        <label class="toggle-switch">
+                                            <input type="checkbox" checked>
+                                            <span class="toggle-slider"></span>
+                                        </label>
+                                    </div>
+
+                                    <div class="flex items-center justify-between">
+                                        <div>
+                                            <h4 class="font-medium">Fine Updates</h4>
+                                            <p class="text-sm text-gray-500">Notifications about fine status changes</p>
+                                        </div>
+                                        <label class="toggle-switch">
+                                            <input type="checkbox" checked>
+                                            <span class="toggle-slider"></span>
+                                        </label>
+                                    </div>
+
+                                    <div class="flex items-center justify-between">
+                                        <div>
+                                            <h4 class="font-medium">Payment Reminders</h4>
+                                            <p class="text-sm text-gray-500">Reminders for pending and overdue payments</p>
+                                        </div>
+                                        <label class="toggle-switch">
+                                            <input type="checkbox">
+                                            <span class="toggle-slider"></span>
+                                        </label>
+                                    </div>
+
+                                    <div class="flex items-center justify-between">
+                                        <div>
+                                            <h4 class="font-medium">Monthly Reports</h4>
+                                            <p class="text-sm text-gray-500">Summary of monthly activities and statistics</p>
+                                        </div>
+                                        <label class="toggle-switch">
+                                            <input type="checkbox" checked>
+                                            <span class="toggle-slider"></span>
+                                        </label>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Push Notifications -->
+                            <div class="setting-card bg-white rounded-lg shadow p-6">
+                                <div class="flex items-center justify-between mb-4">
+                                    <h3 class="text-lg font-medium">Push Notifications</h3>
+                                    <label class="toggle-switch">
+                                        <input type="checkbox" checked>
+                                        <span class="toggle-slider"></span>
+                                        </label>
+                                </div>
+
+                                <div class="space-y-4 pl-2">
+                                    <div class="flex items-center justify-between">
+                                        <div>
+                                            <h4 class="font-medium">New Violations</h4>
+                                            <p class="text-sm text-gray-500">Alerts when new violations are recorded</p>
+                                        </div>
+                                        <label class="toggle-switch">
+                                            <input type="checkbox" checked>
+                                            <span class="toggle-slider"></span>
+                                        </label>
+                                    </div>
+
+                                    <div class="flex items-center justify-between">
+                                        <div>
+                                            <h4 class="font-medium">Urgent Alerts</h4>
+                                            <p class="text-sm text-gray-500">Critical alerts requiring immediate attention</p>
+                                        </div>
+                                        <label class="toggle-switch">
+                                            <input type="checkbox" checked>
+                                            <span class="toggle-slider"></span>
+                                        </label>
+                                    </div>
+
+                                    <div class="flex items-center justify-between">
+                                        <div>
+                                            <h4 class="font-medium">Shift Updates</h4>
+                                            <p class="text-sm text-gray-500">Notifications about shift changes and assignments</p>
+                                        </div>
+                                        <label class="toggle-switch">
+                                            <input type="checkbox">
+                                            <span class="toggle-slider"></span>
+                                        </label>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- SMS Notifications -->
+                            <div class="setting-card bg-white rounded-lg shadow p-6">
+                                <div class="flex items-center justify-between mb-4">
+                                    <h3 class="text-lg font-medium">SMS Notifications</h3>
+                                    <label class="toggle-switch">
+                                        <input type="checkbox">
+                                        <span class="toggle-slider"></span>
+                                    </label>
+                                </div>
+
+                                <div class="mt-4">
+                                    <p class="text-sm text-gray-500">Receive important notifications via text message. Standard messaging rates may apply.</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Security Tab Content -->
+                    <div id="security" class="tab-content py-6">
+                        <h2 class="text-xl font-semibold mb-6">Security Settings</h2>
+
+                        <div class="space-y-6">
+                            <!-- Password -->
+                            <div class="setting-card bg-white rounded-lg shadow p-6">
+                                <div class="flex items-start justify-between">
+                                    <div>
+                                        <h3 class="text-lg font-medium mb-1">Password</h3>
+                                        <p class="text-sm text-gray-500">Last changed 3 months ago</p>
+                                    </div>
+                                    <button class="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700">
+                                        Change Password
+                                    </button>
+                                </div>
+                            </div>
+
+                            <!-- Two-Factor Authentication -->
+                            <div class="setting-card bg-white rounded-lg shadow p-6">
+                                <div class="flex items-start justify-between">
+                                    <div>
+                                        <h3 class="text-lg font-medium mb-1">Two-Factor Authentication</h3>
+                                        <p class="text-sm text-gray-500">Add an extra layer of security to your account</p>
+                                    </div>
+                                    <label class="toggle-switch">
+                                        <input type="checkbox" checked>
+                                        <span class="toggle-slider"></span>
+                                    </label>
+                                </div>
+
+                                <div class="mt-4 grid grid-cols-1 md:grid-cols-2 gap-6">
+                                    <div>
+                                        <label class="block text-gray-700 text-sm font-medium mb-2" for="auth-method">
+                                            Authentication Method
+                                        </label>
+                                        <select id="auth-method" class="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
+                                            <option>Authenticator App</option>
+                                            <option>SMS Verification</option>
+                                            <option>Email Verification</option>
+                                        </select>
+                                    </div>
+
+                                    <div>
+                                        <label class="block text-gray-700 text-sm font-medium mb-2" for="backup-codes">
+                                            Backup Codes
+                                        </label>
+                                        <button id="backup-codes" class="w-full px-3 py-2 bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 text-left">
+                                            Generate New Backup Codes
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Active Sessions -->
+                            <div class="setting-card bg-white rounded-lg shadow p-6">
+                                <div class="flex items-start justify-between">
+                                    <div>
+                                        <h3 class="text-lg font-medium mb-1">Active Sessions</h3>
+                                        <p class="text-sm text-gray-500">Manage your logged-in devices</p>
+                                    </div>
+                                    <button class="px-4 py-2 bg-blue-100 text-blue-600 rounded-lg hover:bg-blue-200">
+                                        View All
+                                    </button>
+                                </div>
+
+                                <div class="mt-4 space-y-4">
+                                    <div class="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
+                                        <div class="flex items-center space-x-3">
+                                            <i class="fas fa-desktop text-gray-500 text-xl"></i>
+                                            <div>
+                                                <h4 class="font-medium">Windows 10 • Chrome</h4>
+                                                <p class="text-sm text-gray-500">New York, USA • Current Session</p>
+                                            </div>
+                                        </div>
+                                        <button class="text-red-600 hover:text-red-800">
+                                            <i class="fas fa-sign-out-alt"></i>
+                                        </button>
+                                    </div>
+
+                                    <div class="flex items-center justify-between p-3">
+                                        <div class="flex items-center space-x-3">
+                                            <i class="fas fa-mobile-alt text-gray-500 text-xl"></i>
+                                            <div>
+                                                <h4 class="font-medium">iPhone 13 • Safari</h4>
+                                                <p class="text-sm text-gray-500">New York, USA • 2 hours ago</p>
+                                            </div>
+                                        </div>
+                                        <button class="text-red-600 hover:text-red-800">
+                                            <i class="fas fa-sign-out-alt"></i>
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Security Questions -->
+                            <div class="setting-card bg-white rounded-lg shadow p-6">
+                                <div class="flex items-start justify-between">
+                                    <div>
+                                        <h3 class="text-lg font-medium mb-1">Security Questions</h3>
+                                        <p class="text-sm text-gray-500">Set up questions for account recovery</p>
+                                    </div>
+                                    <button class="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700">
+                                        Update Questions
+                                    </button>
+                                </div>
+
+                                <div class="mt-4 space-y-4">
+                                    <div>
+                                        <label class="block text-gray-700 text-sm font-medium mb-2" for="question1">
+                                            Question 1
+                                        </label>
+                                        <select id="question1" class="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
+                                            <option>What was your first pet's name?</option>
+                                            <option>What city were you born in?</option>
+                                            <option>What is your mother's maiden name?</option>
+                                            <option>What was your first car?</option>
+                                        </select>
+                                    </div>
+
+                                    <div>
+                                        <label class="block text-gray-700 text-sm font-medium mb-2" for="answer1">
+                                            Answer
+                                        </label>
+                                        <input id="answer1" type="text" class="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- System Tab Content -->
+                    <div id="system" class="tab-content py-6">
+                        <h2 class="text-xl font-semibold mb-6">System Preferences</h2>
+
+                        <div class="space-y-6">
+                            <!-- Display Settings -->
+                            <div class="setting-card bg-white rounded-lg shadow p-6">
+                                <div class="flex items-start justify-between">
+                                    <div>
+                                        <h3 class="text-lg font-medium mb-1">Display Settings</h3>
+                                        <p class="text-sm text-gray-500">Customize your interface appearance</p>
+                                    </div>
+                                </div>
+
+                                <div class="mt-4 grid grid-cols-1 md:grid-cols-2 gap-6">
+                                    <div>
+                                        <label class="block text-gray-700 text-sm font-medium mb-2" for="theme">
+                                            Theme
+                                        </label>
+                                        <select id="theme" class="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
+                                            <option>Light</option>
+                                            <option>Dark</option>
+                                            <option>System Default</option>
+                                        </select>
+                                    </div>
+
+                                    <div>
+                                        <label class="block text-gray-700 text-sm font-medium mb-2" for="density">
+                                            Density
+                                        </label>
+                                        <select id="density" class="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
+                                            <option>Comfortable</option>
+                                            <option>Compact</option>
+                                            <option>Spacious</option>
+                                        </select>
+                                    </div>
+
+                                    <div>
+                                        <label class="block text-gray-700 text-sm font-medium mb-2" for="font-size">
+                                            Font Size
+                                        </label>
+                                        <select id="font-size" class="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
+                                            <option>Small</option>
+                                            <option selected>Medium</option>
+                                            <option>Large</option>
+                                            <option>Extra Large</option>
+                                        </select>
+                                    </div>
+
+                                    <div>
+                                        <label class="block text-gray-700 text-sm font-medium mb-2" for="color-scheme">
+                                            Color Scheme
+                                        </label>
+                                        <select id="color-scheme" class="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
+                                            <option>Blue</option>
+                                            <option>Green</option>
+                                            <option>Red</option>
+                                            <option>Purple</option>
+                                            <option>Custom</option>
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Data Preferences -->
+                            <div class="setting-card bg-white rounded-lg shadow p-6">
+                                <div class="flex items-start justify-between">
+                                    <div>
+                                        <h3 class="text-lg font-medium mb-1">Data Preferences</h3>
+                                        <p class="text-sm text-gray-500">Configure how data is displayed and managed</p>
+                                    </div>
+                                </div>
+
+                                <div class="mt-4 space-y-4">
+                                    <div class="flex items-center justify-between">
+                                        <div>
+                                            <h4 class="font-medium">Auto-refresh Data</h4>
+                                            <p class="text-sm text-gray-500">Automatically refresh data every 5 minutes</p>
+                                        </div>
+                                        <label class="toggle-switch">
+                                            <input type="checkbox" checked>
+                                            <span class="toggle-slider"></span>
+                                        </label>
+                                    </div>
+
+                                    <div class="flex items-center justify-between">
+                                        <div>
+                                            <h4 class="font-medium">Show Live Updates</h4>
+                                            <p class="text-sm text-gray-500">Display real-time updates without refreshing</p>
+                                        </div>
+                                        <label class="toggle-switch">
+                                            <input type="checkbox">
+                                            <span class="toggle-slider"></span>
+                                        </label>
+                                    </div>
+
+                                    <div class="flex items-center justify-between">
+                                        <div>
+                                            <h4 class="font-medium">Cache Recent Data</h4>
+                                            <p class="text-sm text-gray-500">Store recent data for offline access</p>
+                                        </div>
+                                        <label class="toggle-switch">
+                                            <input type="checkbox" checked>
+                                            <span class="toggle-slider"></span>
+                                        </label>
+                                    </div>
+
+                                    <div class="pt-4 border-t">
+                                        <label class="block text-gray-700 text-sm font-medium mb-2" for="data-limit">
+                                            Records Per Page
+                                        </label>
+                                        <select id="data-limit" class="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
+                                            <option>10</option>
+                                            <option selected>25</option>
+                                            <option>50</option>
+                                            <option>100</option>
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Backup Settings -->
+                            <div class="setting-card bg-white rounded-lg shadow p-6">
+                                <div class="flex items-start justify-between">
+                                    <div>
+                                        <h3 class="text-lg font-medium mb-1">Backup Settings</h3>
+                                        <p class="text-sm text-gray-500">Configure automatic data backups</p>
+                                    </div>
+                                    <label class="toggle-switch">
+                                        <input type="checkbox" checked>
+                                        <span class="toggle-slider"></span>
+                                    </label>
+                                </div>
+
+                                <div class="mt-4 grid grid-cols-1 md:grid-cols-2 gap-6">
+                                    <div>
+                                        <label class="block text-gray-700 text-sm font-medium mb-2" for="backup-frequency">
+                                            Frequency
+                                        </label>
+                                        <select id="backup-frequency" class="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
+                                            <option>Daily</option>
+                                            <option selected>Weekly</option>
+                                            <option>Monthly</option>
+                                        </select>
+                                    </div>
+
+                                    <div>
+                                        <label class="block text-gray-700 text-sm font-medium mb-2" for="backup-time">
+                                            Time
+                                        </label>
+                                        <select id="backup-time" class="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
+                                            <option>12:00 AM</option>
+                                            <option>1:00 AM</option>
+                                            <option>2:00 AM</option>
+                                            <option selected>3:00 AM</option>
+                                            <option>4:00 AM</option>
+                                        </select>
+                                    </div>
+
+                                    <div>
+                                        <label class="block text-gray-700 text-sm font-medium mb-2" for="backup-location">
+                                            Location
+                                        </label>
+                                        <select id="backup-location" class="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
+                                            <option>Local Server</option>
+                                            <option selected>Cloud Storage</option>
+                                            <option>External Drive</option>
+                                        </select>
+                                    </div>
+
+                                    <div>
+                                        <label class="block text-gray-700 text-sm font-medium mb-2" for="backup-retention">
+                                            Retention Period
+                                        </label>
+                                        <select id="backup-retention" class="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
+                                            <option>7 days</option>
+                                            <option selected>30 days</option>
+                                            <option>90 days</option>
+                                            <option>1 year</option>
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Privacy Tab Content -->
+                    <div id="privacy" class="tab-content py-6">
+                        <h2 class="text-xl font-semibold mb-6">Privacy Settings</h2>
+
+                        <div class="space-y-6">
+                            <!-- Data Collection -->
+                            <div class="setting-card bg-white rounded-lg shadow p-6">
+                                <div class="flex items-start justify-between">
+                                    <div>
+                                        <h3 class="text-lg font-medium mb-1">Data Collection</h3>
+                                        <p class="text-sm text-gray-500">Help improve our services by sharing usage data</p>
+                                    </div>
+                                    <label class="toggle-switch">
+                                        <input type="checkbox" checked>
+                                        <span class="toggle-slider"></span>
+                                    </label>
+                                </div>
+
+                                <div class="mt-4">
+                                    <p class="text-sm text-gray-500">We collect anonymous usage data to improve system performance and user experience. This data does not include personal information or sensitive operational details.</p>
+                                </div>
+                            </div>
+
+                            <!-- Activity Logging -->
+                            <div class="setting-card bg-white rounded-lg shadow p-6">
+                                <div class="flex items-start justify-between">
+                                    <div>
+                                        <h3 class="text-lg font-medium mb-1">Activity Logging</h3>
+                                        <p class="text-sm text-gray-500">Record your system activities for security and auditing</p>
+                                    </div>
+                                    <label class="toggle-switch">
+                                        <input type="checkbox" checked>
+                                        <span class="toggle-slider"></span>
+                                    </label>
+                                </div>
+
+                                <div class="mt-4 grid grid-cols-1 md:grid-cols-2 gap-6">
+                                    <div>
+                                        <label class="block text-gray-700 text-sm font-medium mb-2" for="log-duration">
+                                            Log Retention
+                                        </label>
+                                        <select id="log-duration" class="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
+                                            <option>30 days</option>
+                                            <option selected>90 days</option>
+                                            <option>1 year</option>
+                                            <option>Indefinitely</option>
+                                        </select>
+                                    </div>
+
+                                    <div>
+                                        <label class="block text-gray-700 text-sm font-medium mb-2" for="log-level">
+                                            Log Detail Level
+                                        </label>
+                                        <select id="log-level" class="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
+                                            <option>Minimal</option>
+                                            <option selected>Standard</option>
+                                            <option>Detailed</option>
+                                            <option>Debug</option>
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Privacy Controls -->
+                            <div class="setting-card bg-white rounded-lg shadow p-6">
+                                <div class="flex items-start justify-between">
+                                    <div>
+                                        <h3 class="text-lg font-medium mb-1">Privacy Controls</h3>
+                                        <p class="text-sm text-gray-500">Manage what information is visible to others</p>
+                                    </div>
+                                </div>
+
+                                <div class="mt-4 space-y-4">
+                                    <div class="flex items-center justify-between">
+                                        <div>
+                                            <h4 class="font-medium">Show Online Status</h4>
+                                            <p class="text-sm text-gray-500">Display when you're active in the system</p>
+                                        </div>
+                                        <label class="toggle-switch">
+                                            <input type="checkbox" checked>
+                                            <span class="toggle-slider"></span>
+                                        </label>
+                                    </div>
+
+                                    <div class="flex items-center justify-between">
+                                        <div>
+                                            <h4 class="font-medium">Show Last Active</h4>
+                                            <p class="text-sm text-gray-500">Display when you last used the system</p>
+                                        </div>
+                                        <label class="toggle-switch">
+                                            <input type="checkbox">
+                                            <span class="toggle-slider"></span>
+                                        </label>
+                                    </div>
+
+                                    <div class="flex items-center justify-between">
+                                        <div>
+                                            <h4 class="font-medium">Show Profile Picture</h4>
+                                            <p class="text-sm text-gray-500">Display your profile photo to other users</p>
+                                        </div>
+                                        <label class="toggle-switch">
+                                            <input type="checkbox" checked>
+                                            <span class="toggle-slider"></span>
+                                        </label>
+                                    </div>
+
+                                    <div class="flex items-center justify-between">
+                                        <div>
+                                            <h4 class="font-medium">Show Contact Information</h4>
+                                            <p class="text-sm text-gray-500">Display your email and phone to team members</p>
+                                        </div>
+                                        <label class="toggle-switch">
+                                            <input type="checkbox">
+                                            <span class="toggle-slider"></span>
+                                        </label>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Cookie Preferences -->
+                            <div class="setting-card bg-white rounded-lg shadow p-6">
+                                <div class="flex items-start justify-between">
+                                    <div>
+                                        <h3 class="text-lg font-medium mb-1">Cookie Preferences</h3>
+                                        <p class="text-sm text-gray-500">Manage how cookies are used on this system</p>
+                                    </div>
+                                    <button class="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700">
+                                        Manage Cookies
+                                    </button>
+                                </div>
+
+                                <div class="mt-4">
+                                    <p class="text-sm text-gray-500">We use cookies to enhance your experience, analyze system performance, and for security purposes. You can customize your cookie preferences at any time.</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </main>
+        </div>
+    </div>
+
+    <!-- Change Password Modal -->
+    <div id="changePasswordModal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 hidden">
+        <div class="bg-white rounded-lg shadow-xl w-full max-w-md">
+            <div class="px-6 py-4 border-b flex items-center justify-between">
+                <h3 class="text-lg font-semibold">Change Password</h3>
+                <button id="closePasswordModalBtn" class="text-gray-500 hover:text-gray-700">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <div class="p-6">
+                <div class="space-y-4">
+                    <div>
+                        <label class="block text-gray-700 text-sm font-medium mb-2" for="current-password">
+                            Current Password
+                        </label>
+                        <input id="current-password" type="password" class="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
+                    </div>
+
+                    <div>
+                        <label class="block text-gray-700 text-sm font-medium mb-2" for="new-password">
+                            New Password
+                        </label>
+                        <input id="new-password" type="password" class="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
+                        <p class="text-xs text-gray-500 mt-1">Must be at least 8 characters long</p>
+                    </div>
+
+                    <div>
+                        <label class="block text-gray-700 text-sm font-medium mb-2" for="confirm-password">
+                            Confirm New Password
+                        </label>
+                        <input id="confirm-password" type="password" class="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
+                    </div>
+                </div>
+
+                <div class="mt-6 bg-yellow-50 border-l-4 border-yellow-400 p-4">
+                    <div class="flex">
+                        <div class="flex-shrink-0">
+                            <i class="fas fa-exclamation-circle text-yellow-400"></i>
+                        </div>
+                        <div class="ml-3">
+                            <p class="text-sm text-yellow-700">
+                                After changing your password, you'll be logged out of all other devices and will need to sign in again with your new password.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="px-6 py-4 border-t flex justify-end space-x-3">
+                <button id="cancelPasswordModalBtn" class="px-4 py-2 bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200">
+                    Cancel
+                </button>
+                <button class="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700">
+                    Change Password
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Sidebar toggle
+        const sidebarToggle = document.getElementById('sidebarToggle');
+        const sidebar = document.querySelector('.sidebar');
+        const mainContent = document.querySelector('.main-content');
+
+        sidebarToggle.addEventListener('click', () => {
+            sidebar.classList.toggle('collapsed');
+            mainContent.classList.toggle('expanded');
+        });
+
+        // Tab functionality
+        const tabButtons = document.querySelectorAll('.tab-button');
+        const tabContents = document.querySelectorAll('.tab-content');
+
+        tabButtons.forEach(button => {
+            button.addEventListener('click', () => {
+                const tabId = button.getAttribute('data-tab');
+
+                // Remove active class from all buttons and contents
+                tabButtons.forEach(btn => btn.classList.remove('active'));
+                tabContents.forEach(content => content.classList.remove('active'));
+
+                // Add active class to clicked button and corresponding content
+                button.classList.add('active');
+                document.getElementById(tabId).classList.add('active');
+            });
+        });
+
+        // Change Password Modal
+        const changePasswordBtns = document.querySelectorAll('button:contains("Change Password")');
+        const changePasswordModal = document.getElementById('changePasswordModal');
+        const closePasswordModalBtn = document.getElementById('closePasswordModalBtn');
+        const cancelPasswordModalBtn = document.getElementById('cancelPasswordModalBtn');
+
+        // This would need to be adjusted based on how you trigger the password change
+        // For now, we'll assume there's a button with text "Change Password"
+        document.addEventListener('click', function(e) {
+            if (e.target && (e.target.textContent === 'Change Password' ||
+                    e.target.parentElement.textContent === 'Change Password')) {
+                changePasswordModal.classList.remove('hidden');
+            }
+        });
+
+        closePasswordModalBtn.addEventListener('click', () => {
+            changePasswordModal.classList.add('hidden');
+        });
+
+        cancelPasswordModalBtn.addEventListener('click', () => {
+            changePasswordModal.classList.add('hidden');
+        });
+
+        // Close modal when clicking outside
+        changePasswordModal.addEventListener('click', (e) => {
+            if (e.target === changePasswordModal) {
+                changePasswordModal.classList.add('hidden');
+            }
+        });
+
+        // Set default dates for report filters
+        document.addEventListener('DOMContentLoaded', function() {
+            // Initialize any default settings here if needed
+        });
+    </script>
+</body>
+
+</html>

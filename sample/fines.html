@@ -1,0 +1,821 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fines | Traffic Police Fine Management System</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        .sidebar {
+            transition: all 0.3s ease;
+        }
+        
+        .sidebar.collapsed {
+            width: 70px;
+        }
+        
+        .sidebar.collapsed .sidebar-text {
+            display: none;
+        }
+        
+        .sidebar.collapsed .logo-text {
+            display: none;
+        }
+        
+        .sidebar.collapsed .nav-item {
+            justify-content: center;
+        }
+        
+        .main-content {
+            transition: all 0.3s ease;
+        }
+        
+        .main-content.expanded {
+            margin-left: 70px;
+        }
+        
+        .fine-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+        }
+        
+        .fine-card {
+            transition: all 0.3s ease;
+        }
+        
+        .fine-status-paid {
+            border-left: 4px solid #10B981;
+        }
+        
+        .fine-status-pending {
+            border-left: 4px solid #F59E0B;
+        }
+        
+        .fine-status-overdue {
+            border-left: 4px solid #EF4444;
+        }
+        
+        .fine-status-disputed {
+            border-left: 4px solid #6366F1;
+        }
+        
+        .progress-bar {
+            height: 6px;
+            border-radius: 3px;
+            overflow: hidden;
+        }
+        
+        .progress-fill {
+            height: 100%;
+            transition: width 0.5s ease;
+        }
+    </style>
+</head>
+
+<body class="bg-gray-100 font-sans">
+    <div class="flex h-screen overflow-hidden">
+        <!-- Sidebar -->
+        <div class="sidebar bg-blue-800 text-white w-64 flex flex-col">
+            <div class="p-4 flex items-center space-x-2 border-b border-blue-700">
+                <div class="bg-white p-2 rounded-lg">
+                    <i class="fas fa-traffic-light text-blue-800 text-xl"></i>
+                </div>
+                <span class="logo-text text-xl font-bold">TrafficFineSys</span>
+            </div>
+
+            <div class="p-4 flex items-center justify-between border-b border-blue-700">
+                <div class="flex items-center space-x-3">
+                    <div class="w-10 h-10 rounded-full bg-blue-600 flex items-center justify-center">
+                        <i class="fas fa-user"></i>
+                    </div>
+                    <div>
+                        <div class="sidebar-text font-medium">Officer John</div>
+                        <div class="sidebar-text text-xs text-blue-300">Traffic Police</div>
+                    </div>
+                </div>
+                <button id="sidebarToggle" class="text-blue-300 hover:text-white">
+                    <i class="fas fa-bars"></i>
+                </button>
+            </div>
+
+            <nav class="flex-1 overflow-y-auto py-4">
+                <div class="space-y-1 px-3">
+                    <a href="dashboard.html" class="nav-item flex items-center space-x-3 px-3 py-2 rounded-lg text-blue-200 hover:bg-blue-700 hover:text-white">
+                        <i class="fas fa-tachometer-alt"></i>
+                        <span class="sidebar-text">Dashboard</span>
+                    </a>
+                    <a href="violations.html" class="nav-item flex items-center space-x-3 px-3 py-2 rounded-lg text-blue-200 hover:bg-blue-700 hover:text-white">
+                        <i class="fas fa-car-crash"></i>
+                        <span class="sidebar-text">Violations</span>
+                    </a>
+                    <a href="fines.html" class="nav-item flex items-center space-x-3 px-3 py-2 rounded-lg bg-blue-700 text-white">
+                        <i class="fas fa-file-invoice-dollar"></i>
+                        <span class="sidebar-text">Fines</span>
+                    </a>
+                    <a href="drivers.html" class="nav-item flex items-center space-x-3 px-3 py-2 rounded-lg text-blue-200 hover:bg-blue-700 hover:text-white">
+                        <i class="fas fa-users"></i>
+                        <span class="sidebar-text">Drivers</span>
+                    </a>
+                    <a href="reports.html" class="nav-item flex items-center space-x-3 px-3 py-2 rounded-lg text-blue-200 hover:bg-blue-700 hover:text-white">
+                        <i class="fas fa-chart-line"></i>
+                        <span class="sidebar-text">Reports</span>
+                    </a>
+                    <a href="settings.html" class="nav-item flex items-center space-x-3 px-3 py-2 rounded-lg text-blue-200 hover:bg-blue-700 hover:text-white">
+                        <i class="fas fa-cog"></i>
+                        <span class="sidebar-text">Settings</span>
+                    </a>
+                </div>
+
+                <div class="px-3 mt-8">
+                    <div class="text-xs uppercase text-blue-400 mb-2 sidebar-text">Quick Actions</div>
+                    <div class="space-y-1">
+                        <a href="#" class="nav-item flex items-center space-x-3 px-3 py-2 rounded-lg text-blue-200 hover:bg-blue-700 hover:text-white">
+                            <i class="fas fa-plus-circle"></i>
+                            <span class="sidebar-text">New Fine</span>
+                        </a>
+                        <a href="#" class="nav-item flex items-center space-x-3 px-3 py-2 rounded-lg text-blue-200 hover:bg-blue-700 hover:text-white">
+                            <i class="fas fa-search"></i>
+                            <span class="sidebar-text">Search Driver</span>
+                        </a>
+                        <a href="#" class="nav-item flex items-center space-x-3 px-3 py-2 rounded-lg text-blue-200 hover:bg-blue-700 hover:text-white">
+                            <i class="fas fa-print"></i>
+                            <span class="sidebar-text">Print Report</span>
+                        </a>
+                    </div>
+                </div>
+            </nav>
+
+            <div class="p-4 border-t border-blue-700">
+                <a href="#" class="nav-item flex items-center space-x-3 px-3 py-2 rounded-lg text-blue-200 hover:bg-blue-700 hover:text-white">
+                    <i class="fas fa-sign-out-alt"></i>
+                    <span class="sidebar-text">Logout</span>
+                </a>
+            </div>
+        </div>
+
+        <!-- Main Content -->
+        <div class="main-content flex-1 flex flex-col overflow-hidden">
+            <!-- Top Navigation -->
+            <header class="bg-white shadow-sm">
+                <div class="px-6 py-4 flex items-center justify-between">
+                    <h1 class="text-2xl font-semibold text-gray-800">Fines</h1>
+                    <div class="flex items-center space-x-4">
+                        <div class="relative">
+                            <input type="text" placeholder="Search fines..." class="pl-10 pr-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
+                            <i class="fas fa-search absolute left-3 top-3 text-gray-400"></i>
+                        </div>
+                        <button class="p-2 rounded-full bg-gray-100 text-gray-600 hover:bg-gray-200">
+                            <i class="fas fa-bell"></i>
+                            <span class="absolute top-0 right-0 h-2 w-2 rounded-full bg-red-500"></span>
+                        </button>
+                    </div>
+                </div>
+            </header>
+
+            <!-- Main Content Area -->
+            <main class="flex-1 overflow-y-auto p-6">
+                <!-- Fine Management Header -->
+                <div class="flex flex-col md:flex-row justify-between items-start md:items-center mb-6 gap-4">
+                    <div>
+                        <h2 class="text-xl font-semibold text-gray-800">Traffic Fines Management</h2>
+                        <p class="text-gray-600">View, manage, and process all traffic fines</p>
+                    </div>
+                    <div class="flex space-x-3">
+                        <button class="px-4 py-2 bg-white border rounded-lg text-gray-700 hover:bg-gray-50 flex items-center space-x-2">
+                            <i class="fas fa-filter"></i>
+                            <span>Filter</span>
+                        </button>
+                        <button id="addFineBtn" class="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 flex items-center space-x-2">
+                            <i class="fas fa-plus"></i>
+                            <span>Issue Fine</span>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Stats Cards -->
+                <div class="grid grid-cols-1 md:grid-cols-4 gap-6 mb-6">
+                    <div class="bg-white rounded-xl shadow p-6">
+                        <div class="flex items-center justify-between">
+                            <div>
+                                <p class="text-gray-500">Total Fines</p>
+                                <h3 class="text-3xl font-bold text-blue-600">1,248</h3>
+                                <p class="text-sm text-gray-500">Issued this month</p>
+                            </div>
+                            <div class="p-3 rounded-full bg-blue-100 text-blue-600">
+                                <i class="fas fa-file-invoice text-xl"></i>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="bg-white rounded-xl shadow p-6">
+                        <div class="flex items-center justify-between">
+                            <div>
+                                <p class="text-gray-500">Pending Payment</p>
+                                <h3 class="text-3xl font-bold text-yellow-600">487</h3>
+                                <p class="text-sm text-gray-500">39% of total fines</p>
+                            </div>
+                            <div class="p-3 rounded-full bg-yellow-100 text-yellow-600">
+                                <i class="fas fa-clock text-xl"></i>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="bg-white rounded-xl shadow p-6">
+                        <div class="flex items-center justify-between">
+                            <div>
+                                <p class="text-gray-500">Overdue Fines</p>
+                                <h3 class="text-3xl font-bold text-red-600">156</h3>
+                                <p class="text-sm text-gray-500">13% of total fines</p>
+                            </div>
+                            <div class="p-3 rounded-full bg-red-100 text-red-600">
+                                <i class="fas fa-exclamation-triangle text-xl"></i>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="bg-white rounded-xl shadow p-6">
+                        <div class="flex items-center justify-between">
+                            <div>
+                                <p class="text-gray-500">Total Revenue</p>
+                                <h3 class="text-3xl font-bold text-green-600">$84,250</h3>
+                                <p class="text-sm text-gray-500">Collected this month</p>
+                            </div>
+                            <div class="p-3 rounded-full bg-green-100 text-green-600">
+                                <i class="fas fa-dollar-sign text-xl"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Payment Progress -->
+                <div class="bg-white rounded-xl shadow p-6 mb-6">
+                    <div class="flex justify-between items-center mb-4">
+                        <h3 class="text-lg font-semibold text-gray-800">Payment Progress</h3>
+                        <div class="flex space-x-2">
+                            <button class="px-3 py-1 text-sm bg-gray-100 text-gray-600 rounded-lg">This Month</button>
+                            <button class="px-3 py-1 text-sm bg-blue-100 text-blue-600 rounded-lg">This Year</button>
+                        </div>
+                    </div>
+
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                        <div>
+                            <div class="flex justify-between mb-2">
+                                <span class="text-sm font-medium text-gray-700">Paid Fines</span>
+                                <span class="text-sm font-medium text-green-600">72%</span>
+                            </div>
+                            <div class="progress-bar bg-gray-200">
+                                <div class="progress-fill bg-green-500" style="width: 72%"></div>
+                            </div>
+                        </div>
+
+                        <div>
+                            <div class="flex justify-between mb-2">
+                                <span class="text-sm font-medium text-gray-700">Pending Payment</span>
+                                <span class="text-sm font-medium text-yellow-600">21%</span>
+                            </div>
+                            <div class="progress-bar bg-gray-200">
+                                <div class="progress-fill bg-yellow-500" style="width: 21%"></div>
+                            </div>
+                        </div>
+
+                        <div>
+                            <div class="flex justify-between mb-2">
+                                <span class="text-sm font-medium text-gray-700">Overdue</span>
+                                <span class="text-sm font-medium text-red-600">7%</span>
+                            </div>
+                            <div class="progress-bar bg-gray-200">
+                                <div class="progress-fill bg-red-500" style="width: 7%"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Recent Fines -->
+                <div class="mb-6">
+                    <div class="flex items-center justify-between mb-4">
+                        <h3 class="text-lg font-semibold text-gray-800">Recent Fines</h3>
+                        <div class="flex space-x-2">
+                            <button class="px-3 py-1 text-sm bg-blue-100 text-blue-600 rounded-lg">All</button>
+                            <button class="px-3 py-1 text-sm bg-gray-100 text-gray-600 rounded-lg">Today</button>
+                            <button class="px-3 py-1 text-sm bg-gray-100 text-gray-600 rounded-lg">This Week</button>
+                        </div>
+                    </div>
+
+                    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                        <!-- Fine Card 1 -->
+                        <div class="fine-card bg-white rounded-lg shadow overflow-hidden fine-status-paid">
+                            <div class="p-5">
+                                <div class="flex justify-between items-start">
+                                    <div>
+                                        <h4 class="font-bold text-lg text-gray-800">#FIN-2023-00145</h4>
+                                        <p class="text-sm text-gray-500">John D. - License: DL-458796</p>
+                                    </div>
+                                    <span class="px-2 py-1 text-xs font-semibold rounded-full bg-green-100 text-green-800">Paid</span>
+                                </div>
+                                <div class="mt-4">
+                                    <div class="flex justify-between text-sm mb-2">
+                                        <span class="text-gray-500">Violation:</span>
+                                        <span class="font-medium">Speeding (15 mph over)</span>
+                                    </div>
+                                    <div class="flex justify-between text-sm mb-2">
+                                        <span class="text-gray-500">Amount:</span>
+                                        <span class="font-medium">$250.00</span>
+                                    </div>
+                                    <div class="flex justify-between text-sm">
+                                        <span class="text-gray-500">Issued:</span>
+                                        <span class="font-medium">Oct 12, 2023</span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="bg-gray-50 px-5 py-3 flex justify-between items-center">
+                                <span class="text-xs text-gray-500">Paid on: Oct 15, 2023</span>
+                                <div class="flex space-x-2">
+                                    <button class="text-blue-600 hover:text-blue-800">
+                                        <i class="fas fa-print"></i>
+                                    </button>
+                                    <button class="text-purple-600 hover:text-purple-800">
+                                        <i class="fas fa-eye"></i>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Fine Card 2 -->
+                        <div class="fine-card bg-white rounded-lg shadow overflow-hidden fine-status-pending">
+                            <div class="p-5">
+                                <div class="flex justify-between items-start">
+                                    <div>
+                                        <h4 class="font-bold text-lg text-gray-800">#FIN-2023-00146</h4>
+                                        <p class="text-sm text-gray-500">Sarah M. - License: DL-325487</p>
+                                    </div>
+                                    <span class="px-2 py-1 text-xs font-semibold rounded-full bg-yellow-100 text-yellow-800">Pending</span>
+                                </div>
+                                <div class="mt-4">
+                                    <div class="flex justify-between text-sm mb-2">
+                                        <span class="text-gray-500">Violation:</span>
+                                        <span class="font-medium">Red Light Violation</span>
+                                    </div>
+                                    <div class="flex justify-between text-sm mb-2">
+                                        <span class="text-gray-500">Amount:</span>
+                                        <span class="font-medium">$200.00</span>
+                                    </div>
+                                    <div class="flex justify-between text-sm">
+                                        <span class="text-gray-500">Issued:</span>
+                                        <span class="font-medium">Oct 13, 2023</span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="bg-gray-50 px-5 py-3 flex justify-between items-center">
+                                <span class="text-xs text-gray-500">Due by: Oct 27, 2023</span>
+                                <div class="flex space-x-2">
+                                    <button class="text-blue-600 hover:text-blue-800">
+                                        <i class="fas fa-print"></i>
+                                    </button>
+                                    <button class="text-purple-600 hover:text-purple-800">
+                                        <i class="fas fa-eye"></i>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Fine Card 3 -->
+                        <div class="fine-card bg-white rounded-lg shadow overflow-hidden fine-status-overdue">
+                            <div class="p-5">
+                                <div class="flex justify-between items-start">
+                                    <div>
+                                        <h4 class="font-bold text-lg text-gray-800">#FIN-2023-00147</h4>
+                                        <p class="text-sm text-gray-500">Robert T. - License: DL-789654</p>
+                                    </div>
+                                    <span class="px-2 py-1 text-xs font-semibold rounded-full bg-red-100 text-red-800">Overdue</span>
+                                </div>
+                                <div class="mt-4">
+                                    <div class="flex justify-between text-sm mb-2">
+                                        <span class="text-gray-500">Violation:</span>
+                                        <span class="font-medium">No Seatbelt</span>
+                                    </div>
+                                    <div class="flex justify-between text-sm mb-2">
+                                        <span class="text-gray-500">Amount:</span>
+                                        <span class="font-medium">$100.00</span>
+                                    </div>
+                                    <div class="flex justify-between text-sm">
+                                        <span class="text-gray-500">Issued:</span>
+                                        <span class="font-medium">Sep 28, 2023</span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="bg-gray-50 px-5 py-3 flex justify-between items-center">
+                                <span class="text-xs text-gray-500">Overdue by: 12 days</span>
+                                <div class="flex space-x-2">
+                                    <button class="text-blue-600 hover:text-blue-800">
+                                        <i class="fas fa-print"></i>
+                                    </button>
+                                    <button class="text-purple-600 hover:text-purple-800">
+                                        <i class="fas fa-eye"></i>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Fine Card 4 -->
+                        <div class="fine-card bg-white rounded-lg shadow overflow-hidden fine-status-paid">
+                            <div class="p-5">
+                                <div class="flex justify-between items-start">
+                                    <div>
+                                        <h4 class="font-bold text-lg text-gray-800">#FIN-2023-00148</h4>
+                                        <p class="text-sm text-gray-500">Lisa K. - License: DL-963258</p>
+                                    </div>
+                                    <span class="px-2 py-1 text-xs font-semibold rounded-full bg-green-100 text-green-800">Paid</span>
+                                </div>
+                                <div class="mt-4">
+                                    <div class="flex justify-between text-sm mb-2">
+                                        <span class="text-gray-500">Violation:</span>
+                                        <span class="font-medium">Illegal Parking</span>
+                                    </div>
+                                    <div class="flex justify-between text-sm mb-2">
+                                        <span class="text-gray-500">Amount:</span>
+                                        <span class="font-medium">$75.00</span>
+                                    </div>
+                                    <div class="flex justify-between text-sm">
+                                        <span class="text-gray-500">Issued:</span>
+                                        <span class="font-medium">Oct 10, 2023</span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="bg-gray-50 px-5 py-3 flex justify-between items-center">
+                                <span class="text-xs text-gray-500">Paid on: Oct 11, 2023</span>
+                                <div class="flex space-x-2">
+                                    <button class="text-blue-600 hover:text-blue-800">
+                                        <i class="fas fa-print"></i>
+                                    </button>
+                                    <button class="text-purple-600 hover:text-purple-800">
+                                        <i class="fas fa-eye"></i>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Fine Card 5 -->
+                        <div class="fine-card bg-white rounded-lg shadow overflow-hidden fine-status-disputed">
+                            <div class="p-5">
+                                <div class="flex justify-between items-start">
+                                    <div>
+                                        <h4 class="font-bold text-lg text-gray-800">#FIN-2023-00149</h4>
+                                        <p class="text-sm text-gray-500">Michael B. - License: DL-741852</p>
+                                    </div>
+                                    <span class="px-2 py-1 text-xs font-semibold rounded-full bg-indigo-100 text-indigo-800">Disputed</span>
+                                </div>
+                                <div class="mt-4">
+                                    <div class="flex justify-between text-sm mb-2">
+                                        <span class="text-gray-500">Violation:</span>
+                                        <span class="font-medium">Expired Registration</span>
+                                    </div>
+                                    <div class="flex justify-between text-sm mb-2">
+                                        <span class="text-gray-500">Amount:</span>
+                                        <span class="font-medium">$50.00</span>
+                                    </div>
+                                    <div class="flex justify-between text-sm">
+                                        <span class="text-gray-500">Issued:</span>
+                                        <span class="font-medium">Oct 14, 2023</span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="bg-gray-50 px-5 py-3 flex justify-between items-center">
+                                <span class="text-xs text-gray-500">Under review</span>
+                                <div class="flex space-x-2">
+                                    <button class="text-blue-600 hover:text-blue-800">
+                                        <i class="fas fa-print"></i>
+                                    </button>
+                                    <button class="text-purple-600 hover:text-purple-800">
+                                        <i class="fas fa-eye"></i>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Fine Card 6 -->
+                        <div class="fine-card bg-white rounded-lg shadow overflow-hidden fine-status-pending">
+                            <div class="p-5">
+                                <div class="flex justify-between items-start">
+                                    <div>
+                                        <h4 class="font-bold text-lg text-gray-800">#FIN-2023-00150</h4>
+                                        <p class="text-sm text-gray-500">David L. - License: DL-159753</p>
+                                    </div>
+                                    <span class="px-2 py-1 text-xs font-semibold rounded-full bg-yellow-100 text-yellow-800">Pending</span>
+                                </div>
+                                <div class="mt-4">
+                                    <div class="flex justify-between text-sm mb-2">
+                                        <span class="text-gray-500">Violation:</span>
+                                        <span class="font-medium">No Insurance</span>
+                                    </div>
+                                    <div class="flex justify-between text-sm mb-2">
+                                        <span class="text-gray-500">Amount:</span>
+                                        <span class="font-medium">$500.00</span>
+                                    </div>
+                                    <div class="flex justify-between text-sm">
+                                        <span class="text-gray-500">Issued:</span>
+                                        <span class="font-medium">Oct 15, 2023</span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="bg-gray-50 px-5 py-3 flex justify-between items-center">
+                                <span class="text-xs text-gray-500">Due by: Oct 29, 2023</span>
+                                <div class="flex space-x-2">
+                                    <button class="text-blue-600 hover:text-blue-800">
+                                        <i class="fas fa-print"></i>
+                                    </button>
+                                    <button class="text-purple-600 hover:text-purple-800">
+                                        <i class="fas fa-eye"></i>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- All Fines Table -->
+                <div class="bg-white rounded-xl shadow overflow-hidden">
+                    <div class="px-6 py-4 border-b flex items-center justify-between">
+                        <h2 class="text-lg font-semibold">All Fines</h2>
+                        <div class="flex items-center space-x-3">
+                            <div class="relative">
+                                <select class="appearance-none pl-3 pr-8 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm">
+                                    <option>Filter by: All Status</option>
+                                    <option>Filter by: Paid</option>
+                                    <option>Filter by: Pending</option>
+                                    <option>Filter by: Overdue</option>
+                                    <option>Filter by: Disputed</option>
+                                </select>
+                                <i class="fas fa-chevron-down absolute right-3 top-3 text-gray-400 text-xs"></i>
+                            </div>
+                            <button class="px-3 py-2 bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200">
+                                <i class="fas fa-download"></i>
+                            </button>
+                        </div>
+                    </div>
+                    <div class="overflow-x-auto">
+                        <table class="min-w-full divide-y divide-gray-200">
+                            <thead class="bg-gray-50">
+                                <tr>
+                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Fine ID</th>
+                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Driver</th>
+                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Violation</th>
+                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Issued</th>
+                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Due Date</th>
+                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Amount</th>
+                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
+                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody class="bg-white divide-y divide-gray-200">
+                                <tr>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">#FIN-2023-00145</td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">John D. (DL-458796)</td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">Speeding (15 mph over)</td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">Oct 12, 2023</td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">Oct 26, 2023</td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">$250.00</td>
+                                    <td class="px-6 py-4 whitespace-nowrap">
+                                        <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800">Paid</span>
+                                    </td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                                        <button class="text-blue-600 hover:text-blue-900 mr-3"><i class="fas fa-print"></i></button>
+                                        <button class="text-purple-600 hover:text-purple-900"><i class="fas fa-eye"></i></button>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">#FIN-2023-00146</td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">Sarah M. (DL-325487)</td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">Red Light Violation</td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">Oct 13, 2023</td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">Oct 27, 2023</td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">$200.00</td>
+                                    <td class="px-6 py-4 whitespace-nowrap">
+                                        <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-yellow-100 text-yellow-800">Pending</span>
+                                    </td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                                        <button class="text-blue-600 hover:text-blue-900 mr-3"><i class="fas fa-print"></i></button>
+                                        <button class="text-purple-600 hover:text-purple-900"><i class="fas fa-eye"></i></button>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">#FIN-2023-00147</td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">Robert T. (DL-789654)</td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">No Seatbelt</td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">Sep 28, 2023</td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">Oct 12, 2023</td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">$100.00</td>
+                                    <td class="px-6 py-4 whitespace-nowrap">
+                                        <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-red-100 text-red-800">Overdue</span>
+                                    </td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                                        <button class="text-blue-600 hover:text-blue-900 mr-3"><i class="fas fa-print"></i></button>
+                                        <button class="text-purple-600 hover:text-purple-900"><i class="fas fa-eye"></i></button>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">#FIN-2023-00148</td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">Lisa K. (DL-963258)</td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">Illegal Parking</td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">Oct 10, 2023</td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">Oct 24, 2023</td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">$75.00</td>
+                                    <td class="px-6 py-4 whitespace-nowrap">
+                                        <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800">Paid</span>
+                                    </td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                                        <button class="text-blue-600 hover:text-blue-900 mr-3"><i class="fas fa-print"></i></button>
+                                        <button class="text-purple-600 hover:text-purple-900"><i class="fas fa-eye"></i></button>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">#FIN-2023-00149</td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">Michael B. (DL-741852)</td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">Expired Registration</td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">Oct 14, 2023</td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">Oct 28, 2023</td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">$50.00</td>
+                                    <td class="px-6 py-4 whitespace-nowrap">
+                                        <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-indigo-100 text-indigo-800">Disputed</span>
+                                    </td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                                        <button class="text-blue-600 hover:text-blue-900 mr-3"><i class="fas fa-print"></i></button>
+                                        <button class="text-purple-600 hover:text-purple-900"><i class="fas fa-eye"></i></button>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <div class="px-6 py-4 border-t flex items-center justify-between">
+                        <div class="text-sm text-gray-500">Showing <span class="font-medium">1</span> to <span class="font-medium">5</span> of <span class="font-medium">1,248</span> entries</div>
+                        <div class="flex space-x-2">
+                            <button class="px-3 py-1 border rounded-lg text-sm">Previous</button>
+                            <button class="px-3 py-1 border rounded-lg bg-blue-600 text-white text-sm">1</button>
+                            <button class="px-3 py-1 border rounded-lg text-sm">2</button>
+                            <button class="px-3 py-1 border rounded-lg text-sm">3</button>
+                            <button class="px-3 py-1 border rounded-lg text-sm">4</button>
+                            <button class="px-3 py-1 border rounded-lg text-sm">5</button>
+                            <button class="px-3 py-1 border rounded-lg text-sm">Next</button>
+                        </div>
+                    </div>
+                </div>
+            </main>
+        </div>
+    </div>
+
+    <!-- Add Fine Modal -->
+    <div id="addFineModal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 hidden">
+        <div class="bg-white rounded-lg shadow-xl w-full max-w-2xl">
+            <div class="px-6 py-4 border-b flex items-center justify-between">
+                <h3 class="text-lg font-semibold">Issue New Traffic Fine</h3>
+                <button id="closeModalBtn" class="text-gray-500 hover:text-gray-700">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <div class="p-6">
+                <form>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <div>
+                            <label class="block text-gray-700 text-sm font-medium mb-2" for="driver-search">
+                                Search Driver
+                            </label>
+                            <div class="relative">
+                                <input id="driver-search" type="text" class="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" placeholder="License number or name">
+                                <button class="absolute right-3 top-2 text-blue-600">
+                                    <i class="fas fa-search"></i>
+                                </button>
+                            </div>
+                        </div>
+
+                        <div>
+                            <label class="block text-gray-700 text-sm font-medium mb-2" for="vehicle-plate">
+                                Vehicle Plate
+                            </label>
+                            <input id="vehicle-plate" type="text" class="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" placeholder="e.g. ABC-1234">
+                        </div>
+
+                        <div>
+                            <label class="block text-gray-700 text-sm font-medium mb-2" for="violation-type">
+                                Violation Type
+                            </label>
+                            <select id="violation-type" class="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
+                                <option value="">Select Violation</option>
+                                <option value="speeding">Speeding</option>
+                                <option value="red-light">Red Light Violation</option>
+                                <option value="seatbelt">No Seatbelt</option>
+                                <option value="parking">Illegal Parking</option>
+                                <option value="dui">DUI</option>
+                                <option value="insurance">No Insurance</option>
+                                <option value="registration">Expired Registration</option>
+                            </select>
+                        </div>
+
+                        <div>
+                            <label class="block text-gray-700 text-sm font-medium mb-2" for="fine-amount">
+                                Fine Amount ($)
+                            </label>
+                            <input id="fine-amount" type="number" class="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" placeholder="0.00">
+                        </div>
+
+                        <div>
+                            <label class="block text-gray-700 text-sm font-medium mb-2" for="issue-date">
+                                Issue Date
+                            </label>
+                            <input id="issue-date" type="date" class="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
+                        </div>
+
+                        <div>
+                            <label class="block text-gray-700 text-sm font-medium mb-2" for="due-date">
+                                Due Date
+                            </label>
+                            <input id="due-date" type="date" class="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
+                        </div>
+
+                        <div class="md:col-span-2">
+                            <label class="block text-gray-700 text-sm font-medium mb-2" for="location">
+                                Violation Location
+                            </label>
+                            <input id="location" type="text" class="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" placeholder="Street name and city">
+                        </div>
+
+                        <div class="md:col-span-2">
+                            <label class="block text-gray-700 text-sm font-medium mb-2" for="notes">
+                                Officer Notes
+                            </label>
+                            <textarea id="notes" rows="3" class="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" placeholder="Additional details about the violation..."></textarea>
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="px-6 py-4 border-t flex justify-end space-x-3">
+                <button id="cancelModalBtn" class="px-4 py-2 bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200">
+                    Cancel
+                </button>
+                <button class="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700">
+                    Issue Fine
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Sidebar toggle
+        const sidebarToggle = document.getElementById('sidebarToggle');
+        const sidebar = document.querySelector('.sidebar');
+        const mainContent = document.querySelector('.main-content');
+
+        sidebarToggle.addEventListener('click', () => {
+            sidebar.classList.toggle('collapsed');
+            mainContent.classList.toggle('expanded');
+        });
+
+        // Modal handling
+        const addFineBtn = document.getElementById('addFineBtn');
+        const addFineModal = document.getElementById('addFineModal');
+        const closeModalBtn = document.getElementById('closeModalBtn');
+        const cancelModalBtn = document.getElementById('cancelModalBtn');
+
+        addFineBtn.addEventListener('click', () => {
+            addFineModal.classList.remove('hidden');
+        });
+
+        closeModalBtn.addEventListener('click', () => {
+            addFineModal.classList.add('hidden');
+        });
+
+        cancelModalBtn.addEventListener('click', () => {
+            addFineModal.classList.add('hidden');
+        });
+
+        // Close modal when clicking outside
+        addFineModal.addEventListener('click', (e) => {
+            if (e.target === addFineModal) {
+                addFineModal.classList.add('hidden');
+            }
+        });
+
+        // Set today's date as default for issue date
+        document.addEventListener('DOMContentLoaded', function() {
+            const today = new Date();
+            const dd = String(today.getDate()).padStart(2, '0');
+            const mm = String(today.getMonth() + 1).padStart(2, '0');
+            const yyyy = today.getFullYear();
+            const todayFormatted = yyyy + '-' + mm + '-' + dd;
+
+            document.getElementById('issue-date').value = todayFormatted;
+
+            // Set due date to 14 days from today
+            const dueDate = new Date();
+            dueDate.setDate(today.getDate() + 14);
+            const dueDD = String(dueDate.getDate()).padStart(2, '0');
+            const dueMM = String(dueDate.getMonth() + 1).padStart(2, '0');
+            const dueYYYY = dueDate.getFullYear();
+            const dueFormatted = dueYYYY + '-' + dueMM + '-' + dueDD;
+
+            document.getElementById('due-date').value = dueFormatted;
+        });
+    </script>
+</body>
+
+</html>

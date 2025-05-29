@@ -1,0 +1,1076 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>System Settings | Nairobi Traffic Police Fines</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        .sidebar {
+            transition: all 0.3s ease;
+        }
+        
+        .sidebar.collapsed {
+            width: 70px;
+        }
+        
+        .sidebar.collapsed .sidebar-text {
+            display: none;
+        }
+        
+        .sidebar.collapsed .sidebar-icon {
+            margin-right: 0;
+        }
+        
+        .tab-content {
+            display: none;
+        }
+        
+        .tab-content.active {
+            display: block;
+        }
+        
+        .toggle-checkbox:checked {
+            right: 0;
+            background-color: #3B82F6;
+        }
+        
+        .toggle-checkbox:checked+.toggle-label {
+            background-color: #93C5FD;
+        }
+    </style>
+</head>
+
+<body class="bg-gray-50 font-sans">
+    <div class="flex h-screen overflow-hidden">
+        <!-- Sidebar -->
+        <div class="sidebar bg-blue-800 text-white w-64 flex-shrink-0 flex flex-col">
+            <div class="p-4 flex items-center justify-between border-b border-blue-700">
+                <div class="flex items-center">
+                    <img src="https://www.nairobi.go.ke/wp-content/uploads/2020/09/cropped-nairobi-logo-32x32.png" alt="Nairobi County Logo" class="h-8 w-8">
+                    <span class="sidebar-text ml-3 text-xl font-semibold">Nairobi Traffic</span>
+                </div>
+                <button id="sidebarToggle" class="text-blue-200 hover:text-white">
+                    <i class="fas fa-bars"></i>
+                </button>
+            </div>
+
+            <div class="flex-1 overflow-y-auto">
+                <nav class="p-4">
+                    <div class="mb-8">
+                        <p class="sidebar-text uppercase text-xs text-blue-400 font-semibold mb-4">Main Menu</p>
+                        <ul>
+                            <li class="mb-2">
+                                <a href="#" class="flex items-center p-2 text-blue-200 hover:bg-blue-700 rounded-lg">
+                                    <i class="sidebar-icon fas fa-tachometer-alt"></i>
+                                    <span class="sidebar-text ml-3">Dashboard</span>
+                                </a>
+                            </li>
+                            <li class="mb-2">
+                                <a href="#" class="flex items-center p-2 text-blue-200 hover:bg-blue-700 rounded-lg">
+                                    <i class="sidebar-icon fas fa-car-crash"></i>
+                                    <span class="sidebar-text ml-3">Violations</span>
+                                </a>
+                            </li>
+                            <li class="mb-2">
+                                <a href="#" class="flex items-center p-2 text-blue-200 hover:bg-blue-700 rounded-lg">
+                                    <i class="sidebar-icon fas fa-file-invoice-dollar"></i>
+                                    <span class="sidebar-text ml-3">Fines</span>
+                                </a>
+                            </li>
+                            <li class="mb-2">
+                                <a href="#" class="flex items-center p-2 text-blue-200 hover:bg-blue-700 rounded-lg">
+                                    <i class="sidebar-icon fas fa-users"></i>
+                                    <span class="sidebar-text ml-3">Drivers</span>
+                                </a>
+                            </li>
+                            <li class="mb-2">
+                                <a href="#" class="flex items-center p-2 text-blue-200 hover:bg-blue-700 rounded-lg">
+                                    <i class="sidebar-icon fas fa-map-marked-alt"></i>
+                                    <span class="sidebar-text ml-3">Hotspots</span>
+                                </a>
+                            </li>
+                            <li class="mb-2">
+                                <a href="#" class="flex items-center p-2 text-blue-200 hover:bg-blue-700 rounded-lg">
+                                    <i class="sidebar-icon fas fa-chart-bar"></i>
+                                    <span class="sidebar-text ml-3">Reports</span>
+                                </a>
+                            </li>
+                        </ul>
+                    </div>
+
+                    <div>
+                        <p class="sidebar-text uppercase text-xs text-blue-400 font-semibold mb-4">System</p>
+                        <ul>
+                            <li class="mb-2">
+                                <a href="#" class="flex items-center p-2 bg-blue-900 text-white rounded-lg">
+                                    <i class="sidebar-icon fas fa-cog"></i>
+                                    <span class="sidebar-text ml-3">Settings</span>
+                                </a>
+                            </li>
+                            <li class="mb-2">
+                                <a href="#" class="flex items-center p-2 text-blue-200 hover:bg-blue-700 rounded-lg">
+                                    <i class="sidebar-icon fas fa-user-shield"></i>
+                                    <span class="sidebar-text ml-3">User Management</span>
+                                </a>
+                            </li>
+                            <li class="mb-2">
+                                <a href="#" class="flex items-center p-2 text-blue-200 hover:bg-blue-700 rounded-lg">
+                                    <i class="sidebar-icon fas fa-history"></i>
+                                    <span class="sidebar-text ml-3">Audit Logs</span>
+                                </a>
+                            </li>
+                        </ul>
+                    </div>
+                </nav>
+            </div>
+
+            <div class="p-4 border-t border-blue-700">
+                <div class="flex items-center">
+                    <img src="https://randomuser.me/api/portraits/men/32.jpg" alt="User" class="h-8 w-8 rounded-full">
+                    <div class="sidebar-text ml-3">
+                        <p class="text-sm font-medium">Inspector Kamau</p>
+                        <p class="text-xs text-blue-300">Traffic Police</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Main Content -->
+        <div class="flex-1 flex flex-col overflow-hidden">
+            <!-- Top Navigation -->
+            <header class="bg-white shadow-sm">
+                <div class="px-6 py-4 flex items-center justify-between">
+                    <h1 class="text-2xl font-semibold text-gray-800">
+                        <i class="fas fa-cog text-blue-600 mr-3"></i> System Settings
+                    </h1>
+
+                    <div class="flex items-center space-x-4">
+                        <button class="p-2 rounded-full bg-gray-100 text-gray-600 hover:bg-gray-200">
+                            <i class="fas fa-bell"></i>
+                            <span class="sr-only">Notifications</span>
+                        </button>
+                        <button class="p-2 rounded-full bg-gray-100 text-gray-600 hover:bg-gray-200">
+                            <i class="fas fa-question-circle"></i>
+                            <span class="sr-only">Help</span>
+                        </button>
+                        <div class="relative">
+                            <button id="userMenuButton" class="flex items-center space-x-2 focus:outline-none">
+                                <span class="text-sm font-medium">Inspector Kamau</span>
+                                <img src="https://randomuser.me/api/portraits/men/32.jpg" alt="User" class="h-8 w-8 rounded-full">
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </header>
+
+            <!-- Main Content Area -->
+            <main class="flex-1 overflow-y-auto p-6 bg-gray-50">
+                <div class="max-w-6xl mx-auto">
+                    <!-- Settings Tabs -->
+                    <div class="bg-white rounded-lg shadow mb-6">
+                        <div class="border-b border-gray-200">
+                            <nav class="flex -mb-px">
+                                <button data-tab="general" class="tab-button py-4 px-6 text-center border-b-2 font-medium text-sm border-blue-500 text-blue-600">
+                                    <i class="fas fa-cog mr-2"></i> General
+                                </button>
+                                <button data-tab="violations" class="tab-button py-4 px-6 text-center border-b-2 font-medium text-sm border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300">
+                                    <i class="fas fa-car-crash mr-2"></i> Violations & Fines
+                                </button>
+                                <button data-tab="notifications" class="tab-button py-4 px-6 text-center border-b-2 font-medium text-sm border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300">
+                                    <i class="fas fa-bell mr-2"></i> Notifications
+                                </button>
+                                <button data-tab="integrations" class="tab-button py-4 px-6 text-center border-b-2 font-medium text-sm border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300">
+                                    <i class="fas fa-plug mr-2"></i> Integrations
+                                </button>
+                                <button data-tab="backup" class="tab-button py-4 px-6 text-center border-b-2 font-medium text-sm border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300">
+                                    <i class="fas fa-database mr-2"></i> Backup & Restore
+                                </button>
+                            </nav>
+                        </div>
+                    </div>
+
+                    <!-- General Settings Tab -->
+                    <div id="general" class="tab-content active">
+                        <div class="bg-white shadow rounded-lg mb-6">
+                            <div class="px-6 py-4 border-b border-gray-200">
+                                <h3 class="text-lg font-medium text-gray-900">General System Settings</h3>
+                                <p class="mt-1 text-sm text-gray-500">Configure basic system preferences and appearance.</p>
+                            </div>
+                            <div class="px-6 py-4 space-y-6">
+                                <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                                    <div>
+                                        <label class="block text-sm font-medium text-gray-700 mb-1">System Language</label>
+                                        <select class="mt-1 block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm rounded-md">
+                                            <option>English</option>
+                                            <option>Swahili</option>
+                                        </select>
+                                    </div>
+                                    <div>
+                                        <label class="block text-sm font-medium text-gray-700 mb-1">Time Zone</label>
+                                        <select class="mt-1 block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm rounded-md">
+                                            <option>Africa/Nairobi (EAT)</option>
+                                            <option>UTC</option>
+                                        </select>
+                                    </div>
+                                    <div>
+                                        <label class="block text-sm font-medium text-gray-700 mb-1">Date Format</label>
+                                        <select class="mt-1 block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm rounded-md">
+                                            <option>DD/MM/YYYY</option>
+                                            <option>MM/DD/YYYY</option>
+                                            <option>YYYY-MM-DD</option>
+                                        </select>
+                                    </div>
+                                </div>
+
+                                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                    <div>
+                                        <label class="block text-sm font-medium text-gray-700 mb-1">System Name</label>
+                                        <input type="text" value="Nairobi Traffic Police Fines System" class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm">
+                                    </div>
+                                    <div>
+                                        <label class="block text-sm font-medium text-gray-700 mb-1">System Logo</label>
+                                        <div class="mt-1 flex items-center">
+                                            <span class="h-12 w-12 rounded-full overflow-hidden bg-gray-100 flex items-center justify-center">
+                                                <img src="https://www.nairobi.go.ke/wp-content/uploads/2020/09/cropped-nairobi-logo-32x32.png" alt="Current logo" class="h-8 w-8">
+                                            </span>
+                                            <button type="button" class="ml-5 bg-white py-2 px-3 border border-gray-300 rounded-md shadow-sm text-sm leading-4 font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
+                                                Change
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                    <div>
+                                        <label class="block text-sm font-medium text-gray-700 mb-1">Default Records Per Page</label>
+                                        <select class="mt-1 block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm rounded-md">
+                                            <option>10</option>
+                                            <option selected>25</option>
+                                            <option>50</option>
+                                            <option>100</option>
+                                        </select>
+                                    </div>
+                                    <div>
+                                        <label class="block text-sm font-medium text-gray-700 mb-1">System Theme</label>
+                                        <div class="mt-1 flex space-x-4">
+                                            <button class="w-8 h-8 rounded-full bg-blue-600 border-2 border-blue-700"></button>
+                                            <button class="w-8 h-8 rounded-full bg-green-600 border-2 border-gray-200"></button>
+                                            <button class="w-8 h-8 rounded-full bg-red-600 border-2 border-gray-200"></button>
+                                            <button class="w-8 h-8 rounded-full bg-purple-600 border-2 border-gray-200"></button>
+                                            <button class="w-8 h-8 rounded-full bg-gray-800 border-2 border-gray-200"></button>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="flex items-center justify-between pt-6 border-t border-gray-200">
+                                    <div>
+                                        <h4 class="text-sm font-medium text-gray-700">Maintenance Mode</h4>
+                                        <p class="text-xs text-gray-500">When enabled, only administrators can access the system.</p>
+                                    </div>
+                                    <div class="relative inline-block w-10 mr-2 align-middle select-none">
+                                        <input type="checkbox" id="maintenanceToggle" class="toggle-checkbox absolute block w-6 h-6 rounded-full bg-white border-4 appearance-none cursor-pointer" />
+                                        <label for="maintenanceToggle" class="toggle-label block overflow-hidden h-6 rounded-full bg-gray-300 cursor-pointer"></label>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="px-6 py-4 bg-gray-50 text-right">
+                                <button type="button" class="bg-blue-600 border border-transparent rounded-md shadow-sm py-2 px-4 inline-flex justify-center text-sm font-medium text-white hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
+                                    Save General Settings
+                                </button>
+                            </div>
+                        </div>
+
+                        <div class="bg-white shadow rounded-lg">
+                            <div class="px-6 py-4 border-b border-gray-200">
+                                <h3 class="text-lg font-medium text-gray-900">System Information</h3>
+                                <p class="mt-1 text-sm text-gray-500">Technical details about your system installation.</p>
+                            </div>
+                            <div class="px-6 py-4">
+                                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                    <div>
+                                        <dl class="grid grid-cols-1 gap-x-4 gap-y-4 sm:grid-cols-2">
+                                            <div class="sm:col-span-1">
+                                                <dt class="text-sm font-medium text-gray-500">System Version</dt>
+                                                <dd class="mt-1 text-sm text-gray-900">v4.2.1</dd>
+                                            </div>
+                                            <div class="sm:col-span-1">
+                                                <dt class="text-sm font-medium text-gray-500">Last Updated</dt>
+                                                <dd class="mt-1 text-sm text-gray-900">15 June 2023</dd>
+                                            </div>
+                                            <div class="sm:col-span-1">
+                                                <dt class="text-sm font-medium text-gray-500">Database Version</dt>
+                                                <dd class="mt-1 text-sm text-gray-900">MySQL 8.0</dd>
+                                            </div>
+                                            <div class="sm:col-span-1">
+                                                <dt class="text-sm font-medium text-gray-500">PHP Version</dt>
+                                                <dd class="mt-1 text-sm text-gray-900">8.1.6</dd>
+                                            </div>
+                                        </dl>
+                                    </div>
+                                    <div>
+                                        <dl class="grid grid-cols-1 gap-x-4 gap-y-4 sm:grid-cols-2">
+                                            <div class="sm:col-span-1">
+                                                <dt class="text-sm font-medium text-gray-500">Server OS</dt>
+                                                <dd class="mt-1 text-sm text-gray-900">Ubuntu 22.04 LTS</dd>
+                                            </div>
+                                            <div class="sm:col-span-1">
+                                                <dt class="text-sm font-medium text-gray-500">Server IP</dt>
+                                                <dd class="mt-1 text-sm text-gray-900">192.168.1.45</dd>
+                                            </div>
+                                            <div class="sm:col-span-1">
+                                                <dt class="text-sm font-medium text-gray-500">Disk Space</dt>
+                                                <dd class="mt-1 text-sm text-gray-900">45.2 GB / 100 GB</dd>
+                                            </div>
+                                            <div class="sm:col-span-1">
+                                                <dt class="text-sm font-medium text-gray-500">Memory Usage</dt>
+                                                <dd class="mt-1 text-sm text-gray-900">1.2 GB / 4 GB</dd>
+                                            </div>
+                                        </dl>
+                                    </div>
+                                </div>
+
+                                <div class="mt-6 pt-6 border-t border-gray-200">
+                                    <h4 class="text-sm font-medium text-gray-700 mb-3">System Health</h4>
+                                    <div class="space-y-4">
+                                        <div>
+                                            <div class="flex items-center justify-between mb-1">
+                                                <span class="text-sm font-medium text-gray-700">Database</span>
+                                                <span class="text-sm font-medium text-green-600">Operational</span>
+                                            </div>
+                                            <div class="w-full bg-gray-200 rounded-full h-2.5">
+                                                <div class="bg-green-600 h-2.5 rounded-full" style="width: 95%"></div>
+                                            </div>
+                                        </div>
+                                        <div>
+                                            <div class="flex items-center justify-between mb-1">
+                                                <span class="text-sm font-medium text-gray-700">Storage</span>
+                                                <span class="text-sm font-medium text-yellow-600">45% Used</span>
+                                            </div>
+                                            <div class="w-full bg-gray-200 rounded-full h-2.5">
+                                                <div class="bg-yellow-500 h-2.5 rounded-full" style="width: 45%"></div>
+                                            </div>
+                                        </div>
+                                        <div>
+                                            <div class="flex items-center justify-between mb-1">
+                                                <span class="text-sm font-medium text-gray-700">Memory</span>
+                                                <span class="text-sm font-medium text-blue-600">30% Used</span>
+                                            </div>
+                                            <div class="w-full bg-gray-200 rounded-full h-2.5">
+                                                <div class="bg-blue-600 h-2.5 rounded-full" style="width: 30%"></div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Violations & Fines Settings Tab -->
+                    <div id="violations" class="tab-content">
+                        <div class="bg-white shadow rounded-lg mb-6">
+                            <div class="px-6 py-4 border-b border-gray-200">
+                                <h3 class="text-lg font-medium text-gray-900">Violation Categories</h3>
+                                <p class="mt-1 text-sm text-gray-500">Manage different types of traffic violations and their classifications.</p>
+                            </div>
+                            <div class="px-6 py-4">
+                                <div class="flex justify-between items-center mb-4">
+                                    <div class="relative w-64">
+                                        <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                                            <i class="fas fa-search text-gray-400"></i>
+                                        </div>
+                                        <input type="text" class="block w-full pl-10 pr-3 py-2 border border-gray-300 rounded-md leading-5 bg-white placeholder-gray-500 focus:outline-none focus:placeholder-gray-400 focus:ring-1 focus:ring-blue-500 focus:border-blue-500 sm:text-sm" placeholder="Search violations...">
+                                    </div>
+                                    <button type="button" class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
+                                        <i class="fas fa-plus mr-2"></i> Add Violation
+                                    </button>
+                                </div>
+
+                                <div class="overflow-x-auto">
+                                    <table class="min-w-full divide-y divide-gray-200">
+                                        <thead class="bg-gray-50">
+                                            <tr>
+                                                <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Code</th>
+                                                <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Violation</th>
+                                                <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Category</th>
+                                                <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Fine Amount (KES)</th>
+                                                <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Points</th>
+                                                <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
+                                                <th scope="col" class="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">Actions</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody class="bg-white divide-y divide-gray-200">
+                                            <tr>
+                                                <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">TR-101</td>
+                                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">Speeding (20-30km/h over limit)</td>
+                                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">Moving Violation</td>
+                                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">3,000</td>
+                                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">3</td>
+                                                <td class="px-6 py-4 whitespace-nowrap">
+                                                    <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800">Active</span>
+                                                </td>
+                                                <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
+                                                    <button class="text-blue-600 hover:text-blue-900 mr-3">Edit</button>
+                                                    <button class="text-red-600 hover:text-red-900">Deactivate</button>
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">TR-102</td>
+                                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">Running a red light</td>
+                                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">Serious Violation</td>
+                                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">5,000</td>
+                                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">5</td>
+                                                <td class="px-6 py-4 whitespace-nowrap">
+                                                    <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800">Active</span>
+                                                </td>
+                                                <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
+                                                    <button class="text-blue-600 hover:text-blue-900 mr-3">Edit</button>
+                                                    <button class="text-red-600 hover:text-red-900">Deactivate</button>
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">TR-103</td>
+                                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">Illegal parking (designated zones)</td>
+                                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">Parking Violation</td>
+                                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">2,000</td>
+                                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">2</td>
+                                                <td class="px-6 py-4 whitespace-nowrap">
+                                                    <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800">Active</span>
+                                                </td>
+                                                <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
+                                                    <button class="text-blue-600 hover:text-blue-900 mr-3">Edit</button>
+                                                    <button class="text-red-600 hover:text-red-900">Deactivate</button>
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">TR-104</td>
+                                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">Driving without seatbelt</td>
+                                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">Safety Violation</td>
+                                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">1,500</td>
+                                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">2</td>
+                                                <td class="px-6 py-4 whitespace-nowrap">
+                                                    <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800">Active</span>
+                                                </td>
+                                                <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
+                                                    <button class="text-blue-600 hover:text-blue-900 mr-3">Edit</button>
+                                                    <button class="text-red-600 hover:text-red-900">Deactivate</button>
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">TR-105</td>
+                                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">Matatu overloading</td>
+                                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">Public Service Violation</td>
+                                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">10,000</td>
+                                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">6</td>
+                                                <td class="px-6 py-4 whitespace-nowrap">
+                                                    <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800">Active</span>
+                                                </td>
+                                                <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
+                                                    <button class="text-blue-600 hover:text-blue-900 mr-3">Edit</button>
+                                                    <button class="text-red-600 hover:text-red-900">Deactivate</button>
+                                                </td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+
+                                <div class="px-6 py-4 bg-gray-50 border-t border-gray-200 flex items-center justify-between">
+                                    <div class="flex-1 flex justify-between sm:hidden">
+                                        <button class="relative inline-flex items-center px-4 py-2 border border-gray-300 text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50">
+                                            Previous
+                                        </button>
+                                        <button class="ml-3 relative inline-flex items-center px-4 py-2 border border-gray-300 text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50">
+                                            Next
+                                        </button>
+                                    </div>
+                                    <div class="hidden sm:flex-1 sm:flex sm:items-center sm:justify-between">
+                                        <div>
+                                            <p class="text-sm text-gray-700">
+                                                Showing <span class="font-medium">1</span> to <span class="font-medium">5</span> of <span class="font-medium">12</span> violations
+                                            </p>
+                                        </div>
+                                        <div>
+                                            <nav class="relative z-0 inline-flex rounded-md shadow-sm -space-x-px" aria-label="Pagination">
+                                                <button class="relative inline-flex items-center px-2 py-2 rounded-l-md border border-gray-300 bg-white text-sm font-medium text-gray-500 hover:bg-gray-50">
+                                                    <span class="sr-only">Previous</span>
+                                                    <i class="fas fa-chevron-left"></i>
+                                                </button>
+                                                <button aria-current="page" class="z-10 bg-blue-50 border-blue-500 text-blue-600 relative inline-flex items-center px-4 py-2 border text-sm font-medium">
+                                                    1
+                                                </button>
+                                                <button class="bg-white border-gray-300 text-gray-500 hover:bg-gray-50 relative inline-flex items-center px-4 py-2 border text-sm font-medium">
+                                                    2
+                                                </button>
+                                                <button class="bg-white border-gray-300 text-gray-500 hover:bg-gray-50 relative inline-flex items-center px-4 py-2 border text-sm font-medium">
+                                                    3
+                                                </button>
+                                                <button class="relative inline-flex items-center px-2 py-2 rounded-r-md border border-gray-300 bg-white text-sm font-medium text-gray-500 hover:bg-gray-50">
+                                                    <span class="sr-only">Next</span>
+                                                    <i class="fas fa-chevron-right"></i>
+                                                </button>
+                                            </nav>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="bg-white shadow rounded-lg">
+                            <div class="px-6 py-4 border-b border-gray-200">
+                                <h3 class="text-lg font-medium text-gray-900">Fine Payment Settings</h3>
+                                <p class="mt-1 text-sm text-gray-500">Configure payment options and fine collection settings.</p>
+                            </div>
+                            <div class="px-6 py-4 space-y-6">
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-700 mb-1">Default Payment Methods</label>
+                                    <div class="mt-1 space-y-2">
+                                        <div class="flex items-center">
+                                            <input id="mpesa" name="payment_methods" type="checkbox" checked class="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded">
+                                            <label for="mpesa" class="ml-3 block text-sm font-medium text-gray-700">
+                                                <div class="flex items-center">
+                                                    <img src="https://upload.wikimedia.org/wikipedia/commons/1/15/M-PESA_LOGO-01.svg" alt="M-Pesa" class="h-5 ml-1">
+                                                    <span class="ml-2">M-Pesa</span>
+                                                </div>
+                                            </label>
+                                        </div>
+                                        <div class="flex items-center">
+                                            <input id="card" name="payment_methods" type="checkbox" checked class="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded">
+                                            <label for="card" class="ml-3 block text-sm font-medium text-gray-700">
+                                                <div class="flex items-center">
+                                                    <i class="fab fa-cc-visa text-blue-800 text-xl"></i>
+                                                    <i class="fab fa-cc-mastercard text-red-800 text-xl ml-1"></i>
+                                                    <span class="ml-2">Credit/Debit Cards</span>
+                                                </div>
+                                            </label>
+                                        </div>
+                                        <div class="flex items-center">
+                                            <input id="bank" name="payment_methods" type="checkbox" class="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded">
+                                            <label for="bank" class="ml-3 block text-sm font-medium text-gray-700">
+                                                <div class="flex items-center">
+                                                    <i class="fas fa-university text-gray-600"></i>
+                                                    <span class="ml-2">Bank Transfer</span>
+                                                </div>
+                                            </label>
+                                        </div>
+                                        <div class="flex items-center">
+                                            <input id="cash" name="payment_methods" type="checkbox" class="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded">
+                                            <label for="cash" class="ml-3 block text-sm font-medium text-gray-700">
+                                                <div class="flex items-center">
+                                                    <i class="fas fa-money-bill-wave text-green-600"></i>
+                                                    <span class="ml-2">Cash Payment</span>
+                                                </div>
+                                            </label>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                    <div>
+                                        <label class="block text-sm font-medium text-gray-700 mb-1">Default Payment Deadline (Days)</label>
+                                        <input type="number" value="14" min="1" max="90" class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm">
+                                    </div>
+                                    <div>
+                                        <label class="block text-sm font-medium text-gray-700 mb-1">Late Payment Penalty (%)</label>
+                                        <div class="mt-1 relative rounded-md shadow-sm">
+                                            <input type="number" value="15" min="0" max="100" class="block w-full pr-10 border border-gray-300 rounded-md py-2 px-3 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm">
+                                            <div class="absolute inset-y-0 right-0 pr-3 flex items-center pointer-events-none">
+                                                <span class="text-gray-500 sm:text-sm">%</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                    <div>
+                                        <label class="block text-sm font-medium text-gray-700 mb-1">M-Pesa Paybill Number</label>
+                                        <input type="text" value="123456" class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm">
+                                    </div>
+                                    <div>
+                                        <label class="block text-sm font-medium text-gray-700 mb-1">M-Pesa Account Number</label>
+                                        <input type="text" value="NairobiTraffic" class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm">
+                                    </div>
+                                </div>
+
+                                <div class="pt-6 border-t border-gray-200">
+                                    <h4 class="text-sm font-medium text-gray-700 mb-3">Fine Receipt Settings</h4>
+                                    <div class="space-y-4">
+                                        <div class="flex items-center">
+                                            <input id="receipt_email" name="receipt_email" type="checkbox" checked class="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded">
+                                            <label for="receipt_email" class="ml-3 block text-sm font-medium text-gray-700">Email receipt to offender</label>
+                                        </div>
+                                        <div class="flex items-center">
+                                            <input id="receipt_sms" name="receipt_sms" type="checkbox" checked class="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded">
+                                            <label for="receipt_sms" class="ml-3 block text-sm font-medium text-gray-700">SMS receipt to offender</label>
+                                        </div>
+                                        <div class="flex items-center">
+                                            <input id="receipt_print" name="receipt_print" type="checkbox" class="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded">
+                                            <label for="receipt_print" class="ml-3 block text-sm font-medium text-gray-700">Enable receipt printing</label>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="px-6 py-4 bg-gray-50 text-right">
+                                <button type="button" class="bg-blue-600 border border-transparent rounded-md shadow-sm py-2 px-4 inline-flex justify-center text-sm font-medium text-white hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
+                                    Save Payment Settings
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Notifications Settings Tab -->
+                    <div id="notifications" class="tab-content">
+                        <div class="bg-white shadow rounded-lg mb-6">
+                            <div class="px-6 py-4 border-b border-gray-200">
+                                <h3 class="text-lg font-medium text-gray-900">Notification Preferences</h3>
+                                <p class="mt-1 text-sm text-gray-500">Configure how and when you receive system notifications.</p>
+                            </div>
+                            <div class="px-6 py-4 space-y-6">
+                                <div>
+                                    <h4 class="text-sm font-medium text-gray-700 mb-3">Notification Channels</h4>
+                                    <div class="space-y-4">
+                                        <div class="flex items-center justify-between">
+                                            <div class="flex items-center">
+                                                <i class="fas fa-envelope text-gray-600 mr-3"></i>
+                                                <div>
+                                                    <label class="block text-sm font-medium text-gray-700">Email Notifications</label>
+                                                    <p class="text-xs text-gray-500">Receive notifications via email</p>
+                                                </div>
+                                            </div>
+                                            <div class="relative inline-block w-10 mr-2 align-middle select-none">
+                                                <input type="checkbox" id="emailToggle" checked class="toggle-checkbox absolute block w-6 h-6 rounded-full bg-white border-4 appearance-none cursor-pointer" />
+                                                <label for="emailToggle" class="toggle-label block overflow-hidden h-6 rounded-full bg-gray-300 cursor-pointer"></label>
+                                            </div>
+                                        </div>
+                                        <div class="flex items-center justify-between">
+                                            <div class="flex items-center">
+                                                <i class="fas fa-sms text-blue-600 mr-3"></i>
+                                                <div>
+                                                    <label class="block text-sm font-medium text-gray-700">SMS Notifications</label>
+                                                    <p class="text-xs text-gray-500">Receive notifications via text message</p>
+                                                </div>
+                                            </div>
+                                            <div class="relative inline-block w-10 mr-2 align-middle select-none">
+                                                <input type="checkbox" id="smsToggle" checked class="toggle-checkbox absolute block w-6 h-6 rounded-full bg-white border-4 appearance-none cursor-pointer" />
+                                                <label for="smsToggle" class="toggle-label block overflow-hidden h-6 rounded-full bg-gray-300 cursor-pointer"></label>
+                                            </div>
+                                        </div>
+                                        <div class="flex items-center justify-between">
+                                            <div class="flex items-center">
+                                                <i class="fas fa-bell text-yellow-500 mr-3"></i>
+                                                <div>
+                                                    <label class="block text-sm font-medium text-gray-700">In-App Notifications</label>
+                                                    <p class="text-xs text-gray-500">Show notifications within the system</p>
+                                                </div>
+                                            </div>
+                                            <div class="relative inline-block w-10 mr-2 align-middle select-none">
+                                                <input type="checkbox" id="appToggle" checked class="toggle-checkbox absolute block w-6 h-6 rounded-full bg-white border-4 appearance-none cursor-pointer" />
+                                                <label for="appToggle" class="toggle-label block overflow-hidden h-6 rounded-full bg-gray-300 cursor-pointer"></label>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="pt-6 border-t border-gray-200">
+                                    <h4 class="text-sm font-medium text-gray-700 mb-3">Notification Types</h4>
+                                    <div class="space-y-4">
+                                        <div class="flex items-center justify-between">
+                                            <div>
+                                                <label class="block text-sm font-medium text-gray-700">New Violation Reported</label>
+                                                <p class="text-xs text-gray-500">When a new traffic violation is recorded</p>
+                                            </div>
+                                            <div class="relative inline-block w-10 mr-2 align-middle select-none">
+                                                <input type="checkbox" id="newViolationToggle" checked class="toggle-checkbox absolute block w-6 h-6 rounded-full bg-white border-4 appearance-none cursor-pointer" />
+                                                <label for="newViolationToggle" class="toggle-label block overflow-hidden h-6 rounded-full bg-gray-300 cursor-pointer"></label>
+                                            </div>
+                                        </div>
+                                        <div class="flex items-center justify-between">
+                                            <div>
+                                                <label class="block text-sm font-medium text-gray-700">Fine Payment Received</label>
+                                                <p class="text-xs text-gray-500">When a fine payment is successfully processed</p>
+                                            </div>
+                                            <div class="relative inline-block w-10 mr-2 align-middle select-none">
+                                                <input type="checkbox" id="paymentToggle" checked class="toggle-checkbox absolute block w-6 h-6 rounded-full bg-white border-4 appearance-none cursor-pointer" />
+                                                <label for="paymentToggle" class="toggle-label block overflow-hidden h-6 rounded-full bg-gray-300 cursor-pointer"></label>
+                                            </div>
+                                        </div>
+                                        <div class="flex items-center justify-between">
+                                            <div>
+                                                <label class="block text-sm font-medium text-gray-700">Late Payment Reminder</label>
+                                                <p class="text-xs text-gray-500">When a fine payment is overdue</p>
+                                            </div>
+                                            <div class="relative inline-block w-10 mr-2 align-middle select-none">
+                                                <input type="checkbox" id="latePaymentToggle" checked class="toggle-checkbox absolute block w-6 h-6 rounded-full bg-white border-4 appearance-none cursor-pointer" />
+                                                <label for="latePaymentToggle" class="toggle-label block overflow-hidden h-6 rounded-full bg-gray-300 cursor-pointer"></label>
+                                            </div>
+                                        </div>
+                                        <div class="flex items-center justify-between">
+                                            <div>
+                                                <label class="block text-sm font-medium text-gray-700">System Alerts</label>
+                                                <p class="text-xs text-gray-500">Important system notifications and updates</p>
+                                            </div>
+                                            <div class="relative inline-block w-10 mr-2 align-middle select-none">
+                                                <input type="checkbox" id="systemAlertsToggle" checked class="toggle-checkbox absolute block w-6 h-6 rounded-full bg-white border-4 appearance-none cursor-pointer" />
+                                                <label for="systemAlertsToggle" class="toggle-label block overflow-hidden h-6 rounded-full bg-gray-300 cursor-pointer"></label>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="pt-6 border-t border-gray-200">
+                                    <h4 class="text-sm font-medium text-gray-700 mb-3">Email Notification Settings</h4>
+                                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                        <div>
+                                            <label class="block text-sm font-medium text-gray-700 mb-1">Notification Email Address</label>
+                                            <input type="email" value="kamau@nairobi.go.ke" class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm">
+                                        </div>
+                                        <div>
+                                            <label class="block text-sm font-medium text-gray-700 mb-1">Email Frequency</label>
+                                            <select class="mt-1 block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm rounded-md">
+                                                <option>Immediately</option>
+                                                <option>Daily Digest</option>
+                                                <option>Weekly Summary</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="pt-6 border-t border-gray-200">
+                                    <h4 class="text-sm font-medium text-gray-700 mb-3">SMS Notification Settings</h4>
+                                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                        <div>
+                                            <label class="block text-sm font-medium text-gray-700 mb-1">Mobile Number</label>
+                                            <div class="mt-1 relative rounded-md shadow-sm">
+                                                <div class="absolute inset-y-0 left-0 flex items-center">
+                                                    <label for="country" class="sr-only">Country</label>
+                                                    <select id="country" name="country" class="h-full py-0 pl-3 pr-7 border-transparent bg-transparent text-gray-500 sm:text-sm rounded-md">
+                                                        <option>+254</option>
+                                                    </select>
+                                                </div>
+                                                <input type="text" name="phone_number" id="phone_number" value="712345678" class="block w-full pl-16 border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm">
+                                            </div>
+                                        </div>
+                                        <div>
+                                            <label class="block text-sm font-medium text-gray-700 mb-1">SMS Sender ID</label>
+                                            <input type="text" value="NairobiTraffic" class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm">
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="px-6 py-4 bg-gray-50 text-right">
+                                <button type="button" class="bg-blue-600 border border-transparent rounded-md shadow-sm py-2 px-4 inline-flex justify-center text-sm font-medium text-white hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
+                                    Save Notification Settings
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Integrations Settings Tab -->
+                    <div id="integrations" class="tab-content">
+                        <div class="bg-white shadow rounded-lg mb-6">
+                            <div class="px-6 py-4 border-b border-gray-200">
+                                <h3 class="text-lg font-medium text-gray-900">System Integrations</h3>
+                                <p class="mt-1 text-sm text-gray-500">Connect with external services and platforms.</p>
+                            </div>
+                            <div class="px-6 py-4 space-y-6">
+                                <div class="border border-gray-200 rounded-lg p-4">
+                                    <div class="flex items-center justify-between">
+                                        <div class="flex items-center">
+                                            <img src="https://upload.wikimedia.org/wikipedia/commons/1/15/M-PESA_LOGO-01.svg" alt="M-Pesa" class="h-8">
+                                            <div class="ml-4">
+                                                <h4 class="text-sm font-medium text-gray-900">M-Pesa Integration</h4>
+                                                <p class="text-xs text-gray-500">Process fine payments via M-Pesa</p>
+                                            </div>
+                                        </div>
+                                        <div class="relative inline-block w-10 mr-2 align-middle select-none">
+                                            <input type="checkbox" id="mpesaIntegrationToggle" checked class="toggle-checkbox absolute block w-6 h-6 rounded-full bg-white border-4 appearance-none cursor-pointer" />
+                                            <label for="mpesaIntegrationToggle" class="toggle-label block overflow-hidden h-6 rounded-full bg-gray-300 cursor-pointer"></label>
+                                        </div>
+                                    </div>
+                                    <div class="mt-4 pt-4 border-t border-gray-200">
+                                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                            <div>
+                                                <label class="block text-sm font-medium text-gray-700 mb-1">M-Pesa API Key</label>
+                                                <input type="password" value="mpk_1234567890abcdef" class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm">
+                                            </div>
+                                            <div>
+                                                <label class="block text-sm font-medium text-gray-700 mb-1">M-Pesa API Secret</label>
+                                                <input type="password" value="mps_0987654321fedcba" class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm">
+                                            </div>
+                                        </div>
+                                        <div class="mt-4">
+                                            <label class="block text-sm font-medium text-gray-700 mb-1">M-Pesa Callback URL</label>
+                                            <input type="text" value="https://api.nairobi.go.ke/traffic/mpesa/callback" class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm">
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="border border-gray-200 rounded-lg p-4">
+                                    <div class="flex items-center justify-between">
+                                        <div class="flex items-center">
+                                            <img src="https://upload.wikimedia.org/wikipedia/commons/5/5e/KRA_Logo.png" alt="KRA" class="h-8">
+                                            <div class="ml-4">
+                                                <h4 class="text-sm font-medium text-gray-900">KRA Integration</h4>
+                                                <p class="text-xs text-gray-500">Sync with Kenya Revenue Authority</p>
+                                            </div>
+                                        </div>
+                                        <div class="relative inline-block w-10 mr-2 align-middle select-none">
+                                            <input type="checkbox" id="kraIntegrationToggle" class="toggle-checkbox absolute block w-6 h-6 rounded-full bg-white border-4 appearance-none cursor-pointer" />
+                                            <label for="kraIntegrationToggle" class="toggle-label block overflow-hidden h-6 rounded-full bg-gray-300 cursor-pointer"></label>
+                                        </div>
+                                    </div>
+                                    <div class="mt-4 pt-4 border-t border-gray-200">
+                                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                            <div>
+                                                <label class="block text-sm font-medium text-gray-700 mb-1">KRA API Endpoint</label>
+                                                <input type="text" value="https://api.kra.go.ke/v1/" class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm">
+                                            </div>
+                                            <div>
+                                                <label class="block text-sm font-medium text-gray-700 mb-1">KRA API Key</label>
+                                                <input type="password" class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm">
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="border border-gray-200 rounded-lg p-4">
+                                    <div class="flex items-center justify-between">
+                                        <div class="flex items-center">
+                                            <img src="https://www.nationaltransport.go.ke/wp-content/uploads/2020/06/NTSA-Logo.png" alt="NTSA" class="h-8">
+                                            <div class="ml-4">
+                                                <h4 class="text-sm font-medium text-gray-900">NTSA Integration</h4>
+                                                <p class="text-xs text-gray-500">Connect with National Transport and Safety Authority</p>
+                                            </div>
+                                        </div>
+                                        <div class="relative inline-block w-10 mr-2 align-middle select-none">
+                                            <input type="checkbox" id="ntsaIntegrationToggle" checked class="toggle-checkbox absolute block w-6 h-6 rounded-full bg-white border-4 appearance-none cursor-pointer" />
+                                            <label for="ntsaIntegrationToggle" class="toggle-label block overflow-hidden h-6 rounded-full bg-gray-300 cursor-pointer"></label>
+                                        </div>
+                                    </div>
+                                    <div class="mt-4 pt-4 border-t border-gray-200">
+                                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                            <div>
+                                                <label class="block text-sm font-medium text-gray-700 mb-1">NTSA API Endpoint</label>
+                                                <input type="text" value="https://api.ntsa.go.ke/v2/" class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm">
+                                            </div>
+                                            <div>
+                                                <label class="block text-sm font-medium text-gray-700 mb-1">NTSA API Key</label>
+                                                <input type="password" value="ntsa_9876543210" class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm">
+                                            </div>
+                                        </div>
+                                        <div class="mt-4">
+                                            <label class="block text-sm font-medium text-gray-700 mb-1">Sync Frequency</label>
+                                            <select class="mt-1 block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm rounded-md">
+                                                <option>Every 15 minutes</option>
+                                                <option>Hourly</option>
+                                                <option selected>Daily</option>
+                                                <option>Weekly</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="border border-gray-200 rounded-lg p-4">
+                                    <div class="flex items-center justify-between">
+                                        <div class="flex items-center">
+                                            <i class="fab fa-google text-red-500 text-2xl"></i>
+                                            <div class="ml-4">
+                                                <h4 class="text-sm font-medium text-gray-900">Google Maps API</h4>
+                                                <p class="text-xs text-gray-500">Enable mapping and geolocation features</p>
+                                            </div>
+                                        </div>
+                                        <div class="relative inline-block w-10 mr-2 align-middle select-none">
+                                            <input type="checkbox" id="googleMapsToggle" checked class="toggle-checkbox absolute block w-6 h-6 rounded-full bg-white border-4 appearance-none cursor-pointer" />
+                                            <label for="googleMapsToggle" class="toggle-label block overflow-hidden h-6 rounded-full bg-gray-300 cursor-pointer"></label>
+                                        </div>
+                                    </div>
+                                    <div class="mt-4 pt-4 border-t border-gray-200">
+                                        <div>
+                                            <label class="block text-sm font-medium text-gray-700 mb-1">Google Maps API Key</label>
+                                            <input type="password" value="AIzaSyABCDEFGHIJKLMNOPQRSTUVWXYZ12345678" class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm">
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="px-6 py-4 bg-gray-50 text-right">
+                                <button type="button" class="bg-blue-600 border border-transparent rounded-md shadow-sm py-2 px-4 inline-flex justify-center text-sm font-medium text-white hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
+                                    Save Integration Settings
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Backup & Restore Settings Tab -->
+                    <div id="backup" class="tab-content">
+                        <div class="bg-white shadow rounded-lg mb-6">
+                            <div class="px-6 py-4 border-b border-gray-200">
+                                <h3 class="text-lg font-medium text-gray-900">System Backup</h3>
+                                <p class="mt-1 text-sm text-gray-500">Create and manage system backups.</p>
+                            </div>
+                            <div class="px-6 py-4 space-y-6">
+                                <div>
+                                    <h4 class="text-sm font-medium text-gray-700 mb-3">Manual Backup</h4>
+                                    <div class="bg-blue-50 border border-blue-200 rounded-lg p-4">
+                                        <div class="flex items-center justify-between">
+                                            <div>
+                                                <h5 class="text-sm font-medium text-blue-800">Create New Backup</h5>
+                                                <p class="text-xs text-blue-600">Generate a complete backup of the system data and configuration.</p>
+                                            </div>
+                                            <button type="button" class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
+                                                <i class="fas fa-download mr-2"></i> Create Backup
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="pt-6 border-t border-gray-200">
+                                    <h4 class="text-sm font-medium text-gray-700 mb-3">Automatic Backups</h4>
+                                    <div class="flex items-center justify-between">
+                                        <div>
+                                            <label class="block text-sm font-medium text-gray-700">Enable Automatic Backups</label>
+                                            <p class="text-xs text-gray-500">System will automatically create backups at scheduled times</p>
+                                        </div>
+                                        <div class="relative inline-block w-10 mr-2 align-middle select-none">
+                                            <input type="checkbox" id="autoBackupToggle" class="toggle-checkbox absolute block w-6 h-6 rounded-full bg-white border-4 appearance-none cursor-pointer" />
+                                            <label for="autoBackupToggle" class="toggle-label block overflow-hidden h-6 rounded-full bg-gray-300 cursor-pointer"></label>
+                                        </div>
+                                    </div>
+
+                                    <div class="mt-4 grid grid-cols-1 md:grid-cols-2 gap-6">
+                                        <div>
+                                            <label class="block text-sm font-medium text-gray-700 mb-1">Backup Frequency</label>
+                                            <select class="mt-1 block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm rounded-md">
+                                                <option>Daily</option>
+                                                <option>Weekly</option>
+                                                <option selected>Monthly</option>
+                                            </select>
+                                        </div>
+                                        <div>
+                                            <label class="block text-sm font-medium text-gray-700 mb-1">Backup Time</label>
+                                            <input type="time" value="02:00" class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm">
+                                        </div>
+                                    </div>
+
+                                    <div class="mt-4">
+                                        <label class="block text-sm font-medium text-gray-700 mb-1">Backup Retention</label>
+                                        <select class="mt-1 block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm rounded-md">
+                                            <option>Keep all backups</option>
+                                            <option selected>Keep backups for 30 days</option>
+                                            <option>Keep backups for 90 days</option>
+                                            <option>Keep backups for 1 year</option>
+                                        </select>
+                                    </div>
+
+                                    <div class="mt-4">
+                                        <label class="block text-sm font-medium text-gray-700 mb-1">Backup Storage</label>
+                                        <div class="mt-1 space-y-2">
+                                            <div class="flex items-center">
+                                                <input id="local_storage" name="backup_storage" type="radio" checked class="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300">
+                                                <label for="local_storage" class="ml-3 block text-sm font-medium text-gray-700">
+                                                    Local Server Storage
+                                                </label>
+                                            </div>
+                                            <div class="flex items-center">
+                                                <input id="cloud_storage" name="backup_storage" type="radio" class="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300">
+                                                <label for="cloud_storage" class="ml-3 block text-sm font-medium text-gray-700">
+                                                    Cloud Storage (Google Drive)
+                                                </label>
+                                            </div>
+                                            <div class="flex items-center">
+                                                <input id="external_storage" name="backup_storage" type="radio" class="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300">
+                                                <label for="external_storage" class="ml-3 block text-sm font-medium text-gray-700">
+                                                    External Drive
+                                                </label>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="pt-6 border-t border-gray-200">
+                                    <h4 class="text-sm font-medium text-gray-700 mb-3">Available Backups</h4>
+                                    <div class="overflow-x-auto">
+                                        <table class="min-w-full divide-y divide-gray-200">
+                                            <thead class="bg-gray-50">
+                                                <tr>
+                                                    <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Backup Name</th>
+                                                    <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Date Created</th>
+                                                    <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Size</th>
+                                                    <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Type</th>
+                                                    <th scope="col" class="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">Actions</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody class="bg-white divide-y divide-gray-200">
+                                                <tr>
+                                                    <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">backup_20230615_full</td>
+                                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">15 June 2023, 02:00</td>
+                                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">1.2 GB</td>
+                                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">Full</td>
+                                                    <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
+                                                        <button class="text-blue-600 hover:text-blue-900 mr-3">Download</button>
+                                                        <button class="text-red-600 hover:text-red-900">Delete</button>
+                                                    </td>
+                                                </tr>
+                                                <tr>
+                                                    <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">backup_20230601_full</td>
+                                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">1 June 2023, 02:00</td>
+                                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">1.1 GB</td>
+                                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">Full</td>
+                                                    <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
+                                                        <button class="text-blue-600 hover:text-blue-900 mr-3">Download</button>
+                                                        <button class="text-red-600 hover:text-red-900">Delete</button>
+                                                    </td>
+                                                </tr>
+                                                <tr>
+                                                    <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">backup_20230515_full</td>
+                                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">15 May 2023, 02:00</td>
+                                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">1.0 GB</td>
+                                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">Full</td>
+                                                    <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
+                                                        <button class="text-blue-600 hover:text-blue-900 mr-3">Download</button>
+                                                        <button class="text-red-600 hover:text-red-900">Delete</button>
+                                                    </td>
+                                                </tr>
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="px-6 py-4 bg-gray-50 text-right">
+                                <button type="button" class="bg-blue-600 border border-transparent rounded-md shadow-sm py-2 px-4 inline-flex justify-center text-sm font-medium text-white hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
+                                    Save Backup Settings
+                                </button>
+                            </div>
+                        </div>
+
+                        <div class="bg-white shadow rounded-lg">
+                            <div class="px-6 py-4 border-b border-gray-200">
+                                <h3 class="text-lg font-medium text-gray-900">System Restore</h3>
+                                <p class="mt-1 text-sm text-gray-500">Restore the system from a previous backup.</p>
+                            </div>
+                            <div class="px-6 py-4 space-y-6">
+                                <div class="bg-yellow-50 border border-yellow-200 rounded-lg p-4">
+                                    <div class="flex">
+                                        <div class="flex-shrink-0">
+                                            <i class="fas fa-exclamation-triangle text-yellow-400"></i>
+                                        </div>
+                                        <div class="ml-3">
+                                            <h3 class="text-sm font-medium text-yellow-800">Warning</h3>
+                                            <div class="mt-2 text-sm text-yellow-700">
+                                                <p>Restoring from a backup will overwrite all current system data. This action cannot be undone. It is recommended to create a new backup before performing a restore.</p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-700 mb-1">Select Backup to Restore</label>
+                                    <select class="mt-1 block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm rounded-md">
+                                        <option>Select a backup file...</option>
+                                        <option>backup_20230615_full</option>
+                                        <option>backup_20230601_full</option>
+                                        <option>backup_20230515_full</option>
+                                    </select>
+                                </div>
+
+                                < </html>

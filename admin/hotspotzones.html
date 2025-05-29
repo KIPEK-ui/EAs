@@ -1,0 +1,868 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hotspot Zones | Nairobi Traffic Police System</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    <script src="https://unpkg.com/leaflet.heat@0.2.0/dist/leaflet-heat.js"></script>
+    <style>
+        #map,
+        #addZoneMap {
+            height: 400px;
+            border-radius: 0.75rem;
+            z-index: 0;
+        }
+        
+        .map-container {
+            position: relative;
+        }
+        
+        .map-overlay {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            background: white;
+            padding: 10px;
+            border-radius: 8px;
+            box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+            z-index: 1;
+        }
+        
+        .heatmap-legend {
+            position: absolute;
+            bottom: 20px;
+            left: 20px;
+            background: white;
+            padding: 10px;
+            border-radius: 8px;
+            box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+            z-index: 1;
+        }
+        
+        .heatmap-legend i {
+            display: inline-block;
+            width: 20px;
+            height: 10px;
+            margin-right: 5px;
+        }
+        
+        .zone-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+        }
+        
+        .violation-tag {
+            display: inline-flex;
+            align-items: center;
+            padding: 0.25rem 0.5rem;
+            border-radius: 9999px;
+            font-size: 0.75rem;
+            font-weight: 500;
+        }
+        
+        .hotspot-marker {
+            background: transparent;
+            border: none;
+        }
+        
+        .add-zone-marker {
+            background: transparent;
+            border: none;
+        }
+    </style>
+</head>
+
+<body class="bg-gray-50 font-sans">
+    <div class="container mx-auto p-4">
+        <!-- Page Header -->
+        <div class="flex flex-col md:flex-row md:items-center md:justify-between mb-8">
+            <div>
+                <h1 class="text-3xl font-bold text-gray-800">Nairobi Hotspot Zones</h1>
+                <p class="text-gray-600">Interactive map and analytics of high-violation traffic zones in Nairobi</p>
+            </div>
+            <div class="mt-4 md:mt-0 flex space-x-3">
+                <button id="addHotspotBtn" class="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 flex items-center">
+                    <i class="fas fa-plus-circle mr-2"></i> Add New Hotspot
+                </button>
+                <button class="px-4 py-2 border border-gray-300 rounded-lg hover:bg-gray-50 flex items-center">
+                    <i class="fas fa-filter mr-2"></i> Filter
+                </button>
+                <button class="px-4 py-2 border border-gray-300 rounded-lg hover:bg-gray-50 flex items-center">
+                    <i class="fas fa-download mr-2"></i> Export
+                </button>
+            </div>
+        </div>
+
+        <!-- Stats Cards -->
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+            <div class="bg-white rounded-xl shadow p-6">
+                <div class="flex items-center justify-between">
+                    <div>
+                        <p class="text-gray-500">Active Hotspots</p>
+                        <h3 class="text-3xl font-bold text-blue-600">24</h3>
+                    </div>
+                    <div class="p-3 rounded-full bg-blue-100 text-blue-600">
+                        <i class="fas fa-map-marker-alt text-xl"></i>
+                    </div>
+                </div>
+            </div>
+
+            <div class="bg-white rounded-xl shadow p-6">
+                <div class="flex items-center justify-between">
+                    <div>
+                        <p class="text-gray-500">Critical Zones</p>
+                        <h3 class="text-3xl font-bold text-red-600">5</h3>
+                        <p class="text-sm text-red-500">Needs immediate attention</p>
+                    </div>
+                    <div class="p-3 rounded-full bg-red-100 text-red-600">
+                        <i class="fas fa-exclamation-triangle text-xl"></i>
+                    </div>
+                </div>
+            </div>
+
+            <div class="bg-white rounded-xl shadow p-6">
+                <div class="flex items-center justify-between">
+                    <div>
+                        <p class="text-gray-500">Avg. Violations/Day</p>
+                        <h3 class="text-3xl font-bold text-yellow-600">68</h3>
+                        <p class="text-sm text-yellow-500">+15% from last week</p>
+                    </div>
+                    <div class="p-3 rounded-full bg-yellow-100 text-yellow-600">
+                        <i class="fas fa-chart-line text-xl"></i>
+                    </div>
+                </div>
+            </div>
+
+            <div class="bg-white rounded-xl shadow p-6">
+                <div class="flex items-center justify-between">
+                    <div>
+                        <p class="text-gray-500">Cameras Deployed</p>
+                        <h3 class="text-3xl font-bold text-green-600">45</h3>
+                        <p class="text-sm text-green-500">82% operational</p>
+                    </div>
+                    <div class="p-3 rounded-full bg-green-100 text-green-600">
+                        <i class="fas fa-video text-xl"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Main Map Section -->
+        <div class="bg-white rounded-xl shadow overflow-hidden mb-8">
+            <div class="px-6 py-4 border-b">
+                <h3 class="text-lg font-semibold">Nairobi Violation Heatmap & Hotspots</h3>
+                <p class="text-sm text-gray-500">Real-time visualization of traffic violation concentrations in Nairobi</p>
+            </div>
+            <div class="map-container p-4">
+                <div id="map"></div>
+                <div class="map-overlay">
+                    <div class="flex items-center space-x-2">
+                        <button id="heatmapToggle" class="px-3 py-1 bg-blue-600 text-white rounded text-sm">
+                            <i class="fas fa-fire mr-1"></i> Heatmap
+                        </button>
+                        <button id="hotspotsToggle" class="px-3 py-1 bg-white border border-gray-300 rounded text-sm">
+                            <i class="fas fa-map-marker-alt mr-1"></i> Hotspots
+                        </button>
+                    </div>
+                </div>
+                <div class="heatmap-legend">
+                    <div class="text-xs font-medium mb-1">Violation Intensity</div>
+                    <div><i style="background: #FFEDA0;"></i> <span>Low</span></div>
+                    <div><i style="background: #FEB24C;"></i> <span>Medium</span></div>
+                    <div><i style="background: #F03B20;"></i> <span>High</span></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Hotspot Zones List -->
+        <div class="bg-white rounded-xl shadow overflow-hidden mb-8">
+            <div class="px-6 py-4 border-b flex flex-col md:flex-row md:items-center md:justify-between">
+                <div class="mb-4 md:mb-0">
+                    <h3 class="text-lg font-semibold">Nairobi Hotspot Zones</h3>
+                    <p class="text-sm text-gray-500">Detailed list of monitored violation hotspots in Nairobi</p>
+                </div>
+                <div class="flex items-center space-x-2">
+                    <div class="relative">
+                        <select id="priorityFilter" class="appearance-none bg-gray-100 border border-gray-300 rounded-lg pl-3 pr-8 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm">
+                            <option>All Zones</option>
+                            <option>Critical</option>
+                            <option>High Priority</option>
+                            <option>Medium Priority</option>
+                            <option>Low Priority</option>
+                        </select>
+                        <i class="fas fa-chevron-down absolute right-3 top-3 text-gray-500 text-xs"></i>
+                    </div>
+                    <div class="relative">
+                        <select id="sortBy" class="appearance-none bg-gray-100 border border-gray-300 rounded-lg pl-3 pr-8 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm">
+                            <option>Sort by Violations</option>
+                            <option>Sort by Name</option>
+                            <option>Sort by Priority</option>
+                        </select>
+                        <i class="fas fa-chevron-down absolute right-3 top-3 text-gray-500 text-xs"></i>
+                    </div>
+                </div>
+            </div>
+
+            <div class="divide-y divide-gray-200" id="hotspotsList">
+                <!-- Hotspot zones will be dynamically loaded here -->
+            </div>
+
+            <div class="px-6 py-4 border-t flex items-center justify-between">
+                <div class="text-sm text-gray-500">
+                    Showing <span class="font-medium">1</span> to <span class="font-medium">4</span> of <span class="font-medium">24</span> zones
+                </div>
+                <div class="flex space-x-2">
+                    <button class="px-3 py-1 border rounded-lg text-sm bg-gray-100 text-gray-600">
+                        Previous
+                    </button>
+                    <button class="px-3 py-1 border rounded-lg text-sm bg-blue-600 text-white">
+                        1
+                    </button>
+                    <button class="px-3 py-1 border rounded-lg text-sm hover:bg-gray-100">
+                        2
+                    </button>
+                    <button class="px-3 py-1 border rounded-lg text-sm hover:bg-gray-100">
+                        3
+                    </button>
+                    <button class="px-3 py-1 border rounded-lg text-sm hover:bg-gray-100">
+                        Next
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Add Hotspot Modal -->
+        <div id="addHotspotModal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 hidden">
+            <div class="bg-white rounded-xl shadow-lg w-full max-w-3xl max-h-screen overflow-y-auto">
+                <div class="px-6 py-4 border-b flex items-center justify-between sticky top-0 bg-white z-10">
+                    <h3 class="text-lg font-semibold">Add New Hotspot Zone in Nairobi</h3>
+                    <button id="closeHotspotModal" class="text-gray-500 hover:text-gray-700">
+                        <i class="fas fa-times"></i>
+                    </button>
+                </div>
+                <div class="p-6">
+                    <form id="hotspotForm">
+                        <div class="grid grid-cols-1 gap-6 mb-6">
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-700 mb-1">Zone Name</label>
+                                    <input type="text" id="zoneName" class="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" placeholder="e.g. Mombasa Road Roundabout" required>
+                                </div>
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-700 mb-1">Priority Level</label>
+                                    <select id="zonePriority" class="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" required>
+                                        <option value="">Select Priority</option>
+                                        <option value="critical">Critical</option>
+                                        <option value="high">High</option>
+                                        <option value="medium">Medium</option>
+                                        <option value="low">Low</option>
+                                    </select>
+                                </div>
+                            </div>
+
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-1">Location Description</label>
+                                <input type="text" id="zoneLocation" class="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" placeholder="e.g. Mombasa Road near JKIA" required>
+                            </div>
+
+                            <div class="border-t border-gray-200 pt-4">
+                                <h4 class="text-md font-medium text-gray-700 mb-3">Common Violations</h4>
+                                <div class="grid grid-cols-2 md:grid-cols-3 gap-3" id="violationTypes">
+                                    <label class="inline-flex items-center">
+                                        <input type="checkbox" name="violation" value="speeding" class="rounded border-gray-300 text-blue-600 shadow-sm focus:border-blue-300 focus:ring focus:ring-blue-200 focus:ring-opacity-50">
+                                        <span class="ml-2">Speeding</span>
+                                    </label>
+                                    <label class="inline-flex items-center">
+                                        <input type="checkbox" name="violation" value="red_light" class="rounded border-gray-300 text-blue-600 shadow-sm focus:border-blue-300 focus:ring focus:ring-blue-200 focus:ring-opacity-50">
+                                        <span class="ml-2">Red Light Running</span>
+                                    </label>
+                                    <label class="inline-flex items-center">
+                                        <input type="checkbox" name="violation" value="illegal_parking" class="rounded border-gray-300 text-blue-600 shadow-sm focus:border-blue-300 focus:ring focus:ring-blue-200 focus:ring-opacity-50">
+                                        <span class="ml-2">Illegal Parking</span>
+                                    </label>
+                                    <label class="inline-flex items-center">
+                                        <input type="checkbox" name="violation" value="no_seatbelt" class="rounded border-gray-300 text-blue-600 shadow-sm focus:border-blue-300 focus:ring focus:ring-blue-200 focus:ring-opacity-50">
+                                        <span class="ml-2">No Seatbelt</span>
+                                    </label>
+                                    <label class="inline-flex items-center">
+                                        <input type="checkbox" name="violation" value="illegal_u_turn" class="rounded border-gray-300 text-blue-600 shadow-sm focus:border-blue-300 focus:ring focus:ring-blue-200 focus:ring-opacity-50">
+                                        <span class="ml-2">Illegal U-Turn</span>
+                                    </label>
+                                    <label class="inline-flex items-center">
+                                        <input type="checkbox" name="violation" value="matatu_violations" class="rounded border-gray-300 text-blue-600 shadow-sm focus:border-blue-300 focus:ring focus:ring-blue-200 focus:ring-opacity-50">
+                                        <span class="ml-2">Matatu Violations</span>
+                                    </label>
+                                </div>
+                            </div>
+
+                            <div class="border-t border-gray-200 pt-4">
+                                <h4 class="text-md font-medium text-gray-700 mb-3">Zone Location</h4>
+                                <div class="h-64 bg-gray-100 rounded-lg" id="addZoneMap"></div>
+                                <div class="mt-2 text-sm text-gray-500">
+                                    <i class="fas fa-info-circle text-blue-500 mr-1"></i> Click on the map to set the hotspot location or drag the marker to adjust
+                                </div>
+                                <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mt-3">
+                                    <div>
+                                        <label class="block text-sm font-medium text-gray-700 mb-1">Latitude</label>
+                                        <input type="text" id="latitude" class="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" readonly>
+                                    </div>
+                                    <div>
+                                        <label class="block text-sm font-medium text-gray-700 mb-1">Longitude</label>
+                                        <input type="text" id="longitude" class="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" readonly>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="border-t border-gray-200 pt-4">
+                                <h4 class="text-md font-medium text-gray-700 mb-3">Additional Information</h4>
+                                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                    <div>
+                                        <label class="block text-sm font-medium text-gray-700 mb-1">Traffic Cameras</label>
+                                        <select id="trafficCameras" class="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
+                                            <option value="">Select Camera</option>
+                                            <option value="TC-4587">Camera #TC-4587 (Mombasa Road)</option>
+                                            <option value="TC-1254">Camera #TC-1254 (Thika Road)</option>
+                                            <option value="TC-7896">Camera #TC-7896 (Waiyaki Way)</option>
+                                            <option value="TC-3621">Camera #TC-3621 (Ngong Road)</option>
+                                            <option value="none">None</option>
+                                        </select>
+                                    </div>
+                                    <div>
+                                        <label class="block text-sm font-medium text-gray-700 mb-1">Patrol Frequency</label>
+                                        <select id="patrolFrequency" class="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
+                                            <option value="high">High (Daily patrols)</option>
+                                            <option value="medium">Medium (3x per week)</option>
+                                            <option value="low">Low (Weekly patrols)</option>
+                                            <option value="as_needed">As needed</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="mt-4">
+                                    <label class="block text-sm font-medium text-gray-700 mb-1">Notes</label>
+                                    <textarea id="zoneNotes" rows="3" class="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" placeholder="Any additional notes about this hotspot zone"></textarea>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="flex justify-end space-x-3">
+                            <button type="button" id="cancelAddHotspot" class="px-4 py-2 border border-gray-300 rounded-lg text-gray-700 hover:bg-gray-50">
+                                Cancel
+                            </button>
+                            <button type="submit" class="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700">
+                                Save Hotspot
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Sample hotspot data for Nairobi
+        const hotspotsData = [{
+            id: 1,
+            name: "Mombasa Road Roundabout",
+            location: "Near JKIA Airport",
+            priority: "critical",
+            violations: ["speeding", "red_light", "matatu_violations"],
+            violationsCount: 187,
+            trend: "up",
+            trendPercentage: 22,
+            coordinates: [-1.3192, 36.9255]
+        }, {
+            id: 2,
+            name: "Thika Road - Garden City",
+            location: "Near Garden City Mall",
+            priority: "high",
+            violations: ["speeding", "illegal_u_turn"],
+            violationsCount: 124,
+            trend: "up",
+            trendPercentage: 15,
+            coordinates: [-1.2208, 36.8913]
+        }, {
+            id: 3,
+            name: "Ngong Road - Prestige Plaza",
+            location: "Near Prestige Plaza",
+            priority: "medium",
+            violations: ["illegal_parking", "matatu_violations"],
+            violationsCount: 92,
+            trend: "down",
+            trendPercentage: 8,
+            coordinates: [-1.3028, 36.8019]
+        }, {
+            id: 4,
+            name: "Waiyaki Way - Westlands",
+            location: "Near Sarit Centre",
+            priority: "low",
+            violations: ["no_seatbelt", "illegal_parking"],
+            violationsCount: 68,
+            trend: "neutral",
+            trendPercentage: 0,
+            coordinates: [-1.2545, 36.8057]
+        }];
+
+        // Heatmap data for Nairobi (simulated)
+        const heatmapData = [{
+                lat: -1.3192,
+                lng: 36.9255,
+                intensity: 0.9
+            }, // Mombasa Road
+            {
+                lat: -1.2208,
+                lng: 36.8913,
+                intensity: 0.8
+            }, // Thika Road
+            {
+                lat: -1.3028,
+                lng: 36.8019,
+                intensity: 0.7
+            }, // Ngong Road
+            {
+                lat: -1.2545,
+                lng: 36.8057,
+                intensity: 0.6
+            }, // Waiyaki Way
+            {
+                lat: -1.2833,
+                lng: 36.8172,
+                intensity: 0.5
+            }, // CBD
+            {
+                lat: -1.2689,
+                lng: 36.8033,
+                intensity: 0.4
+            }, // Upper Hill
+            {
+                lat: -1.2921,
+                lng: 36.8219,
+                intensity: 0.3
+            } // Industrial Area
+        ];
+
+        // Initialize main map
+        let map;
+        let heatmapLayer;
+        let markersLayer = L.layerGroup();
+        let addZoneMap;
+        let addZoneMarker;
+
+        function initMap() {
+            // Main map initialization centered on Nairobi
+            map = L.map('map').setView([-1.2921, 36.8219], 12);
+
+            L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+            }).addTo(map);
+
+            // Initialize heatmap layer
+            const heatmapPoints = heatmapData.map(point => [point.lat, point.lng, point.intensity * 100]);
+            heatmapLayer = L.heatLayer(heatmapPoints, {
+                radius: 25,
+                blur: 15,
+                maxZoom: 17,
+                gradient: {
+                    0.4: 'blue',
+                    0.6: 'cyan',
+                    0.7: 'lime',
+                    0.8: 'yellow',
+                    1.0: 'red'
+                }
+            }).addTo(map);
+
+            // Add hotspot markers
+            updateHotspotMarkers();
+
+            // Heatmap toggle
+            const heatmapToggle = document.getElementById('heatmapToggle');
+            const hotspotsToggle = document.getElementById('hotspotsToggle');
+
+            heatmapToggle.addEventListener('click', () => {
+                if (map.hasLayer(heatmapLayer)) {
+                    map.removeLayer(heatmapLayer);
+                    heatmapToggle.innerHTML = '<i class="fas fa-eye-slash mr-1"></i> Show Heatmap';
+                } else {
+                    map.addLayer(heatmapLayer);
+                    heatmapToggle.innerHTML = '<i class="fas fa-fire mr-1"></i> Heatmap';
+                }
+            });
+
+            hotspotsToggle.addEventListener('click', () => {
+                if (map.hasLayer(markersLayer)) {
+                    map.removeLayer(markersLayer);
+                    hotspotsToggle.innerHTML = '<i class="fas fa-eye-slash mr-1"></i> Show Hotspots';
+                } else {
+                    map.addLayer(markersLayer);
+                    hotspotsToggle.innerHTML = '<i class="fas fa-map-marker-alt mr-1"></i> Hotspots';
+                }
+            });
+        }
+
+        // Update hotspot markers on map
+        function updateHotspotMarkers() {
+            markersLayer.clearLayers();
+
+            hotspotsData.forEach(hotspot => {
+                const hotspotIcon = L.divIcon({
+                    className: 'hotspot-marker',
+                    html: `
+                        <div class="relative">
+                            <div class="animate-ping absolute inline-flex h-full w-full rounded-full ${
+                                hotspot.priority === 'critical' ? 'bg-red-400' :
+                                hotspot.priority === 'high' ? 'bg-orange-400' :
+                                hotspot.priority === 'medium' ? 'bg-yellow-400' : 'bg-green-400'
+                            } opacity-75"></div>
+                            <div class="relative inline-flex rounded-full h-6 w-6 ${
+                                hotspot.priority === 'critical' ? 'bg-red-600' :
+                                hotspot.priority === 'high' ? 'bg-orange-600' :
+                                hotspot.priority === 'medium' ? 'bg-yellow-600' : 'bg-green-600'
+                            } text-white items-center justify-center">
+                                <i class="fas fa-map-marker-alt text-xs"></i>
+                            </div>
+                        </div>
+                    `,
+                    iconSize: [24, 24],
+                    iconAnchor: [12, 24]
+                });
+
+                const marker = L.marker(hotspot.coordinates, {
+                    icon: hotspotIcon
+                }).addTo(markersLayer);
+
+                // Generate violation tags HTML
+                const violationTags = hotspot.violations.map(violation => {
+                    let text, bgColor, textColor;
+                    switch (violation) {
+                        case 'speeding':
+                            text = 'Speeding';
+                            bgColor = 'bg-yellow-100';
+                            textColor = 'text-yellow-800';
+                            break;
+                        case 'red_light':
+                            text = 'Red Light';
+                            bgColor = 'bg-red-100';
+                            textColor = 'text-red-800';
+                            break;
+                        case 'illegal_parking':
+                            text = 'Parking';
+                            bgColor = 'bg-purple-100';
+                            textColor = 'text-purple-800';
+                            break;
+                        case 'no_seatbelt':
+                            text = 'Seatbelt';
+                            bgColor = 'bg-blue-100';
+                            textColor = 'text-blue-800';
+                            break;
+                        case 'illegal_u_turn':
+                            text = 'U-Turn';
+                            bgColor = 'bg-red-100';
+                            textColor = 'text-red-800';
+                            break;
+                        case 'matatu_violations':
+                            text = 'Matatu';
+                            bgColor = 'bg-orange-100';
+                            textColor = 'text-orange-800';
+                            break;
+                        default:
+                            text = 'Other';
+                            bgColor = 'bg-gray-100';
+                            textColor = 'text-gray-800';
+                    }
+                    return `<span class="inline-block px-2 py-1 rounded-full text-xs ${bgColor} ${textColor} mr-1 mb-1">
+                        <i class="fas fa-car-crash mr-1"></i> ${text}
+                    </span>`;
+                }).join('');
+
+                marker.bindPopup(`
+                    <div class="font-semibold text-lg">${hotspot.name}</div>
+                    <div class="text-sm text-gray-600 mb-2">${hotspot.location}</div>
+                    <div class="mb-2">
+                        <span class="inline-block px-2 py-1 rounded-full text-xs ${
+                            hotspot.priority === 'critical' ? 'bg-red-100 text-red-800' :
+                            hotspot.priority === 'high' ? 'bg-orange-100 text-orange-800' :
+                            hotspot.priority === 'medium' ? 'bg-yellow-100 text-yellow-800' : 'bg-green-100 text-green-800'
+                        }">
+                            ${hotspot.priority.charAt(0).toUpperCase() + hotspot.priority.slice(1)} Priority
+                        </span>
+                    </div>
+                    <div class="text-sm mb-2">
+                        <div><i class="fas fa-car-crash text-red-500 mr-1"></i> ${hotspot.violationsCount} violations (7 days)</div>
+                        <div class="mt-1">
+                            <i class="fas ${
+                                hotspot.trend === 'up' ? 'fa-arrow-up text-red-500' :
+                                hotspot.trend === 'down' ? 'fa-arrow-down text-green-500' : 'fa-minus text-gray-500'
+                            } mr-1"></i> ${hotspot.trendPercentage}% ${hotspot.trend === 'up' ? 'increase' : hotspot.trend === 'down' ? 'decrease' : 'no change'}
+                        </div>
+                    </div>
+                    <div class="text-sm">
+                        <div class="font-medium mb-1">Common Violations:</div>
+                        <div class="flex flex-wrap">
+                            ${violationTags}
+                        </div>
+                    </div>
+                `);
+            });
+
+            map.addLayer(markersLayer);
+        }
+
+        // Initialize add zone map
+        function initAddZoneMap() {
+            addZoneMap = L.map('addZoneMap').setView([-1.2921, 36.8219], 12);
+
+            L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+            }).addTo(addZoneMap);
+
+            // Add draggable marker
+            addZoneMarker = L.marker([-1.2921, 36.8219], {
+                draggable: true,
+                icon: L.divIcon({
+                    className: 'add-zone-marker',
+                    html: '<div class="relative inline-flex rounded-full h-8 w-8 bg-blue-600 text-white items-center justify-center"><i class="fas fa-map-marker-alt text-sm"></i></div>',
+                    iconSize: [24, 24],
+                    iconAnchor: [12, 24]
+                })
+            }).addTo(addZoneMap);
+
+            // Update coordinates when marker is dragged
+            addZoneMarker.on('dragend', function(event) {
+                const marker = event.target;
+                const position = marker.getLatLng();
+                document.getElementById('latitude').value = position.lat.toFixed(6);
+                document.getElementById('longitude').value = position.lng.toFixed(6);
+            });
+
+            // Update coordinates when map is clicked
+            addZoneMap.on('click', function(e) {
+                addZoneMarker.setLatLng(e.latlng);
+                document.getElementById('latitude').value = e.latlng.lat.toFixed(6);
+                document.getElementById('longitude').value = e.latlng.lng.toFixed(6);
+            });
+
+            // Set initial coordinates
+            document.getElementById('latitude').value = '-1.292100';
+            document.getElementById('longitude').value = '36.821900';
+        }
+
+        // Render hotspot list
+        function renderHotspotList() {
+            const hotspotsList = document.getElementById('hotspotsList');
+            hotspotsList.innerHTML = '';
+
+            hotspotsData.forEach(hotspot => {
+                const priorityClasses = {
+                    'critical': 'bg-red-100 text-red-800',
+                    'high': 'bg-orange-100 text-orange-800',
+                    'medium': 'bg-yellow-100 text-yellow-800',
+                    'low': 'bg-green-100 text-green-800'
+                };
+
+                const trendIcon = hotspot.trend === 'up' ? 'fa-arrow-up text-red-500' :
+                    hotspot.trend === 'down' ? 'fa-arrow-down text-green-500' : 'fa-minus text-gray-500';
+
+                const violationTags = hotspot.violations.map(violation => {
+                    let text, bgColor, textColor, icon;
+                    switch (violation) {
+                        case 'speeding':
+                            text = 'Speeding';
+                            bgColor = 'bg-yellow-100';
+                            textColor = 'text-yellow-800';
+                            icon = 'fa-tachometer-alt';
+                            break;
+                        case 'red_light':
+                            text = 'Red Light';
+                            bgColor = 'bg-red-100';
+                            textColor = 'text-red-800';
+                            icon = 'fa-running';
+                            break;
+                        case 'illegal_parking':
+                            text = 'Parking';
+                            bgColor = 'bg-purple-100';
+                            textColor = 'text-purple-800';
+                            icon = 'fa-parking';
+                            break;
+                        case 'no_seatbelt':
+                            text = 'Seatbelt';
+                            bgColor = 'bg-blue-100';
+                            textColor = 'text-blue-800';
+                            icon = 'fa-user-shield';
+                            break;
+                        case 'illegal_u_turn':
+                            text = 'U-Turn';
+                            bgColor = 'bg-red-100';
+                            textColor = 'text-red-800';
+                            icon = 'fa-exchange-alt';
+                            break;
+                        case 'matatu_violations':
+                            text = 'Matatu';
+                            bgColor = 'bg-orange-100';
+                            textColor = 'text-orange-800';
+                            icon = 'fa-bus';
+                            break;
+                        default:
+                            text = 'Other';
+                            bgColor = 'bg-gray-100';
+                            textColor = 'text-gray-800';
+                            icon = 'fa-car-crash';
+                    }
+                    return `<span class="violation-tag ${bgColor} ${textColor}">
+                        <i class="fas ${icon} mr-1"></i> ${text}
+                    </span>`;
+                }).join('');
+
+                const hotspotElement = document.createElement('div');
+                hotspotElement.className = 'zone-card p-6 hover:bg-gray-50 transition duration-150 ease-in-out cursor-pointer';
+                hotspotElement.innerHTML = `
+                    <div class="flex flex-col md:flex-row md:items-center md:justify-between">
+                        <div class="flex items-start space-x-4">
+                            <div class="flex-shrink-0">
+                                <div class="w-12 h-12 rounded-full ${
+                                    hotspot.priority === 'critical' ? 'bg-red-100 text-red-600' :
+                                    hotspot.priority === 'high' ? 'bg-orange-100 text-orange-600' :
+                                    hotspot.priority === 'medium' ? 'bg-yellow-100 text-yellow-600' : 'bg-green-100 text-green-600'
+                                } flex items-center justify-center">
+                                    <i class="fas ${hotspot.priority === 'critical' ? 'fa-exclamation-triangle' : 'fa-map-marker-alt'} text-xl"></i>
+                                </div>
+                            </div>
+                            <div>
+                                <h4 class="text-lg font-semibold text-gray-800">${hotspot.name}</h4>
+                                <p class="text-sm text-gray-500">${hotspot.location}</p>
+                                <div class="mt-2 flex flex-wrap gap-2">
+                                    ${violationTags}
+                                </div>
+                            </div>
+                        </div>
+                        <div class="mt-4 md:mt-0 flex flex-col items-end">
+                            <span class="px-3 py-1 rounded-full ${priorityClasses[hotspot.priority]} text-sm font-medium mb-2">
+                                ${hotspot.priority.charAt(0).toUpperCase() + hotspot.priority.slice(1)} Priority
+                            </span>
+                            <div class="text-right">
+                                <p class="text-sm text-gray-500">Last 7 days</p>
+                                <p class="text-lg font-semibold text-gray-800">${hotspot.violationsCount} violations</p>
+                                <p class="text-sm ${
+                                    hotspot.trend === 'up' ? 'text-red-500' :
+                                    hotspot.trend === 'down' ? 'text-green-500' : 'text-gray-500'
+                                } flex items-center justify-end">
+                                    <i class="fas ${trendIcon} text-xs mr-1"></i> ${hotspot.trendPercentage}% ${hotspot.trend === 'up' ? 'increase' : hotspot.trend === 'down' ? 'decrease' : 'no change'}
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                `;
+
+                hotspotElement.addEventListener('click', () => {
+                    map.setView(hotspot.coordinates, 15);
+                    markersLayer.eachLayer(layer => {
+                        if (layer.getLatLng().lat === hotspot.coordinates[0] &&
+                            layer.getLatLng().lng === hotspot.coordinates[1]) {
+                            layer.openPopup();
+                        }
+                    });
+                });
+
+                hotspotsList.appendChild(hotspotElement);
+            });
+        }
+
+        // Modal handling
+        const addHotspotModal = document.getElementById('addHotspotModal');
+        const addHotspotBtn = document.getElementById('addHotspotBtn');
+        const closeHotspotModal = document.getElementById('closeHotspotModal');
+        const cancelAddHotspot = document.getElementById('cancelAddHotspot');
+        const hotspotForm = document.getElementById('hotspotForm');
+
+        addHotspotBtn.addEventListener('click', () => {
+            addHotspotModal.classList.remove('hidden');
+            if (!addZoneMap) {
+                initAddZoneMap();
+            }
+        });
+
+        closeHotspotModal.addEventListener('click', () => {
+            addHotspotModal.classList.add('hidden');
+        });
+
+        cancelAddHotspot.addEventListener('click', () => {
+            addHotspotModal.classList.add('hidden');
+        });
+
+        // Form submission
+        hotspotForm.addEventListener('submit', function(e) {
+            e.preventDefault();
+
+            const zoneName = document.getElementById('zoneName').value;
+            const zonePriority = document.getElementById('zonePriority').value;
+            const zoneLocation = document.getElementById('zoneLocation').value;
+            const latitude = document.getElementById('latitude').value;
+            const longitude = document.getElementById('longitude').value;
+            const trafficCameras = document.getElementById('trafficCameras').value;
+            const patrolFrequency = document.getElementById('patrolFrequency').value;
+            const zoneNotes = document.getElementById('zoneNotes').value;
+
+            // Get selected violations
+            const selectedViolations = [];
+            document.querySelectorAll('input[name="violation"]:checked').forEach(checkbox => {
+                selectedViolations.push(checkbox.value);
+            });
+
+            // Create new hotspot (in a real app, this would be sent to a server)
+            const newHotspot = {
+                id: hotspotsData.length + 1,
+                name: zoneName,
+                location: zoneLocation,
+                priority: zonePriority,
+                violations: selectedViolations,
+                violationsCount: Math.floor(Math.random() * 50) + 10,
+                trend: ['up', 'down', 'neutral'][Math.floor(Math.random() * 3)],
+                trendPercentage: Math.floor(Math.random() * 20) + 1,
+                coordinates: [parseFloat(latitude), parseFloat(longitude)]
+            };
+
+            hotspotsData.unshift(newHotspot);
+
+            // Update UI
+            updateHotspotMarkers();
+            renderHotspotList();
+
+            // Reset form and close modal
+            hotspotForm.reset();
+            addHotspotModal.classList.add('hidden');
+
+            // Show success message
+            alert('Hotspot zone added successfully!');
+
+            // Zoom to new hotspot
+            map.setView(newHotspot.coordinates, 15);
+            markersLayer.eachLayer(layer => {
+                if (layer.getLatLng().lat === newHotspot.coordinates[0] &&
+                    layer.getLatLng().lng === newHotspot.coordinates[1]) {
+                    layer.openPopup();
+                }
+            });
+        });
+
+        // Filter and sort functionality
+        document.getElementById('priorityFilter').addEventListener('change', function() {
+            // In a real app, this would filter the hotspots list
+            console.log('Filter by:', this.value);
+        });
+
+        document.getElementById('sortBy').addEventListener('change', function() {
+            // In a real app, this would sort the hotspots list
+            console.log('Sort by:', this.value);
+        });
+
+        // Initialize everything when DOM is loaded
+        document.addEventListener('DOMContentLoaded', function() {
+            initMap();
+            renderHotspotList();
+        });
+    </script>
+</body>
+
+</html>

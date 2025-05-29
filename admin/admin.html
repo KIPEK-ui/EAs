@@ -1,0 +1,740 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Dashboard | Traffic Police Fine Management</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/apexcharts"></script>
+    <style>
+        .sidebar {
+            transition: all 0.3s ease;
+        }
+        
+        .sidebar.collapsed {
+            width: 70px;
+        }
+        
+        .sidebar.collapsed .sidebar-text {
+            display: none;
+        }
+        
+        .sidebar.collapsed .logo-text {
+            display: none;
+        }
+        
+        .sidebar.collapsed .nav-item {
+            justify-content: center;
+        }
+        
+        .main-content {
+            transition: all 0.3s ease;
+        }
+        
+        .main-content.expanded {
+            margin-left: 70px;
+        }
+        
+        .card-hover:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+        }
+        
+        .card-hover {
+            transition: all 0.3s ease;
+        }
+        
+        .notification-badge {
+            position: absolute;
+            top: -5px;
+            right: -5px;
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            background-color: #EF4444;
+            color: white;
+            font-size: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .dropdown:hover .dropdown-menu {
+            display: block;
+        }
+        
+        .status-badge {
+            padding: 0.25rem 0.5rem;
+            border-radius: 9999px;
+            font-size: 0.75rem;
+            font-weight: 600;
+        }
+        
+        .animate-pulse {
+            animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+        }
+        
+        @keyframes pulse {
+            0%,
+            100% {
+                opacity: 1;
+            }
+            50% {
+                opacity: 0.5;
+            }
+        }
+    </style>
+</head>
+
+<body class="bg-gray-50 font-sans">
+    <div class="flex h-screen overflow-hidden">
+        <!-- Sidebar -->
+        <div class="sidebar bg-blue-900 text-white w-64 flex flex-col">
+            <div class="p-4 flex items-center space-x-2 border-b border-blue-800">
+                <div class="bg-white p-2 rounded-lg">
+                    <i class="fas fa-shield-alt text-blue-900 text-xl"></i>
+                </div>
+                <span class="logo-text text-xl font-bold">TrafficFine Admin</span>
+            </div>
+
+            <div class="p-4 flex items-center justify-between border-b border-blue-800">
+                <div class="flex items-center space-x-3">
+                    <div class="w-10 h-10 rounded-full bg-blue-700 flex items-center justify-center">
+                        <i class="fas fa-user-shield"></i>
+                    </div>
+                    <div>
+                        <div class="sidebar-text font-medium">Admin User</div>
+                        <div class="sidebar-text text-xs text-blue-300">Super Administrator</div>
+                    </div>
+                </div>
+                <button id="sidebarToggle" class="text-blue-300 hover:text-white">
+                    <i class="fas fa-bars"></i>
+                </button>
+            </div>
+
+            <nav class="flex-1 overflow-y-auto py-4">
+                <div class="space-y-1 px-3">
+                    <a href="#" class="nav-item flex items-center space-x-3 px-3 py-2 rounded-lg bg-blue-800 text-white">
+                        <i class="fas fa-tachometer-alt"></i>
+                        <span class="sidebar-text">Dashboard</span>
+                    </a>
+                    <a href="#" class="nav-item flex items-center space-x-3 px-3 py-2 rounded-lg text-blue-200 hover:bg-blue-800 hover:text-white">
+                        <i class="fas fa-users-cog"></i>
+                        <span class="sidebar-text">User Management</span>
+                    </a>
+                    <a href="#" class="nav-item flex items-center space-x-3 px-3 py-2 rounded-lg text-blue-200 hover:bg-blue-800 hover:text-white">
+                        <i class="fas fa-car-crash"></i>
+                        <span class="sidebar-text">Violation Types</span>
+                    </a>
+                    <a href="#" class="nav-item flex items-center space-x-3 px-3 py-2 rounded-lg text-blue-200 hover:bg-blue-800 hover:text-white">
+                        <i class="fas fa-file-invoice-dollar"></i>
+                        <span class="sidebar-text">Fine Management</span>
+                    </a>
+                    <a href="#" class="nav-item flex items-center space-x-3 px-3 py-2 rounded-lg text-blue-200 hover:bg-blue-800 hover:text-white">
+                        <i class="fas fa-map-marked-alt"></i>
+                        <span class="sidebar-text">Hotspot Zones</span>
+                    </a>
+                    <a href="#" class="nav-item flex items-center space-x-3 px-3 py-2 rounded-lg text-blue-200 hover:bg-blue-800 hover:text-white">
+                        <i class="fas fa-chart-pie"></i>
+                        <span class="sidebar-text">Analytics</span>
+                    </a>
+                    <a href="#" class="nav-item flex items-center space-x-3 px-3 py-2 rounded-lg text-blue-200 hover:bg-blue-800 hover:text-white">
+                        <i class="fas fa-cog"></i>
+                        <span class="sidebar-text">System Settings</span>
+                    </a>
+                </div>
+
+                <div class="px-3 mt-8">
+                    <div class="text-xs uppercase text-blue-400 mb-2 sidebar-text">Quick Actions</div>
+                    <div class="space-y-1">
+                        <a href="#" class="nav-item flex items-center space-x-3 px-3 py-2 rounded-lg text-blue-200 hover:bg-blue-800 hover:text-white">
+                            <i class="fas fa-user-plus"></i>
+                            <span class="sidebar-text">Add Officer</span>
+                        </a>
+                        <a href="#" class="nav-item flex items-center space-x-3 px-3 py-2 rounded-lg text-blue-200 hover:bg-blue-800 hover:text-white">
+                            <i class="fas fa-file-export"></i>
+                            <span class="sidebar-text">Export Data</span>
+                        </a>
+                        <a href="#" class="nav-item flex items-center space-x-3 px-3 py-2 rounded-lg text-blue-200 hover:bg-blue-800 hover:text-white">
+                            <i class="fas fa-database"></i>
+                            <span class="sidebar-text">Backup System</span>
+                        </a>
+                    </div>
+                </div>
+            </nav>
+
+            <div class="p-4 border-t border-blue-800">
+                <a href="#" class="nav-item flex items-center space-x-3 px-3 py-2 rounded-lg text-blue-200 hover:bg-blue-800 hover:text-white">
+                    <i class="fas fa-sign-out-alt"></i>
+                    <span class="sidebar-text">Logout</span>
+                </a>
+            </div>
+        </div>
+
+        <!-- Main Content -->
+        <div class="main-content flex-1 flex flex-col overflow-hidden">
+            <!-- Top Navigation -->
+            <header class="bg-white shadow-sm">
+                <div class="px-6 py-4 flex items-center justify-between">
+                    <div>
+                        <h1 class="text-2xl font-semibold text-gray-800">Admin Dashboard</h1>
+                        <p class="text-sm text-gray-500">Welcome back, Administrator</p>
+                    </div>
+                    <div class="flex items-center space-x-4">
+                        <div class="relative">
+                            <input type="text" placeholder="Search..." class="pl-10 pr-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 w-64">
+                            <i class="fas fa-search absolute left-3 top-3 text-gray-400"></i>
+                        </div>
+
+                        <div class="relative">
+                            <button class="p-2 rounded-full bg-gray-100 text-gray-600 hover:bg-gray-200 relative">
+                                <i class="fas fa-bell"></i>
+                                <span class="notification-badge">3</span>
+                            </button>
+                        </div>
+
+                        <div class="dropdown relative">
+                            <button class="flex items-center space-x-2 focus:outline-none">
+                                <div class="w-10 h-10 rounded-full bg-blue-100 text-blue-800 flex items-center justify-center">
+                                    <i class="fas fa-user-shield"></i>
+                                </div>
+                                <span class="hidden md:inline">Admin User</span>
+                                <i class="fas fa-chevron-down text-gray-500 text-xs"></i>
+                            </button>
+                            <div class="dropdown-menu absolute right-0 mt-2 w-48 bg-white rounded-md shadow-lg py-1 z-10 hidden">
+                                <a href="#" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"><i class="fas fa-user mr-2"></i>Profile</a>
+                                <a href="#" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"><i class="fas fa-cog mr-2"></i>Settings</a>
+                                <div class="border-t border-gray-200"></div>
+                                <a href="#" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"><i class="fas fa-sign-out-alt mr-2"></i>Logout</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </header>
+
+            <!-- Main Content Area -->
+            <main class="flex-1 overflow-y-auto p-6">
+                <!-- Stats Cards -->
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-6">
+                    <div class="bg-white rounded-xl shadow p-6 card-hover">
+                        <div class="flex items-center justify-between">
+                            <div>
+                                <p class="text-gray-500">Total Officers</p>
+                                <h3 class="text-3xl font-bold text-blue-600">248</h3>
+                                <p class="text-sm text-green-500 flex items-center">
+                                    <i class="fas fa-arrow-up mr-1"></i> 5 new this week
+                                </p>
+                            </div>
+                            <div class="p-3 rounded-full bg-blue-100 text-blue-600">
+                                <i class="fas fa-user-shield text-xl"></i>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="bg-white rounded-xl shadow p-6 card-hover">
+                        <div class="flex items-center justify-between">
+                            <div>
+                                <p class="text-gray-500">Total Fines</p>
+                                <h3 class="text-3xl font-bold text-green-600">12,856</h3>
+                                <p class="text-sm text-green-500 flex items-center">
+                                    <i class="fas fa-arrow-up mr-1"></i> 8% from last month
+                                </p>
+                            </div>
+                            <div class="p-3 rounded-full bg-green-100 text-green-600">
+                                <i class="fas fa-file-invoice-dollar text-xl"></i>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="bg-white rounded-xl shadow p-6 card-hover">
+                        <div class="flex items-center justify-between">
+                            <div>
+                                <p class="text-gray-500">Revenue Collected</p>
+                                <h3 class="text-3xl font-bold text-purple-600">$642,800</h3>
+                                <p class="text-sm text-green-500 flex items-center">
+                                    <i class="fas fa-arrow-up mr-1"></i> 12% from last month
+                                </p>
+                            </div>
+                            <div class="p-3 rounded-full bg-purple-100 text-purple-600">
+                                <i class="fas fa-dollar-sign text-xl"></i>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="bg-white rounded-xl shadow p-6 card-hover">
+                        <div class="flex items-center justify-between">
+                            <div>
+                                <p class="text-gray-500">System Health</p>
+                                <h3 class="text-3xl font-bold text-yellow-600">98%</h3>
+                                <p class="text-sm text-gray-500">All systems operational</p>
+                            </div>
+                            <div class="p-3 rounded-full bg-yellow-100 text-yellow-600">
+                                <i class="fas fa-heartbeat text-xl"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Charts and Recent Activity -->
+                <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-6">
+                    <!-- Revenue Chart -->
+                    <div class="lg:col-span-2 bg-white rounded-xl shadow p-6">
+                        <div class="flex items-center justify-between mb-4">
+                            <h2 class="text-lg font-semibold">Revenue Analytics</h2>
+                            <div class="flex space-x-2">
+                                <button class="px-3 py-1 text-sm bg-blue-100 text-blue-600 rounded-lg">Monthly</button>
+                                <button class="px-3 py-1 text-sm bg-gray-100 text-gray-600 rounded-lg">Quarterly</button>
+                                <button class="px-3 py-1 text-sm bg-gray-100 text-gray-600 rounded-lg">Yearly</button>
+                            </div>
+                        </div>
+                        <div id="revenueChart" class="h-80"></div>
+                    </div>
+
+                    <!-- System Alerts -->
+                    <div class="bg-white rounded-xl shadow p-6">
+                        <h2 class="text-lg font-semibold mb-4">System Alerts</h2>
+                        <div class="space-y-4">
+                            <div class="flex items-start p-3 rounded-lg bg-red-50 border border-red-100">
+                                <div class="flex-shrink-0 mt-1">
+                                    <div class="w-8 h-8 rounded-full bg-red-100 text-red-600 flex items-center justify-center">
+                                        <i class="fas fa-exclamation-circle"></i>
+                                    </div>
+                                </div>
+                                <div class="ml-3">
+                                    <h4 class="text-sm font-medium text-red-800">Database Backup Failed</h4>
+                                    <p class="text-xs text-red-600 mt-1">Last backup attempt failed at 2:30 AM</p>
+                                    <p class="text-xs text-gray-500 mt-1">2 hours ago</p>
+                                </div>
+                            </div>
+
+                            <div class="flex items-start p-3 rounded-lg bg-yellow-50 border border-yellow-100">
+                                <div class="flex-shrink-0 mt-1">
+                                    <div class="w-8 h-8 rounded-full bg-yellow-100 text-yellow-600 flex items-center justify-center">
+                                        <i class="fas fa-exclamation-triangle"></i>
+                                    </div>
+                                </div>
+                                <div class="ml-3">
+                                    <h4 class="text-sm font-medium text-yellow-800">High Server Load</h4>
+                                    <p class="text-xs text-yellow-600 mt-1">CPU usage reached 85%</p>
+                                    <p class="text-xs text-gray-500 mt-1">4 hours ago</p>
+                                </div>
+                            </div>
+
+                            <div class="flex items-start p-3 rounded-lg bg-blue-50 border border-blue-100">
+                                <div class="flex-shrink-0 mt-1">
+                                    <div class="w-8 h-8 rounded-full bg-blue-100 text-blue-600 flex items-center justify-center">
+                                        <i class="fas fa-info-circle"></i>
+                                    </div>
+                                </div>
+                                <div class="ml-3">
+                                    <h4 class="text-sm font-medium text-blue-800">System Update Available</h4>
+                                    <p class="text-xs text-blue-600 mt-1">Version 2.3.5 is ready to install</p>
+                                    <p class="text-xs text-gray-500 mt-1">1 day ago</p>
+                                </div>
+                            </div>
+
+                            <button class="w-full mt-4 px-4 py-2 bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 text-sm font-medium">
+                                View All Alerts
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Recent Activity and Top Officers -->
+                <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-6">
+                    <!-- Recent Activity -->
+                    <div class="lg:col-span-2 bg-white rounded-xl shadow overflow-hidden">
+                        <div class="px-6 py-4 border-b">
+                            <h2 class="text-lg font-semibold">Recent System Activity</h2>
+                        </div>
+                        <div class="divide-y divide-gray-200">
+                            <div class="px-6 py-4 flex items-start">
+                                <div class="flex-shrink-0 mt-1">
+                                    <div class="w-8 h-8 rounded-full bg-green-100 text-green-600 flex items-center justify-center">
+                                        <i class="fas fa-user-plus"></i>
+                                    </div>
+                                </div>
+                                <div class="ml-3">
+                                    <p class="text-sm text-gray-800">
+                                        <span class="font-medium">Admin User</span> added a new officer <span class="font-medium">Officer Smith</span>
+                                    </p>
+                                    <p class="text-xs text-gray-500 mt-1">10 minutes ago</p>
+                                </div>
+                            </div>
+
+                            <div class="px-6 py-4 flex items-start">
+                                <div class="flex-shrink-0 mt-1">
+                                    <div class="w-8 h-8 rounded-full bg-blue-100 text-blue-600 flex items-center justify-center">
+                                        <i class="fas fa-cog"></i>
+                                    </div>
+                                </div>
+                                <div class="ml-3">
+                                    <p class="text-sm text-gray-800">
+                                        <span class="font-medium">System</span> updated violation fine amounts
+                                    </p>
+                                    <p class="text-xs text-gray-500 mt-1">25 minutes ago</p>
+                                </div>
+                            </div>
+
+                            <div class="px-6 py-4 flex items-start">
+                                <div class="flex-shrink-0 mt-1">
+                                    <div class="w-8 h-8 rounded-full bg-purple-100 text-purple-600 flex items-center justify-center">
+                                        <i class="fas fa-file-export"></i>
+                                    </div>
+                                </div>
+                                <div class="ml-3">
+                                    <p class="text-sm text-gray-800">
+                                        <span class="font-medium">Admin User</span> exported monthly reports
+                                    </p>
+                                    <p class="text-xs text-gray-500 mt-1">1 hour ago</p>
+                                </div>
+                            </div>
+
+                            <div class="px-6 py-4 flex items-start">
+                                <div class="flex-shrink-0 mt-1">
+                                    <div class="w-8 h-8 rounded-full bg-yellow-100 text-yellow-600 flex items-center justify-center">
+                                        <i class="fas fa-user-lock"></i>
+                                    </div>
+                                </div>
+                                <div class="ml-3">
+                                    <p class="text-sm text-gray-800">
+                                        <span class="font-medium">Officer Johnson</span> account was temporarily suspended
+                                    </p>
+                                    <p class="text-xs text-gray-500 mt-1">2 hours ago</p>
+                                </div>
+                            </div>
+
+                            <div class="px-6 py-4 flex items-start">
+                                <div class="flex-shrink-0 mt-1">
+                                    <div class="w-8 h-8 rounded-full bg-red-100 text-red-600 flex items-center justify-center">
+                                        <i class="fas fa-trash-alt"></i>
+                                    </div>
+                                </div>
+                                <div class="ml-3">
+                                    <p class="text-sm text-gray-800">
+                                        <span class="font-medium">Admin User</span> deleted 5 duplicate records
+                                    </p>
+                                    <p class="text-xs text-gray-500 mt-1">3 hours ago</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="px-6 py-4 border-t">
+                            <button class="w-full px-4 py-2 bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 text-sm font-medium">
+                                View All Activity
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Top Performing Officers -->
+                    <div class="bg-white rounded-xl shadow overflow-hidden">
+                        <div class="px-6 py-4 border-b">
+                            <h2 class="text-lg font-semibold">Top Performing Officers</h2>
+                        </div>
+                        <div class="divide-y divide-gray-200">
+                            <div class="px-6 py-4 flex items-center">
+                                <div class="flex-shrink-0">
+                                    <div class="w-10 h-10 rounded-full bg-blue-100 text-blue-600 flex items-center justify-center">
+                                        <i class="fas fa-user"></i>
+                                    </div>
+                                </div>
+                                <div class="ml-4">
+                                    <h4 class="text-sm font-medium text-gray-900">Officer Rodriguez</h4>
+                                    <div class="flex items-center mt-1">
+                                        <div class="w-full bg-gray-200 rounded-full h-2">
+                                            <div class="bg-green-500 h-2 rounded-full" style="width: 92%"></div>
+                                        </div>
+                                        <span class="text-xs text-gray-500 ml-2">92%</span>
+                                    </div>
+                                    <p class="text-xs text-gray-500 mt-1">156 fines this month</p>
+                                </div>
+                            </div>
+
+                            <div class="px-6 py-4 flex items-center">
+                                <div class="flex-shrink-0">
+                                    <div class="w-10 h-10 rounded-full bg-blue-100 text-blue-600 flex items-center justify-center">
+                                        <i class="fas fa-user"></i>
+                                    </div>
+                                </div>
+                                <div class="ml-4">
+                                    <h4 class="text-sm font-medium text-gray-900">Officer Chen</h4>
+                                    <div class="flex items-center mt-1">
+                                        <div class="w-full bg-gray-200 rounded-full h-2">
+                                            <div class="bg-green-500 h-2 rounded-full" style="width: 87%"></div>
+                                        </div>
+                                        <span class="text-xs text-gray-500 ml-2">87%</span>
+                                    </div>
+                                    <p class="text-xs text-gray-500 mt-1">142 fines this month</p>
+                                </div>
+                            </div>
+
+                            <div class="px-6 py-4 flex items-center">
+                                <div class="flex-shrink-0">
+                                    <div class="w-10 h-10 rounded-full bg-blue-100 text-blue-600 flex items-center justify-center">
+                                        <i class="fas fa-user"></i>
+                                    </div>
+                                </div>
+                                <div class="ml-4">
+                                    <h4 class="text-sm font-medium text-gray-900">Officer Wilson</h4>
+                                    <div class="flex items-center mt-1">
+                                        <div class="w-full bg-gray-200 rounded-full h-2">
+                                            <div class="bg-green-500 h-2 rounded-full" style="width: 78%"></div>
+                                        </div>
+                                        <span class="text-xs text-gray-500 ml-2">78%</span>
+                                    </div>
+                                    <p class="text-xs text-gray-500 mt-1">128 fines this month</p>
+                                </div>
+                            </div>
+
+                            <div class="px-6 py-4 flex items-center">
+                                <div class="flex-shrink-0">
+                                    <div class="w-10 h-10 rounded-full bg-blue-100 text-blue-600 flex items-center justify-center">
+                                        <i class="fas fa-user"></i>
+                                    </div>
+                                </div>
+                                <div class="ml-4">
+                                    <h4 class="text-sm font-medium text-gray-900">Officer Martinez</h4>
+                                    <div class="flex items-center mt-1">
+                                        <div class="w-full bg-gray-200 rounded-full h-2">
+                                            <div class="bg-green-500 h-2 rounded-full" style="width: 72%"></div>
+                                        </div>
+                                        <span class="text-xs text-gray-500 ml-2">72%</span>
+                                    </div>
+                                    <p class="text-xs text-gray-500 mt-1">118 fines this month</p>
+                                </div>
+                            </div>
+
+                            <div class="px-6 py-4 flex items-center">
+                                <div class="flex-shrink-0">
+                                    <div class="w-10 h-10 rounded-full bg-blue-100 text-blue-600 flex items-center justify-center">
+                                        <i class="fas fa-user"></i>
+                                    </div>
+                                </div>
+                                <div class="ml-4">
+                                    <h4 class="text-sm font-medium text-gray-900">Officer Brown</h4>
+                                    <div class="flex items-center mt-1">
+                                        <div class="w-full bg-gray-200 rounded-full h-2">
+                                            <div class="bg-green-500 h-2 rounded-full" style="width: 65%"></div>
+                                        </div>
+                                        <span class="text-xs text-gray-500 ml-2">65%</span>
+                                    </div>
+                                    <p class="text-xs text-gray-500 mt-1">106 fines this month</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="px-6 py-4 border-t">
+                            <button class="w-full px-4 py-2 bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 text-sm font-medium">
+                                View All Officers
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- System Overview -->
+                <div class="bg-white rounded-xl shadow p-6 mb-6">
+                    <h2 class="text-lg font-semibold mb-4">System Overview</h2>
+                    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+                        <div class="border rounded-lg p-4">
+                            <div class="flex items-center justify-between">
+                                <div>
+                                    <p class="text-sm text-gray-500">Database Size</p>
+                                    <h3 class="text-xl font-semibold">4.2 GB</h3>
+                                </div>
+                                <div class="p-2 rounded-full bg-blue-100 text-blue-600">
+                                    <i class="fas fa-database"></i>
+                                </div>
+                            </div>
+                            <div class="mt-2">
+                                <div class="w-full bg-gray-200 rounded-full h-2">
+                                    <div class="bg-blue-500 h-2 rounded-full" style="width: 42%"></div>
+                                </div>
+                                <p class="text-xs text-gray-500 mt-1">42% of allocated space</p>
+                            </div>
+                        </div>
+
+                        <div class="border rounded-lg p-4">
+                            <div class="flex items-center justify-between">
+                                <div>
+                                    <p class="text-sm text-gray-500">Active Sessions</p>
+                                    <h3 class="text-xl font-semibold">86</h3>
+                                </div>
+                                <div class="p-2 rounded-full bg-green-100 text-green-600">
+                                    <i class="fas fa-users"></i>
+                                </div>
+                            </div>
+                            <div class="mt-2">
+                                <div class="w-full bg-gray-200 rounded-full h-2">
+                                    <div class="bg-green-500 h-2 rounded-full" style="width: 65%"></div>
+                                </div>
+                                <p class="text-xs text-gray-500 mt-1">65% of capacity</p>
+                            </div>
+                        </div>
+
+                        <div class="border rounded-lg p-4">
+                            <div class="flex items-center justify-between">
+                                <div>
+                                    <p class="text-sm text-gray-500">Server Load</p>
+                                    <h3 class="text-xl font-semibold">32%</h3>
+                                </div>
+                                <div class="p-2 rounded-full bg-yellow-100 text-yellow-600">
+                                    <i class="fas fa-server"></i>
+                                </div>
+                            </div>
+                            <div class="mt-2">
+                                <div class="w-full bg-gray-200 rounded-full h-2">
+                                    <div class="bg-yellow-500 h-2 rounded-full" style="width: 32%"></div>
+                                </div>
+                                <p class="text-xs text-gray-500 mt-1">Optimal performance</p>
+                            </div>
+                        </div>
+
+                        <div class="border rounded-lg p-4">
+                            <div class="flex items-center justify-between">
+                                <div>
+                                    <p class="text-sm text-gray-500">Uptime</p>
+                                    <h3 class="text-xl font-semibold">99.98%</h3>
+                                </div>
+                                <div class="p-2 rounded-full bg-purple-100 text-purple-600">
+                                    <i class="fas fa-clock"></i>
+                                </div>
+                            </div>
+                            <div class="mt-2">
+                                <div class="w-full bg-gray-200 rounded-full h-2">
+                                    <div class="bg-purple-500 h-2 rounded-full" style="width: 99%"></div>
+                                </div>
+                                <p class="text-xs text-gray-500 mt-1">Last restart: 30 days ago</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Quick Actions -->
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+                    <div class="bg-blue-600 text-white rounded-xl shadow p-6 flex flex-col items-center justify-center text-center card-hover">
+                        <div class="w-12 h-12 rounded-full bg-blue-500 flex items-center justify-center mb-4">
+                            <i class="fas fa-user-plus text-xl"></i>
+                        </div>
+                        <h3 class="text-lg font-semibold mb-2">Add New Officer</h3>
+                        <p class="text-sm opacity-80 mb-4">Register a new traffic police officer to the system</p>
+                        <button class="px-4 py-2 bg-white text-blue-600 rounded-lg text-sm font-medium">Add Officer</button>
+                    </div>
+
+                    <div class="bg-green-600 text-white rounded-xl shadow p-6 flex flex-col items-center justify-center text-center card-hover">
+                        <div class="w-12 h-12 rounded-full bg-green-500 flex items-center justify-center mb-4">
+                            <i class="fas fa-file-export text-xl"></i>
+                        </div>
+                        <h3 class="text-lg font-semibold mb-2">Generate Reports</h3>
+                        <p class="text-sm opacity-80 mb-4">Create and export detailed system reports</p>
+                        <button class="px-4 py-2 bg-white text-green-600 rounded-lg text-sm font-medium">Generate</button>
+                    </div>
+
+                    <div class="bg-purple-600 text-white rounded-xl shadow p-6 flex flex-col items-center justify-center text-center card-hover">
+                        <div class="w-12 h-12 rounded-full bg-purple-500 flex items-center justify-center mb-4">
+                            <i class="fas fa-cog text-xl"></i>
+                        </div>
+                        <h3 class="text-lg font-semibold mb-2">System Settings</h3>
+                        <p class="text-sm opacity-80 mb-4">Configure system parameters and preferences</p>
+                        <button class="px-4 py-2 bg-white text-purple-600 rounded-lg text-sm font-medium">Configure</button>
+                    </div>
+
+                    <div class="bg-red-600 text-white rounded-xl shadow p-6 flex flex-col items-center justify-center text-center card-hover">
+                        <div class="w-12 h-12 rounded-full bg-red-500 flex items-center justify-center mb-4">
+                            <i class="fas fa-shield-alt text-xl"></i>
+                        </div>
+                        <h3 class="text-lg font-semibold mb-2">Security Audit</h3>
+                        <p class="text-sm opacity-80 mb-4">Run comprehensive security checks</p>
+                        <button class="px-4 py-2 bg-white text-red-600 rounded-lg text-sm font-medium">Run Audit</button>
+                    </div>
+                </div>
+            </main>
+        </div>
+    </div>
+
+    <script>
+        // Sidebar toggle
+        const sidebarToggle = document.getElementById('sidebarToggle');
+        const sidebar = document.querySelector('.sidebar');
+        const mainContent = document.querySelector('.main-content');
+
+        sidebarToggle.addEventListener('click', () => {
+            sidebar.classList.toggle('collapsed');
+            mainContent.classList.toggle('expanded');
+        });
+
+        // Revenue Chart
+        const revenueChartOptions = {
+            series: [{
+                name: 'Collected',
+                data: [45000, 52000, 48000, 62000, 58000, 72000, 68000, 79000, 75000, 82000, 78000, 90000]
+            }, {
+                name: 'Pending',
+                data: [12000, 15000, 10000, 18000, 14000, 20000, 17000, 22000, 19000, 25000, 21000, 28000]
+            }],
+            chart: {
+                type: 'bar',
+                height: '100%',
+                stacked: true,
+                toolbar: {
+                    show: false
+                }
+            },
+            colors: ['#10B981', '#F59E0B'],
+            plotOptions: {
+                bar: {
+                    horizontal: false,
+                    borderRadius: 4,
+                    dataLabels: {
+                        total: {
+                            enabled: true,
+                            style: {
+                                fontSize: '13px',
+                                fontWeight: 900
+                            }
+                        }
+                    }
+                },
+            },
+            xaxis: {
+                categories: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'],
+            },
+            legend: {
+                position: 'top',
+            },
+            fill: {
+                opacity: 1
+            },
+            tooltip: {
+                y: {
+                    formatter: function(val) {
+                        return "$" + val.toLocaleString()
+                    }
+                }
+            }
+        };
+
+        const revenueChart = new ApexCharts(document.querySelector("#revenueChart"), revenueChartOptions);
+        revenueChart.render();
+
+        // Dropdown menu
+        document.addEventListener('click', function(event) {
+            if (!event.target.closest('.dropdown')) {
+                const dropdowns = document.querySelectorAll('.dropdown-menu');
+                dropdowns.forEach(function(dropdown) {
+                    dropdown.classList.add('hidden');
+                });
+            }
+        });
+
+        const dropdownButtons = document.querySelectorAll('.dropdown');
+        dropdownButtons.forEach(function(button) {
+            button.addEventListener('click', function() {
+                const menu = this.querySelector('.dropdown-menu');
+                menu.classList.toggle('hidden');
+            });
+        });
+    </script>
+</body>
+
+</html>

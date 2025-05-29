@@ -1,0 +1,922 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Drivers | Traffic Police Fine Management System</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        .sidebar {
+            transition: all 0.3s ease;
+        }
+        
+        .sidebar.collapsed {
+            width: 70px;
+        }
+        
+        .sidebar.collapsed .sidebar-text {
+            display: none;
+        }
+        
+        .sidebar.collapsed .logo-text {
+            display: none;
+        }
+        
+        .sidebar.collapsed .nav-item {
+            justify-content: center;
+        }
+        
+        .main-content {
+            transition: all 0.3s ease;
+        }
+        
+        .main-content.expanded {
+            margin-left: 70px;
+        }
+        
+        .driver-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+        }
+        
+        .driver-card {
+            transition: all 0.3s ease;
+        }
+        
+        .license-status-valid {
+            border-left: 4px solid #10B981;
+        }
+        
+        .license-status-suspended {
+            border-left: 4px solid #EF4444;
+        }
+        
+        .license-status-expired {
+            border-left: 4px solid #F59E0B;
+        }
+        
+        .license-status-provisional {
+            border-left: 4px solid #6366F1;
+        }
+        
+        .progress-bar {
+            height: 6px;
+            border-radius: 3px;
+            overflow: hidden;
+        }
+        
+        .progress-fill {
+            height: 100%;
+            transition: width 0.5s ease;
+        }
+        
+        .badge {
+            display: inline-flex;
+            align-items: center;
+            padding: 0.25rem 0.5rem;
+            border-radius: 9999px;
+            font-size: 0.75rem;
+            font-weight: 600;
+        }
+    </style>
+</head>
+
+<body class="bg-gray-100 font-sans">
+    <div class="flex h-screen overflow-hidden">
+        <!-- Sidebar -->
+        <div class="sidebar bg-blue-800 text-white w-64 flex flex-col">
+            <div class="p-4 flex items-center space-x-2 border-b border-blue-700">
+                <div class="bg-white p-2 rounded-lg">
+                    <i class="fas fa-traffic-light text-blue-800 text-xl"></i>
+                </div>
+                <span class="logo-text text-xl font-bold">TrafficFineSys</span>
+            </div>
+
+            <div class="p-4 flex items-center justify-between border-b border-blue-700">
+                <div class="flex items-center space-x-3">
+                    <div class="w-10 h-10 rounded-full bg-blue-600 flex items-center justify-center">
+                        <i class="fas fa-user"></i>
+                    </div>
+                    <div>
+                        <div class="sidebar-text font-medium">Officer John</div>
+                        <div class="sidebar-text text-xs text-blue-300">Traffic Police</div>
+                    </div>
+                </div>
+                <button id="sidebarToggle" class="text-blue-300 hover:text-white">
+                    <i class="fas fa-bars"></i>
+                </button>
+            </div>
+
+            <nav class="flex-1 overflow-y-auto py-4">
+                <div class="space-y-1 px-3">
+                    <a href="dashboard.html" class="nav-item flex items-center space-x-3 px-3 py-2 rounded-lg text-blue-200 hover:bg-blue-700 hover:text-white">
+                        <i class="fas fa-tachometer-alt"></i>
+                        <span class="sidebar-text">Dashboard</span>
+                    </a>
+                    <a href="violations.html" class="nav-item flex items-center space-x-3 px-3 py-2 rounded-lg text-blue-200 hover:bg-blue-700 hover:text-white">
+                        <i class="fas fa-car-crash"></i>
+                        <span class="sidebar-text">Violations</span>
+                    </a>
+                    <a href="fines.html" class="nav-item flex items-center space-x-3 px-3 py-2 rounded-lg text-blue-200 hover:bg-blue-700 hover:text-white">
+                        <i class="fas fa-file-invoice-dollar"></i>
+                        <span class="sidebar-text">Fines</span>
+                    </a>
+                    <a href="drivers.html" class="nav-item flex items-center space-x-3 px-3 py-2 rounded-lg bg-blue-700 text-white">
+                        <i class="fas fa-users"></i>
+                        <span class="sidebar-text">Drivers</span>
+                    </a>
+                    <a href="reports.html" class="nav-item flex items-center space-x-3 px-3 py-2 rounded-lg text-blue-200 hover:bg-blue-700 hover:text-white">
+                        <i class="fas fa-chart-line"></i>
+                        <span class="sidebar-text">Reports</span>
+                    </a>
+                    <a href="settings.html" class="nav-item flex items-center space-x-3 px-3 py-2 rounded-lg text-blue-200 hover:bg-blue-700 hover:text-white">
+                        <i class="fas fa-cog"></i>
+                        <span class="sidebar-text">Settings</span>
+                    </a>
+                </div>
+
+                <div class="px-3 mt-8">
+                    <div class="text-xs uppercase text-blue-400 mb-2 sidebar-text">Quick Actions</div>
+                    <div class="space-y-1">
+                        <a href="#" class="nav-item flex items-center space-x-3 px-3 py-2 rounded-lg text-blue-200 hover:bg-blue-700 hover:text-white">
+                            <i class="fas fa-plus-circle"></i>
+                            <span class="sidebar-text">New Driver</span>
+                        </a>
+                        <a href="#" class="nav-item flex items-center space-x-3 px-3 py-2 rounded-lg text-blue-200 hover:bg-blue-700 hover:text-white">
+                            <i class="fas fa-search"></i>
+                            <span class="sidebar-text">Search Driver</span>
+                        </a>
+                        <a href="#" class="nav-item flex items-center space-x-3 px-3 py-2 rounded-lg text-blue-200 hover:bg-blue-700 hover:text-white">
+                            <i class="fas fa-print"></i>
+                            <span class="sidebar-text">Print Report</span>
+                        </a>
+                    </div>
+                </div>
+            </nav>
+
+            <div class="p-4 border-t border-blue-700">
+                <a href="#" class="nav-item flex items-center space-x-3 px-3 py-2 rounded-lg text-blue-200 hover:bg-blue-700 hover:text-white">
+                    <i class="fas fa-sign-out-alt"></i>
+                    <span class="sidebar-text">Logout</span>
+                </a>
+            </div>
+        </div>
+
+        <!-- Main Content -->
+        <div class="main-content flex-1 flex flex-col overflow-hidden">
+            <!-- Top Navigation -->
+            <header class="bg-white shadow-sm">
+                <div class="px-6 py-4 flex items-center justify-between">
+                    <h1 class="text-2xl font-semibold text-gray-800">Drivers</h1>
+                    <div class="flex items-center space-x-4">
+                        <div class="relative">
+                            <input type="text" placeholder="Search drivers..." class="pl-10 pr-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
+                            <i class="fas fa-search absolute left-3 top-3 text-gray-400"></i>
+                        </div>
+                        <button class="p-2 rounded-full bg-gray-100 text-gray-600 hover:bg-gray-200">
+                            <i class="fas fa-bell"></i>
+                            <span class="absolute top-0 right-0 h-2 w-2 rounded-full bg-red-500"></span>
+                        </button>
+                    </div>
+                </div>
+            </header>
+
+            <!-- Main Content Area -->
+            <main class="flex-1 overflow-y-auto p-6">
+                <!-- Driver Management Header -->
+                <div class="flex flex-col md:flex-row justify-between items-start md:items-center mb-6 gap-4">
+                    <div>
+                        <h2 class="text-xl font-semibold text-gray-800">Driver Records Management</h2>
+                        <p class="text-gray-600">View and manage all registered driver records</p>
+                    </div>
+                    <div class="flex space-x-3">
+                        <button class="px-4 py-2 bg-white border rounded-lg text-gray-700 hover:bg-gray-50 flex items-center space-x-2">
+                            <i class="fas fa-filter"></i>
+                            <span>Filter</span>
+                        </button>
+                        <button id="addDriverBtn" class="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 flex items-center space-x-2">
+                            <i class="fas fa-plus"></i>
+                            <span>Add Driver</span>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Stats Cards -->
+                <div class="grid grid-cols-1 md:grid-cols-4 gap-6 mb-6">
+                    <div class="bg-white rounded-xl shadow p-6">
+                        <div class="flex items-center justify-between">
+                            <div>
+                                <p class="text-gray-500">Total Drivers</p>
+                                <h3 class="text-3xl font-bold text-blue-600">8,742</h3>
+                                <p class="text-sm text-gray-500">Registered in system</p>
+                            </div>
+                            <div class="p-3 rounded-full bg-blue-100 text-blue-600">
+                                <i class="fas fa-users text-xl"></i>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="bg-white rounded-xl shadow p-6">
+                        <div class="flex items-center justify-between">
+                            <div>
+                                <p class="text-gray-500">Valid Licenses</p>
+                                <h3 class="text-3xl font-bold text-green-600">7,896</h3>
+                                <p class="text-sm text-gray-500">90% of total</p>
+                            </div>
+                            <div class="p-3 rounded-full bg-green-100 text-green-600">
+                                <i class="fas fa-id-card text-xl"></i>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="bg-white rounded-xl shadow p-6">
+                        <div class="flex items-center justify-between">
+                            <div>
+                                <p class="text-gray-500">Suspended Licenses</p>
+                                <h3 class="text-3xl font-bold text-red-600">156</h3>
+                                <p class="text-sm text-gray-500">1.8% of total</p>
+                            </div>
+                            <div class="p-3 rounded-full bg-red-100 text-red-600">
+                                <i class="fas fa-ban text-xl"></i>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="bg-white rounded-xl shadow p-6">
+                        <div class="flex items-center justify-between">
+                            <div>
+                                <p class="text-gray-500">Expired Licenses</p>
+                                <h3 class="text-3xl font-bold text-yellow-600">690</h3>
+                                <p class="text-sm text-gray-500">7.9% of total</p>
+                            </div>
+                            <div class="p-3 rounded-full bg-yellow-100 text-yellow-600">
+                                <i class="fas fa-exclamation-triangle text-xl"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- License Status Overview -->
+                <div class="bg-white rounded-xl shadow p-6 mb-6">
+                    <div class="flex justify-between items-center mb-4">
+                        <h3 class="text-lg font-semibold text-gray-800">License Status Overview</h3>
+                        <div class="flex space-x-2">
+                            <button class="px-3 py-1 text-sm bg-gray-100 text-gray-600 rounded-lg">This Month</button>
+                            <button class="px-3 py-1 text-sm bg-blue-100 text-blue-600 rounded-lg">This Year</button>
+                        </div>
+                    </div>
+
+                    <div class="grid grid-cols-1 md:grid-cols-4 gap-6">
+                        <div>
+                            <div class="flex justify-between mb-2">
+                                <span class="text-sm font-medium text-gray-700">Valid Licenses</span>
+                                <span class="text-sm font-medium text-green-600">90%</span>
+                            </div>
+                            <div class="progress-bar bg-gray-200">
+                                <div class="progress-fill bg-green-500" style="width: 90%"></div>
+                            </div>
+                        </div>
+
+                        <div>
+                            <div class="flex justify-between mb-2">
+                                <span class="text-sm font-medium text-gray-700">Expired Licenses</span>
+                                <span class="text-sm font-medium text-yellow-600">7.9%</span>
+                            </div>
+                            <div class="progress-bar bg-gray-200">
+                                <div class="progress-fill bg-yellow-500" style="width: 7.9%"></div>
+                            </div>
+                        </div>
+
+                        <div>
+                            <div class="flex justify-between mb-2">
+                                <span class="text-sm font-medium text-gray-700">Suspended Licenses</span>
+                                <span class="text-sm font-medium text-red-600">1.8%</span>
+                            </div>
+                            <div class="progress-bar bg-gray-200">
+                                <div class="progress-fill bg-red-500" style="width: 1.8%"></div>
+                            </div>
+                        </div>
+
+                        <div>
+                            <div class="flex justify-between mb-2">
+                                <span class="text-sm font-medium text-gray-700">Provisional Licenses</span>
+                                <span class="text-sm font-medium text-indigo-600">0.3%</span>
+                            </div>
+                            <div class="progress-bar bg-gray-200">
+                                <div class="progress-fill bg-indigo-500" style="width: 0.3%"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Recent Drivers -->
+                <div class="mb-6">
+                    <div class="flex items-center justify-between mb-4">
+                        <h3 class="text-lg font-semibold text-gray-800">Recent Driver Records</h3>
+                        <div class="flex space-x-2">
+                            <button class="px-3 py-1 text-sm bg-blue-100 text-blue-600 rounded-lg">All</button>
+                            <button class="px-3 py-1 text-sm bg-gray-100 text-gray-600 rounded-lg">Today</button>
+                            <button class="px-3 py-1 text-sm bg-gray-100 text-gray-600 rounded-lg">This Week</button>
+                        </div>
+                    </div>
+
+                    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                        <!-- Driver Card 1 -->
+                        <div class="driver-card bg-white rounded-lg shadow overflow-hidden license-status-valid">
+                            <div class="p-5">
+                                <div class="flex justify-between items-start">
+                                    <div>
+                                        <h4 class="font-bold text-lg text-gray-800">John D. Smith</h4>
+                                        <p class="text-sm text-gray-500">License: DL-458796</p>
+                                    </div>
+                                    <div class="flex flex-col items-end">
+                                        <span class="badge bg-green-100 text-green-800">Valid</span>
+                                        <span class="text-xs text-gray-500 mt-1">Expires: 2025-06-15</span>
+                                    </div>
+                                </div>
+                                <div class="mt-4">
+                                    <div class="flex justify-between text-sm mb-2">
+                                        <span class="text-gray-500">DOB:</span>
+                                        <span class="font-medium">1985-03-22 (38 yrs)</span>
+                                    </div>
+                                    <div class="flex justify-between text-sm mb-2">
+                                        <span class="text-gray-500">Vehicle:</span>
+                                        <span class="font-medium">Toyota Camry (ABC-1234)</span>
+                                    </div>
+                                    <div class="flex justify-between text-sm">
+                                        <span class="text-gray-500">Fines:</span>
+                                        <span class="font-medium">2 (1 paid, 1 pending)</span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="bg-gray-50 px-5 py-3 flex justify-between items-center">
+                                <span class="text-xs text-gray-500">Last updated: Oct 15, 2023</span>
+                                <div class="flex space-x-2">
+                                    <button class="text-blue-600 hover:text-blue-800">
+                                        <i class="fas fa-print"></i>
+                                    </button>
+                                    <button class="text-purple-600 hover:text-purple-800">
+                                        <i class="fas fa-eye"></i>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Driver Card 2 -->
+                        <div class="driver-card bg-white rounded-lg shadow overflow-hidden license-status-suspended">
+                            <div class="p-5">
+                                <div class="flex justify-between items-start">
+                                    <div>
+                                        <h4 class="font-bold text-lg text-gray-800">Sarah M. Johnson</h4>
+                                        <p class="text-sm text-gray-500">License: DL-325487</p>
+                                    </div>
+                                    <div class="flex flex-col items-end">
+                                        <span class="badge bg-red-100 text-red-800">Suspended</span>
+                                        <span class="text-xs text-gray-500 mt-1">Until: 2024-02-01</span>
+                                    </div>
+                                </div>
+                                <div class="mt-4">
+                                    <div class="flex justify-between text-sm mb-2">
+                                        <span class="text-gray-500">DOB:</span>
+                                        <span class="font-medium">1990-07-14 (33 yrs)</span>
+                                    </div>
+                                    <div class="flex justify-between text-sm mb-2">
+                                        <span class="text-gray-500">Vehicle:</span>
+                                        <span class="font-medium">Honda Civic (XYZ-9876)</span>
+                                    </div>
+                                    <div class="flex justify-between text-sm">
+                                        <span class="text-gray-500">Fines:</span>
+                                        <span class="font-medium">5 (3 paid, 2 overdue)</span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="bg-gray-50 px-5 py-3 flex justify-between items-center">
+                                <span class="text-xs text-gray-500">Last updated: Oct 13, 2023</span>
+                                <div class="flex space-x-2">
+                                    <button class="text-blue-600 hover:text-blue-800">
+                                        <i class="fas fa-print"></i>
+                                    </button>
+                                    <button class="text-purple-600 hover:text-purple-800">
+                                        <i class="fas fa-eye"></i>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Driver Card 3 -->
+                        <div class="driver-card bg-white rounded-lg shadow overflow-hidden license-status-expired">
+                            <div class="p-5">
+                                <div class="flex justify-between items-start">
+                                    <div>
+                                        <h4 class="font-bold text-lg text-gray-800">Robert T. Williams</h4>
+                                        <p class="text-sm text-gray-500">License: DL-789654</p>
+                                    </div>
+                                    <div class="flex flex-col items-end">
+                                        <span class="badge bg-yellow-100 text-yellow-800">Expired</span>
+                                        <span class="text-xs text-gray-500 mt-1">Expired: 2023-09-30</span>
+                                    </div>
+                                </div>
+                                <div class="mt-4">
+                                    <div class="flex justify-between text-sm mb-2">
+                                        <span class="text-gray-500">DOB:</span>
+                                        <span class="font-medium">1978-11-05 (44 yrs)</span>
+                                    </div>
+                                    <div class="flex justify-between text-sm mb-2">
+                                        <span class="text-gray-500">Vehicle:</span>
+                                        <span class="font-medium">Ford F-150 (DEF-4567)</span>
+                                    </div>
+                                    <div class="flex justify-between text-sm">
+                                        <span class="text-gray-500">Fines:</span>
+                                        <span class="font-medium">1 (overdue)</span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="bg-gray-50 px-5 py-3 flex justify-between items-center">
+                                <span class="text-xs text-gray-500">Last updated: Sep 28, 2023</span>
+                                <div class="flex space-x-2">
+                                    <button class="text-blue-600 hover:text-blue-800">
+                                        <i class="fas fa-print"></i>
+                                    </button>
+                                    <button class="text-purple-600 hover:text-purple-800">
+                                        <i class="fas fa-eye"></i>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Driver Card 4 -->
+                        <div class="driver-card bg-white rounded-lg shadow overflow-hidden license-status-valid">
+                            <div class="p-5">
+                                <div class="flex justify-between items-start">
+                                    <div>
+                                        <h4 class="font-bold text-lg text-gray-800">Lisa K. Anderson</h4>
+                                        <p class="text-sm text-gray-500">License: DL-963258</p>
+                                    </div>
+                                    <div class="flex flex-col items-end">
+                                        <span class="badge bg-green-100 text-green-800">Valid</span>
+                                        <span class="text-xs text-gray-500 mt-1">Expires: 2026-01-20</span>
+                                    </div>
+                                </div>
+                                <div class="mt-4">
+                                    <div class="flex justify-between text-sm mb-2">
+                                        <span class="text-gray-500">DOB:</span>
+                                        <span class="font-medium">1995-04-18 (28 yrs)</span>
+                                    </div>
+                                    <div class="flex justify-between text-sm mb-2">
+                                        <span class="text-gray-500">Vehicle:</span>
+                                        <span class="font-medium">Tesla Model 3 (GHI-7890)</span>
+                                    </div>
+                                    <div class="flex justify-between text-sm">
+                                        <span class="text-gray-500">Fines:</span>
+                                        <span class="font-medium">0</span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="bg-gray-50 px-5 py-3 flex justify-between items-center">
+                                <span class="text-xs text-gray-500">Last updated: Oct 11, 2023</span>
+                                <div class="flex space-x-2">
+                                    <button class="text-blue-600 hover:text-blue-800">
+                                        <i class="fas fa-print"></i>
+                                    </button>
+                                    <button class="text-purple-600 hover:text-purple-800">
+                                        <i class="fas fa-eye"></i>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Driver Card 5 -->
+                        <div class="driver-card bg-white rounded-lg shadow overflow-hidden license-status-provisional">
+                            <div class="p-5">
+                                <div class="flex justify-between items-start">
+                                    <div>
+                                        <h4 class="font-bold text-lg text-gray-800">Michael B. Chen</h4>
+                                        <p class="text-sm text-gray-500">License: DL-741852</p>
+                                    </div>
+                                    <div class="flex flex-col items-end">
+                                        <span class="badge bg-indigo-100 text-indigo-800">Provisional</span>
+                                        <span class="text-xs text-gray-500 mt-1">Expires: 2024-03-15</span>
+                                    </div>
+                                </div>
+                                <div class="mt-4">
+                                    <div class="flex justify-between text-sm mb-2">
+                                        <span class="text-gray-500">DOB:</span>
+                                        <span class="font-medium">2002-09-30 (21 yrs)</span>
+                                    </div>
+                                    <div class="flex justify-between text-sm mb-2">
+                                        <span class="text-gray-500">Vehicle:</span>
+                                        <span class="font-medium">Nissan Altima (JKL-1234)</span>
+                                    </div>
+                                    <div class="flex justify-between text-sm">
+                                        <span class="text-gray-500">Fines:</span>
+                                        <span class="font-medium">1 (paid)</span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="bg-gray-50 px-5 py-3 flex justify-between items-center">
+                                <span class="text-xs text-gray-500">Last updated: Oct 14, 2023</span>
+                                <div class="flex space-x-2">
+                                    <button class="text-blue-600 hover:text-blue-800">
+                                        <i class="fas fa-print"></i>
+                                    </button>
+                                    <button class="text-purple-600 hover:text-purple-800">
+                                        <i class="fas fa-eye"></i>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Driver Card 6 -->
+                        <div class="driver-card bg-white rounded-lg shadow overflow-hidden license-status-valid">
+                            <div class="p-5">
+                                <div class="flex justify-between items-start">
+                                    <div>
+                                        <h4 class="font-bold text-lg text-gray-800">David L. Rodriguez</h4>
+                                        <p class="text-sm text-gray-500">License: DL-159753</p>
+                                    </div>
+                                    <div class="flex flex-col items-end">
+                                        <span class="badge bg-green-100 text-green-800">Valid</span>
+                                        <span class="text-xs text-gray-500 mt-1">Expires: 2024-11-30</span>
+                                    </div>
+                                </div>
+                                <div class="mt-4">
+                                    <div class="flex justify-between text-sm mb-2">
+                                        <span class="text-gray-500">DOB:</span>
+                                        <span class="font-medium">1988-12-25 (34 yrs)</span>
+                                    </div>
+                                    <div class="flex justify-between text-sm mb-2">
+                                        <span class="text-gray-500">Vehicle:</span>
+                                        <span class="font-medium">Chevrolet Silverado (MNO-5678)</span>
+                                    </div>
+                                    <div class="flex justify-between text-sm">
+                                        <span class="text-gray-500">Fines:</span>
+                                        <span class="font-medium">3 (2 paid, 1 pending)</span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="bg-gray-50 px-5 py-3 flex justify-between items-center">
+                                <span class="text-xs text-gray-500">Last updated: Oct 15, 2023</span>
+                                <div class="flex space-x-2">
+                                    <button class="text-blue-600 hover:text-blue-800">
+                                        <i class="fas fa-print"></i>
+                                    </button>
+                                    <button class="text-purple-600 hover:text-purple-800">
+                                        <i class="fas fa-eye"></i>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- All Drivers Table -->
+                <div class="bg-white rounded-xl shadow overflow-hidden">
+                    <div class="px-6 py-4 border-b flex items-center justify-between">
+                        <h2 class="text-lg font-semibold">All Driver Records</h2>
+                        <div class="flex items-center space-x-3">
+                            <div class="relative">
+                                <select class="appearance-none pl-3 pr-8 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm">
+                                    <option>Filter by: All Status</option>
+                                    <option>Filter by: Valid</option>
+                                    <option>Filter by: Expired</option>
+                                    <option>Filter by: Suspended</option>
+                                    <option>Filter by: Provisional</option>
+                                </select>
+                                <i class="fas fa-chevron-down absolute right-3 top-3 text-gray-400 text-xs"></i>
+                            </div>
+                            <button class="px-3 py-2 bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200">
+                                <i class="fas fa-download"></i>
+                            </button>
+                        </div>
+                    </div>
+                    <div class="overflow-x-auto">
+                        <table class="min-w-full divide-y divide-gray-200">
+                            <thead class="bg-gray-50">
+                                <tr>
+                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Driver Name</th>
+                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">License No.</th>
+                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">DOB/Age</th>
+                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Vehicle</th>
+                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">License Status</th>
+                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Fines</th>
+                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody class="bg-white divide-y divide-gray-200">
+                                <tr>
+                                    <td class="px-6 py-4 whitespace-nowrap">
+                                        <div class="flex items-center">
+                                            <div class="flex-shrink-0 h-10 w-10 rounded-full bg-blue-100 flex items-center justify-center">
+                                                <i class="fas fa-user text-blue-600"></i>
+                                            </div>
+                                            <div class="ml-4">
+                                                <div class="text-sm font-medium text-gray-900">John D. Smith</div>
+                                                <div class="text-sm text-gray-500">john.smith@example.com</div>
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">DL-458796</td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">1985-03-22 (38)</td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">Toyota Camry (ABC-1234)</td>
+                                    <td class="px-6 py-4 whitespace-nowrap">
+                                        <span class="badge bg-green-100 text-green-800">Valid</span>
+                                        <div class="text-xs text-gray-500 mt-1">Expires: 2025-06-15</div>
+                                    </td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                                        <span class="text-green-600">1 paid</span>, <span class="text-yellow-600">1 pending</span>
+                                    </td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                                        <button class="text-blue-600 hover:text-blue-900 mr-3"><i class="fas fa-print"></i></button>
+                                        <button class="text-purple-600 hover:text-purple-900"><i class="fas fa-eye"></i></button>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td class="px-6 py-4 whitespace-nowrap">
+                                        <div class="flex items-center">
+                                            <div class="flex-shrink-0 h-10 w-10 rounded-full bg-blue-100 flex items-center justify-center">
+                                                <i class="fas fa-user text-blue-600"></i>
+                                            </div>
+                                            <div class="ml-4">
+                                                <div class="text-sm font-medium text-gray-900">Sarah M. Johnson</div>
+                                                <div class="text-sm text-gray-500">sarah.j@example.com</div>
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">DL-325487</td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">1990-07-14 (33)</td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">Honda Civic (XYZ-9876)</td>
+                                    <td class="px-6 py-4 whitespace-nowrap">
+                                        <span class="badge bg-red-100 text-red-800">Suspended</span>
+                                        <div class="text-xs text-gray-500 mt-1">Until: 2024-02-01</div>
+                                    </td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                                        <span class="text-green-600">3 paid</span>, <span class="text-red-600">2 overdue</span>
+                                    </td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                                        <button class="text-blue-600 hover:text-blue-900 mr-3"><i class="fas fa-print"></i></button>
+                                        <button class="text-purple-600 hover:text-purple-900"><i class="fas fa-eye"></i></button>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td class="px-6 py-4 whitespace-nowrap">
+                                        <div class="flex items-center">
+                                            <div class="flex-shrink-0 h-10 w-10 rounded-full bg-blue-100 flex items-center justify-center">
+                                                <i class="fas fa-user text-blue-600"></i>
+                                            </div>
+                                            <div class="ml-4">
+                                                <div class="text-sm font-medium text-gray-900">Robert T. Williams</div>
+                                                <div class="text-sm text-gray-500">robert.w@example.com</div>
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">DL-789654</td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">1978-11-05 (44)</td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">Ford F-150 (DEF-4567)</td>
+                                    <td class="px-6 py-4 whitespace-nowrap">
+                                        <span class="badge bg-yellow-100 text-yellow-800">Expired</span>
+                                        <div class="text-xs text-gray-500 mt-1">Expired: 2023-09-30</div>
+                                    </td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                                        <span class="text-red-600">1 overdue</span>
+                                    </td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                                        <button class="text-blue-600 hover:text-blue-900 mr-3"><i class="fas fa-print"></i></button>
+                                        <button class="text-purple-600 hover:text-purple-900"><i class="fas fa-eye"></i></button>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td class="px-6 py-4 whitespace-nowrap">
+                                        <div class="flex items-center">
+                                            <div class="flex-shrink-0 h-10 w-10 rounded-full bg-blue-100 flex items-center justify-center">
+                                                <i class="fas fa-user text-blue-600"></i>
+                                            </div>
+                                            <div class="ml-4">
+                                                <div class="text-sm font-medium text-gray-900">Lisa K. Anderson</div>
+                                                <div class="text-sm text-gray-500">lisa.a@example.com</div>
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">DL-963258</td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">1995-04-18 (28)</td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">Tesla Model 3 (GHI-7890)</td>
+                                    <td class="px-6 py-4 whitespace-nowrap">
+                                        <span class="badge bg-green-100 text-green-800">Valid</span>
+                                        <div class="text-xs text-gray-500 mt-1">Expires: 2026-01-20</div>
+                                    </td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                                        <span class="text-gray-500">None</span>
+                                    </td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                                        <button class="text-blue-600 hover:text-blue-900 mr-3"><i class="fas fa-print"></i></button>
+                                        <button class="text-purple-600 hover:text-purple-900"><i class="fas fa-eye"></i></button>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td class="px-6 py-4 whitespace-nowrap">
+                                        <div class="flex items-center">
+                                            <div class="flex-shrink-0 h-10 w-10 rounded-full bg-blue-100 flex items-center justify-center">
+                                                <i class="fas fa-user text-blue-600"></i>
+                                            </div>
+                                            <div class="ml-4">
+                                                <div class="text-sm font-medium text-gray-900">Michael B. Chen</div>
+                                                <div class="text-sm text-gray-500">michael.c@example.com</div>
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">DL-741852</td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">2002-09-30 (21)</td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">Nissan Altima (JKL-1234)</td>
+                                    <td class="px-6 py-4 whitespace-nowrap">
+                                        <span class="badge bg-indigo-100 text-indigo-800">Provisional</span>
+                                        <div class="text-xs text-gray-500 mt-1">Expires: 2024-03-15</div>
+                                    </td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                                        <span class="text-green-600">1 paid</span>
+                                    </td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                                        <button class="text-blue-600 hover:text-blue-900 mr-3"><i class="fas fa-print"></i></button>
+                                        <button class="text-purple-600 hover:text-purple-900"><i class="fas fa-eye"></i></button>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <div class="px-6 py-4 border-t flex items-center justify-between">
+                        <div class="text-sm text-gray-500">Showing <span class="font-medium">1</span> to <span class="font-medium">5</span> of <span class="font-medium">8,742</span> entries</div>
+                        <div class="flex space-x-2">
+                            <button class="px-3 py-1 border rounded-lg text-sm">Previous</button>
+                            <button class="px-3 py-1 border rounded-lg bg-blue-600 text-white text-sm">1</button>
+                            <button class="px-3 py-1 border rounded-lg text-sm">2</button>
+                            <button class="px-3 py-1 border rounded-lg text-sm">3</button>
+                            <button class="px-3 py-1 border rounded-lg text-sm">4</button>
+                            <button class="px-3 py-1 border rounded-lg text-sm">5</button>
+                            <button class="px-3 py-1 border rounded-lg text-sm">Next</button>
+                        </div>
+                    </div>
+                </div>
+            </main>
+        </div>
+    </div>
+
+    <!-- Add Driver Modal -->
+    <div id="addDriverModal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 hidden">
+        <div class="bg-white rounded-lg shadow-xl w-full max-w-2xl">
+            <div class="px-6 py-4 border-b flex items-center justify-between">
+                <h3 class="text-lg font-semibold">Add New Driver Record</h3>
+                <button id="closeDriverModalBtn" class="text-gray-500 hover:text-gray-700">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <div class="p-6">
+                <form>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <div>
+                            <label class="block text-gray-700 text-sm font-medium mb-2" for="first-name">
+                                First Name
+                            </label>
+                            <input id="first-name" type="text" class="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" placeholder="John">
+                        </div>
+
+                        <div>
+                            <label class="block text-gray-700 text-sm font-medium mb-2" for="last-name">
+                                Last Name
+                            </label>
+                            <input id="last-name" type="text" class="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" placeholder="Smith">
+                        </div>
+
+                        <div>
+                            <label class="block text-gray-700 text-sm font-medium mb-2" for="dob">
+                                Date of Birth
+                            </label>
+                            <input id="dob" type="date" class="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
+                        </div>
+
+                        <div>
+                            <label class="block text-gray-700 text-sm font-medium mb-2" for="license-number">
+                                License Number
+                            </label>
+                            <input id="license-number" type="text" class="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" placeholder="DL-123456">
+                        </div>
+
+                        <div>
+                            <label class="block text-gray-700 text-sm font-medium mb-2" for="license-expiry">
+                                License Expiry
+                            </label>
+                            <input id="license-expiry" type="date" class="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
+                        </div>
+
+                        <div>
+                            <label class="block text-gray-700 text-sm font-medium mb-2" for="license-type">
+                                License Type
+                            </label>
+                            <select id="license-type" class="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
+                                <option value="full">Full License</option>
+                                <option value="provisional">Provisional</option>
+                                <option value="learner">Learner's Permit</option>
+                                <option value="commercial">Commercial</option>
+                            </select>
+                        </div>
+
+                        <div>
+                            <label class="block text-gray-700 text-sm font-medium mb-2" for="email">
+                                Email
+                            </label>
+                            <input id="email" type="email" class="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" placeholder="john.smith@example.com">
+                        </div>
+
+                        <div>
+                            <label class="block text-gray-700 text-sm font-medium mb-2" for="phone">
+                                Phone
+                            </label>
+                            <input id="phone" type="tel" class="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" placeholder="(555) 123-4567">
+                        </div>
+
+                        <div class="md:col-span-2">
+                            <label class="block text-gray-700 text-sm font-medium mb-2" for="address">
+                                Address
+                            </label>
+                            <input id="address" type="text" class="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" placeholder="123 Main St, City, State">
+                        </div>
+
+                        <div>
+                            <label class="block text-gray-700 text-sm font-medium mb-2" for="vehicle-plate">
+                                Vehicle Plate
+                            </label>
+                            <input id="vehicle-plate" type="text" class="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" placeholder="ABC-1234">
+                        </div>
+
+                        <div>
+                            <label class="block text-gray-700 text-sm font-medium mb-2" for="vehicle-make">
+                                Vehicle Make/Model
+                            </label>
+                            <input id="vehicle-make" type="text" class="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" placeholder="Toyota Camry">
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="px-6 py-4 border-t flex justify-end space-x-3">
+                <button id="cancelDriverModalBtn" class="px-4 py-2 bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200">
+                    Cancel
+                </button>
+                <button class="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700">
+                    Save Driver
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Sidebar toggle
+        const sidebarToggle = document.getElementById('sidebarToggle');
+        const sidebar = document.querySelector('.sidebar');
+        const mainContent = document.querySelector('.main-content');
+
+        sidebarToggle.addEventListener('click', () => {
+            sidebar.classList.toggle('collapsed');
+            mainContent.classList.toggle('expanded');
+        });
+
+        // Modal handling for driver
+        const addDriverBtn = document.getElementById('addDriverBtn');
+        const addDriverModal = document.getElementById('addDriverModal');
+        const closeDriverModalBtn = document.getElementById('closeDriverModalBtn');
+        const cancelDriverModalBtn = document.getElementById('cancelDriverModalBtn');
+
+        addDriverBtn.addEventListener('click', () => {
+            addDriverModal.classList.remove('hidden');
+        });
+
+        closeDriverModalBtn.addEventListener('click', () => {
+            addDriverModal.classList.add('hidden');
+        });
+
+        cancelDriverModalBtn.addEventListener('click', () => {
+            addDriverModal.classList.add('hidden');
+        });
+
+        // Close modal when clicking outside
+        addDriverModal.addEventListener('click', (e) => {
+            if (e.target === addDriverModal) {
+                addDriverModal.classList.add('hidden');
+            }
+        });
+
+        // Set default license expiry to 4 years from today
+        document.addEventListener('DOMContentLoaded', function() {
+            const today = new Date();
+            const expiryDate = new Date();
+            expiryDate.setFullYear(today.getFullYear() + 4);
+
+            const dd = String(expiryDate.getDate()).padStart(2, '0');
+            const mm = String(expiryDate.getMonth() + 1).padStart(2, '0');
+            const yyyy = expiryDate.getFullYear();
+            const expiryFormatted = yyyy + '-' + mm + '-' + dd;
+
+            document.getElementById('license-expiry').value = expiryFormatted;
+        });
+    </script>
+</body>
+
+</html>
